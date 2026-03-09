@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Food Safety Scanner</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f6f8;
+padding:40px;
+}
+
+.container{
+width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:70%;
+padding:10px;
+font-size:16px;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+background:#2c7be5;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.badge{
+font-size:18px;
+margin-top:10px;
+font-weight:bold;
+}
+
+ul{
+margin-top:5px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h2>Food Safety & Ingredient Risk Checker</h2>
+
+<input id="productName" placeholder="Enter product name (example: maggi)">
+<button type="button" onclick="searchProduct()">Analyze</button>
+
+<div id="result"></div>
+
+</div>
+
+
+<script>
+
+async function searchProduct(){
+
+console.log("Button clicked");
+
+let name = document.getElementById("productName").value;
+
+let response = await fetch(`http://127.0.0.1:5000/search?name=${name}`);
+
+let data = await response.json();
+
+let html="";
+
+html += `<h3>${data.product.product_name}</h3>`;
+
+html += `<p class="badge">Overall Risk: ${data.overall_risk}</p>`;
+
+if(data.moderate_risk_ingredients.length>0){
+html += "<h4>⚠ Risk Ingredients</h4><ul>";
+data.moderate_risk_ingredients.forEach(i=>{
+html += `<li><b>${i.ingredient}</b> – ${i.reason}</li>`;
+});
+html+="</ul>";
+}
+
+if(data.allergens.length>0){
+html += "<h4>Allergens</h4><ul>";
+data.allergens.forEach(a=>{
+html += `<li>${a}</li>`;
+});
+html+="</ul>";
+}
+
+if(data.health_warnings.length>0){
+html += "<h4>Health Warnings</h4><ul>";
+data.health_warnings.forEach(w=>{
+html += `<li>${w}</li>`;
+});
+html+="</ul>";
+}
+
+document.getElementById("result").innerHTML=html;
+
+}
+
+</script>
+
+</body>
+</html>

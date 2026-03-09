@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Check Product — Food Safety Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #242424;
+      --border: #2e2e2e;
+      --text: #f0ede8;
+      --muted: #888;
+      --green: #a8d5a2;
+      --yellow: #f0d080;
+      --red: #e8857a;
+      --accent: #c8f060;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav ul {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover, nav ul a.active { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      padding: 60px 40px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    /* TABS */
+    .tabs-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      width: fit-content;
+      margin-bottom: 32px;
+    }
+
+    .tab-btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0f0f0f;
+      font-weight: 600;
+    }
+
+    /* SEARCH PANEL */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .search-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+
+    .search-box label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .search-row input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-row input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-row input::placeholder { color: var(--muted); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f0f0f;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 28px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* UPLOAD PANEL */
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .upload-zone {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .upload-zone:hover {
+      border-color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .upload-zone h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .upload-zone p {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .ocr-edit {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .ocr-edit label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .ocr-edit textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 0.2s;
+    }
+
+    .ocr-edit textarea:focus { border-color: var(--accent); }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      display: none;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* RESULTS */
+    .results { display: none; animation: fadeUp 0.4s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RISK BANNER */
+    .risk-banner {
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid;
+    }
+
+    .risk-banner.high {
+      background: rgba(232,133,122,0.12);
+      border-color: rgba(232,133,122,0.3);
+    }
+
+    .risk-banner.moderate {
+      background: rgba(240,208,128,0.12);
+      border-color: rgba(240,208,128,0.3);
+    }
+
+    .risk-banner.low {
+      background: rgba(168,213,162,0.12);
+      border-color: rgba(168,213,162,0.3);
+    }
+
+    .risk-banner-left h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .risk-banner-left p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .risk-badge {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 8px;
+    }
+
+    .risk-badge.high { background: var(--red); color: #0f0f0f; }
+    .risk-badge.moderate { background: var(--yellow); color: #0f0f0f; }
+    .risk-badge.low { background: var(--green); color: #0f0f0f; }
+
+    /* INGREDIENT CARDS */
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .ingredients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .ingredient-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      transition: border-color 0.2s;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .ingredient-card:hover { border-color: #444; }
+
+    .ingredient-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .ingredient-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .dot.high { background: var(--red); }
+    .dot.moderate { background: var(--yellow); }
+    .dot.low { background: var(--green); }
+
+    .ingredient-category {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .ingredient-explanation {
+      font-size: 0.82rem;
+      color: #aaa;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .caution-tag {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ALLERGEN BOX */
+    .allergen-box {
+      background: rgba(232,133,122,0.08);
+      border: 1px solid rgba(232,133,122,0.25);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .allergen-box .icon { font-size: 1.4rem; }
+
+    .allergen-box h4 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: var(--red);
+    }
+
+    .allergen-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .allergen-tag {
+      background: rgba(232,133,122,0.15);
+      color: var(--red);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* FLAG BUTTON */
+    .flag-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .btn-flag {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-flag:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* ERROR */
+    .error-box {
+      background: rgba(232,133,122,0.08);
+      border: 1px solid rgba(232,133,122,0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: var(--red);
+      display: none;
+      font-size: 0.9rem;
+    }
+
+    /* NO RISK */
+    .no-risk {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      nav ul { gap: 16px; }
+      .hero, .tabs-container { padding-left: 20px; padding-right: 20px; }
+      .upload-grid { grid-template-columns: 1fr; }
+      .search-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Food<span>Safe</span></div>
+  <ul>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="#" class="active">Check Product</a></li>
+    <li><a href="#">Awareness</a></li>
+    <li><a href="#">Stay Safe</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">Ingredient Risk Scanner</div>
+  <h1>Check what's <em>really</em><br>in your food</h1>
+  <p>Search any packaged product or upload its label to get a complete ingredient risk breakdown.</p>
+</div>
+
+<div class="tabs-container">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('search')">🔍 Search by Name</button>
+    <button class="tab-btn" onclick="switchTab('upload')">📷 Upload Label Image</button>
+  </div>
+
+  <!-- SEARCH PANEL -->
+  <div class="panel active" id="panel-search">
+    <div class="search-box">
+      <label>Product or Brand Name</label>
+      <div class="search-row">
+        <input type="text" id="search-input" placeholder="e.g. Maggi Noodles, Lay's Classic..." />
+        <button class="btn-primary" onclick="searchProduct()">Analyze →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD PANEL -->
+  <div class="panel" id="panel-upload">
+    <div class="upload-grid">
+      <div class="upload-zone">
+        <input type="file" accept="image/*" onchange="handleFrontImage(event)" />
+        <div class="upload-icon">🖼️</div>
+        <h3>Front of Product</h3>
+        <p>Marketing claims & product name</p>
+      </div>
+      <div class="upload-zone">
+        <input type="file" accept="image/*" onchange="handleBackImage(event)" />
+        <div class="upload-icon">📋</div>
+        <h3>Back / Ingredient Label</h3>
+        <p>Ingredients list & nutritional info</p>
+      </div>
+    </div>
+
+    <div class="ocr-edit">
+      <label>Extracted Ingredients — you can correct if needed</label>
+      <textarea id="ocr-text" placeholder="Upload the back label image and ingredients will appear here. You can also type or paste ingredients manually (comma separated)..."></textarea>
+    </div>
+
+    <button class="btn-primary" onclick="analyzeOCR()" style="width:100%">Analyze Ingredients →</button>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color: var(--muted); font-size:0.9rem">Analyzing ingredients...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+
+    <!-- Risk Banner -->
+    <div class="risk-banner" id="risk-banner">
+      <div class="risk-banner-left">
+        <h2 id="product-title">Product Name</h2>
+        <p id="product-subtitle">Ingredient analysis complete</p>
+      </div>
+      <div class="risk-badge" id="risk-badge">Low</div>
+    </div>
+
+    <!-- Allergen Alert -->
+    <div class="allergen-box" id="allergen-box" style="display:none">
+      <div class="icon">⚠️</div>
+      <div>
+        <h4>Allergen Alert</h4>
+        <p style="font-size:0.82rem; color:var(--muted)">This product contains the following allergens:</p>
+        <div class="allergen-tags" id="allergen-tags"></div>
+      </div>
+    </div>
+
+    <!-- Ingredient Cards -->
+    <div class="section-title">Ingredient Breakdown</div>
+    <div class="ingredients-grid" id="ingredients-grid"></div>
+
+    <!-- Flag Button -->
+    <div class="flag-row">
+      <button class="btn-flag" onclick="alert('Flagging feature coming soon!')">🚩 Flag this Product</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const API = 'http://127.0.0.1:5000';
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && tab === 'search') || (i === 1 && tab === 'upload'));
+    });
+    document.getElementById('panel-search').classList.toggle('active', tab === 'search');
+    document.getElementById('panel-upload').classList.toggle('active', tab === 'upload');
+    hideResults();
+  }
+
+  function showLoading() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('error-box').style.display = 'none';
+  }
+
+  function hideLoading() {
+    document.getElementById('loading').style.display = 'none';
+  }
+
+  function hideResults() {
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('error-box').style.display = 'none';
+    document.getElementById('loading').style.display = 'none';
+  }
+
+  function showError(msg) {
+    hideLoading();
+    const box = document.getElementById('error-box');
+    box.textContent = '⚠️ ' + msg;
+    box.style.display = 'block';
+  }
+
+  async function searchProduct() {
+    const name = document.getElementById('search-input').value.trim();
+    if (!name) { showError('Please enter a product name.'); return; }
+
+    showLoading();
+    try {
+      const res = await fetch(`${API}/search?name=${encodeURIComponent(name)}`);
+      const data = await res.json();
+      if (!res.ok) { showError(data.error || 'Product not found.'); return; }
+      renderResults(data.product.product_name, data.ingredient_risks, data.overall_risk, data.allergens);
+    } catch (e) {
+      showError('Could not connect to server. Make sure Flask is running.');
+    }
+  }
+
+  async function analyzeOCR() {
+    const text = document.getElementById('ocr-text').value.trim();
+    if (!text) { showError('Please enter or extract ingredient text first.'); return; }
+
+    showLoading();
+    try {
+      const res = await fetch(`${API}/analyze-ingredients`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ingredients_text: text })
+      });
+      const data = await res.json();
+      if (!res.ok) { showError(data.error || 'Analysis failed.'); return; }
+      renderResults('Uploaded Product', data.ingredient_risks, data.overall_risk, data.allergens);
+    } catch (e) {
+      showError('Could not connect to server. Make sure Flask is running.');
+    }
+  }
+
+  function handleFrontImage(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const zone = e.target.parentElement;
+      zone.querySelector('h3').textContent = '✅ ' + file.name;
+    }
+  }
+
+  function handleBackImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const zone = e.target.parentElement;
+    zone.querySelector('h3').textContent = '✅ ' + file.name;
+    // Placeholder: in real implementation, send to OCR endpoint
+    document.getElementById('ocr-text').placeholder = 'OCR processing... (connect to backend OCR endpoint to auto-extract)';
+  }
+
+  function renderResults(productName, risks, overallRisk, allergens) {
+    hideLoading();
+
+    // Risk banner
+    const level = overallRisk.toLowerCase();
+    const banner = document.getElementById('risk-banner');
+    banner.className = 'risk-banner ' + level;
+    document.getElementById('product-title').textContent = productName;
+    document.getElementById('product-subtitle').textContent =
+      risks.length + ' ingredient' + (risks.length !== 1 ? 's' : '') + ' analyzed';
+    const badge = document.getElementById('risk-badge');
+    badge.className = 'risk-badge ' + level;
+    badge.textContent = overallRisk + ' Risk';
+
+    // Allergens
+    const allergenBox = document.getElementById('allergen-box');
+    if (allergens && allergens.length > 0) {
+      allergenBox.style.display = 'flex';
+      document.getElementById('allergen-tags').innerHTML =
+        allergens.map(a => `<span class="allergen-tag">${a}</span>`).join('');
+    } else {
+      allergenBox.style.display = 'none';
+    }
+
+    // Ingredient cards
+    const grid = document.getElementById('ingredients-grid');
+    if (risks.length === 0) {
+      grid.innerHTML = '<div class="no-risk">✅ No flagged ingredients found in our database for this product.</div>';
+    } else {
+      grid.innerHTML = risks.map((r, i) => `
+        <div class="ingredient-card" style="animation-delay:${i * 0.05}s">
+          <div class="ingredient-card-top">
+            <div class="ingredient-name">${r.ingredient_name}</div>
+            <div class="dot ${r.risk_level.toLowerCase()}"></div>
+          </div>
+          <div class="ingredient-category">${r.category}</div>
+          <div class="ingredient-explanation">${r.explanation}</div>
+          <span class="caution-tag">⚠ ${r.caution_group}</span>
+          ${r.allergen_type ? `<span class="caution-tag" style="margin-left:6px; color:var(--red)">🥜 ${r.allergen_type}</span>` : ''}
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  // Allow Enter key to search
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') searchProduct();
+  });
+</script>
+
+</body>
+</html>

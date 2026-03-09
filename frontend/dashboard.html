@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Food Safety Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #242424;
+      --border: #2e2e2e;
+      --text: #f0ede8;
+      --muted: #888;
+      --green: #a8d5a2;
+      --yellow: #f0d080;
+      --red: #e8857a;
+      --accent: #c8f060;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav ul {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--text); }
+    nav ul a.active { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      padding: 60px 40px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 em { font-style: normal; color: var(--red); }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+
+    /* STATS ROW */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto 48px;
+      padding: 0 40px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      flex: 1;
+    }
+
+    .stat-card .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .stat-card.red .stat-num { color: var(--red); }
+    .stat-card.yellow .stat-num { color: var(--yellow); }
+    .stat-card.accent .stat-num { color: var(--accent); }
+
+    /* MAIN CONTENT */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-header-left h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .section-header-left p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    /* PRODUCT CARDS - ADULTERATED */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: border-color 0.2s, transform 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .product-card:hover {
+      border-color: #444;
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .card-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .card-badge.adulterated {
+      background: rgba(232,133,122,0.15);
+      color: var(--red);
+      border: 1px solid rgba(232,133,122,0.3);
+    }
+
+    .card-badge.flagged {
+      background: rgba(240,208,128,0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(240,208,128,0.3);
+    }
+
+    .card-badge.review {
+      background: rgba(168,213,162,0.1);
+      color: var(--green);
+      border: 1px solid rgba(168,213,162,0.25);
+    }
+
+    .product-icon {
+      width: 42px;
+      height: 42px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .card-body h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .card-brand {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .card-issue {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #bbb;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-source {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .card-source span {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .btn-details {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 7px;
+      padding: 6px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-details:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* FLAG COUNT */
+    .flag-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .flag-count .count {
+      background: rgba(240,208,128,0.15);
+      color: var(--yellow);
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    /* REPORT BUTTON */
+    .btn-report {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-report:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* LOADING */
+    .loading-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .skeleton {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      animation: pulse 1.5s ease infinite;
+    }
+
+    .skeleton-line {
+      background: var(--surface2);
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state .emoji { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .modal h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .modal label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    .modal input, .modal select, .modal textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .modal input:focus, .modal select:focus, .modal textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .modal select option { background: var(--surface2); }
+    .modal textarea { resize: vertical; min-height: 80px; }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+
+    .btn-submit {
+      flex: 2;
+      background: var(--accent);
+      color: #0f0f0f;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-submit:hover { opacity: 0.88; }
+
+    .success-msg {
+      background: rgba(168,213,162,0.12);
+      border: 1px solid rgba(168,213,162,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--green);
+      font-size: 0.88rem;
+      margin-top: 16px;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      nav ul { gap: 16px; }
+      .hero, .stats-row, .main { padding-left: 20px; padding-right: 20px; }
+      .stats-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Food<span>Safe</span></div>
+  <ul>
+    <li><a href="#" class="active">Dashboard</a></li>
+    <li><a href="check_product.html">Check Product</a></li>
+    <li><a href="#">Awareness</a></li>
+    <li><a href="#">Stay Safe</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">Safety Dashboard</div>
+  <h1>Know before you <em>eat</em></h1>
+  <p>Stay updated on lab-tested adulterated products and community-reported suspicious food items.</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card red">
+    <div class="stat-num" id="stat-adulterated">—</div>
+    <div class="stat-label">Lab-confirmed adulterated products</div>
+  </div>
+  <div class="stat-card yellow">
+    <div class="stat-num" id="stat-flagged">—</div>
+    <div class="stat-label">Community flagged products</div>
+  </div>
+  <div class="stat-card accent">
+    <div class="stat-num">100</div>
+    <div class="stat-label">Ingredients in our risk database</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SECTION 1: LAB TESTED -->
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>🔬 Lab-Tested Adulterated Products</h2>
+      <p>Officially reported by regulatory authorities such as FSSAI</p>
+    </div>
+  </div>
+
+  <div class="cards-grid" id="adulterated-grid">
+    <!-- Skeleton loaders -->
+    <div class="skeleton">
+      <div class="skeleton-line" style="height:12px; width:40%"></div>
+      <div class="skeleton-line" style="height:18px; width:70%; margin-top:14px"></div>
+      <div class="skeleton-line" style="height:12px; width:50%"></div>
+      <div class="skeleton-line" style="height:60px; margin-top:14px"></div>
+    </div>
+    <div class="skeleton">
+      <div class="skeleton-line" style="height:12px; width:40%"></div>
+      <div class="skeleton-line" style="height:18px; width:70%; margin-top:14px"></div>
+      <div class="skeleton-line" style="height:12px; width:50%"></div>
+      <div class="skeleton-line" style="height:60px; margin-top:14px"></div>
+    </div>
+    <div class="skeleton">
+      <div class="skeleton-line" style="height:12px; width:40%"></div>
+      <div class="skeleton-line" style="height:18px; width:70%; margin-top:14px"></div>
+      <div class="skeleton-line" style="height:12px; width:50%"></div>
+      <div class="skeleton-line" style="height:60px; margin-top:14px"></div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- SECTION 2: USER FLAGGED -->
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>🚩 Community Flagged Products</h2>
+      <p>Reported by users on this platform — under review before verification</p>
+    </div>
+    <button class="btn-report" onclick="openModal()">+ Report a Product</button>
+  </div>
+
+  <div class="cards-grid" id="flagged-grid">
+    <div class="skeleton">
+      <div class="skeleton-line" style="height:12px; width:40%"></div>
+      <div class="skeleton-line" style="height:18px; width:70%; margin-top:14px"></div>
+      <div class="skeleton-line" style="height:60px; margin-top:14px"></div>
+    </div>
+    <div class="skeleton">
+      <div class="skeleton-line" style="height:12px; width:40%"></div>
+      <div class="skeleton-line" style="height:18px; width:70%; margin-top:14px"></div>
+      <div class="skeleton-line" style="height:60px; margin-top:14px"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3>🚩 Report a Product</h3>
+
+    <label>Product Name</label>
+    <input type="text" id="flag-product" placeholder="e.g. Maggi Noodles" />
+
+    <label>Brand</label>
+    <input type="text" id="flag-brand" placeholder="e.g. Nestle" />
+
+    <label>Reason for Reporting</label>
+    <select id="flag-reason">
+      <option value="">Select a reason...</option>
+      <option value="Harmful Ingredient">Harmful Ingredient</option>
+      <option value="Misleading Claim">Misleading Claim on Packaging</option>
+      <option value="Allergy Risk">Allergy Risk</option>
+      <option value="Health Issue After Consumption">Health Issue After Consumption</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label>Description</label>
+    <textarea id="flag-desc" placeholder="Tell us more about your concern..."></textarea>
+
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" onclick="submitFlag()">Submit Report →</button>
+    </div>
+
+    <div class="success-msg" id="success-msg">
+      ✅ Thank you for reporting. Your submission is under review and will help keep the community safe.
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://127.0.0.1:5000';
+
+  // Static adulterated products (lab-tested, curated data)
+  const adulteratedProducts = [
+    {
+      icon: '🥛',
+      name: 'Masti Dahi',
+      brand: 'Amul',
+      issue: 'Found to contain bacterial contamination beyond permissible limits in multiple state lab tests.',
+      source: 'FSSAI',
+      year: '2023'
+    },
+    {
+      icon: '🌶️',
+      name: 'Chilli Powder',
+      brand: 'Various Local Brands',
+      issue: 'Brick powder and artificial red dye used as adulterants to increase weight and colour.',
+      source: 'FSSAI Survey',
+      year: '2022'
+    },
+    {
+      icon: '🍯',
+      name: 'Honey',
+      brand: 'Multiple Brands',
+      issue: 'Sugar syrup and rice syrup added to adulterate natural honey content.',
+      source: 'CSE Report',
+      year: '2020'
+    },
+    {
+      icon: '🧀',
+      name: 'Processed Cheese',
+      brand: 'Local Manufacturers',
+      issue: 'Starch and vegetable fat used in place of actual dairy content.',
+      source: 'FSSAI',
+      year: '2023'
+    },
+    {
+      icon: '🫒',
+      name: 'Mustard Oil',
+      brand: 'Unbranded',
+      issue: 'Argemone oil detected, which is toxic and can cause epidemic dropsy.',
+      source: 'Ministry of Health',
+      year: '2021'
+    },
+    {
+      icon: '🍵',
+      name: 'Tea Powder',
+      brand: 'Loose/Unbranded',
+      issue: 'Used tea leaves mixed with fresh leaves, along with artificial colour additives.',
+      source: 'State Food Authority',
+      year: '2022'
+    },
+  ];
+
+  function renderAdulterated() {
+    const grid = document.getElementById('adulterated-grid');
+    grid.innerHTML = adulteratedProducts.map((p, i) => `
+      <div class="product-card" style="animation-delay:${i * 0.07}s">
+        <div class="card-top">
+          <div class="product-icon">${p.icon}</div>
+          <span class="card-badge adulterated">Adulterated</span>
+        </div>
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <div class="card-brand">${p.brand}</div>
+          <div class="card-issue">${p.issue}</div>
+          <div class="card-meta">
+            <div class="card-source">Reported by: <span>${p.source}, ${p.year}</span></div>
+            <button class="btn-details">Details</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('stat-adulterated').textContent = adulteratedProducts.length;
+  }
+
+  async function loadFlagged() {
+    try {
+      const res = await fetch(`${API}/flagged`);
+      const data = await res.json();
+      const grid = document.getElementById('flagged-grid');
+      document.getElementById('stat-flagged').textContent = data.length;
+
+      if (data.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <div class="emoji">🙌</div>
+            <p>No community reports yet. Be the first to report a suspicious product.</p>
+          </div>`;
+        return;
+      }
+
+      const icons = ['🛒','🥫','🍜','🧃','🍪','🫙'];
+      grid.innerHTML = data.map((p, i) => `
+        <div class="product-card" style="animation-delay:${i * 0.07}s">
+          <div class="card-top">
+            <div class="product-icon">${icons[i % icons.length]}</div>
+            <span class="card-badge ${p.status === 'Under Review' ? 'review' : 'flagged'}">
+              ${p.status || 'Under Review'}
+            </span>
+          </div>
+          <div class="card-body">
+            <h3>${p.product_name}</h3>
+            <div class="card-brand">${p.brand || 'Unknown brand'}</div>
+            <div class="card-issue">${p.description || p.reason}</div>
+            <div class="card-meta">
+              <div class="flag-count">
+                Reason: <span class="count">${p.reason}</span>
+              </div>
+              <button class="btn-details">Details</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (e) {
+      document.getElementById('flagged-grid').innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="emoji">⚠️</div>
+          <p>Could not load flagged products. Make sure Flask is running.</p>
+        </div>`;
+    }
+  }
+
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+    document.getElementById('success-msg').style.display = 'none';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    // Reset form
+    document.getElementById('flag-product').value = '';
+    document.getElementById('flag-brand').value = '';
+    document.getElementById('flag-reason').value = '';
+    document.getElementById('flag-desc').value = '';
+  }
+
+  async function submitFlag() {
+    const product_name = document.getElementById('flag-product').value.trim();
+    const brand = document.getElementById('flag-brand').value.trim();
+    const reason = document.getElementById('flag-reason').value;
+    const description = document.getElementById('flag-desc').value.trim();
+
+    if (!product_name || !reason) {
+      alert('Please fill in the product name and reason.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/flag`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_name, brand, reason, description })
+      });
+      const data = await res.json();
+      document.getElementById('success-msg').style.display = 'block';
+      setTimeout(() => {
+        closeModal();
+        loadFlagged(); // refresh flagged list
+      }, 2500);
+    } catch (e) {
+      alert('Could not submit. Make sure Flask is running.');
+    }
+  }
+
+  // Close modal on overlay click
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Init
+  renderAdulterated();
+  loadFlagged();
+</script>
+
+</body>
+</html>
