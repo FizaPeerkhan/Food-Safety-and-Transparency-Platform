@@ -3,7 +3,7 @@ import mysql.connector
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 # -------------------------------
 # Database Connection
 # -------------------------------
@@ -91,7 +91,7 @@ def analyze_ingredients():
     health_warnings = []
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor(dictionary=True, buffered=True)  # FIXED: added buffered=True
 
     for ing in raw_ingredients:
         ing = ing.strip()
@@ -102,9 +102,9 @@ def analyze_ingredients():
         result = cursor.fetchone()
         if result:
             matched_risks.append(result)
-            if result['allergen_type']:
+            if result.get('allergen_type'):
                 allergens.append(result['allergen_type'])
-            if result["caution_group"] and result["risk_level"] in ["Moderate", "High"]:
+            if result.get("caution_group") and result.get("risk_level") in ["Moderate", "High"]:
                 groups = result["caution_group"].split(";")
                 for g in groups:
                     health_warnings.append(g.strip())
@@ -128,7 +128,6 @@ def analyze_ingredients():
         'health_warnings': list(set(health_warnings)),
         'risk_badge': risk_badge
     })
-
 
 # -------------------------------
 # Route 4: Get Flagged Products
@@ -215,9 +214,9 @@ def search_product():
                 "reason": result["explanation"],
                 "caution_for": result["caution_group"]
             })
-            if result["allergen_type"]:
-                allergens.append(result["allergen_type"])
-            if result["caution_group"]:
+            if result.get('allergen_type'):
+                allergens.append(result['allergen_type'])
+            if result.get("caution_group"):
                 groups = result["caution_group"].split(";")
                 for g in groups:
                     health_warnings.append(g.strip())
@@ -239,7 +238,118 @@ def search_product():
         "health_warnings": list(set(health_warnings))
     })
 
+# -------------------------------
+# Claim Verification Dictionary
+# -------------------------------
+CLAIM_RULES = {
+    "no added sugar": {
+        "banned_ingredients": ["sugar", "high fructose corn syrup", "invert sugar",
+                               "glucose syrup", "dextrose", "fructose", "sucrose",
+                               "maltodextrin", "corn syrup", "liquid glucose"],
+        "message": "Claims 'No Added Sugar' but contains sugar-based ingredients."
+    },
+    "no preservatives": {
+        "banned_ingredients": ["sodium benzoate", "potassium sorbate", "sodium nitrate",
+                               "sulphur dioxide", "bha", "bht", "tbhq",
+                               "calcium propionate", "sodium metabisulphite"],
+        "message": "Claims 'No Preservatives' but contains preservative ingredients."
+    },
+    "low fat": {
+        "banned_ingredients": ["palm oil", "hydrogenated vegetable oil", "vanaspati",
+                               "coconut oil", "butter", "cream", "whole milk"],
+        "message": "Claims 'Low Fat' but contains high-fat ingredients."
+    },
+    "no artificial colours": {
+        "banned_ingredients": ["tartrazine", "sunset yellow", "brilliant blue",
+                               "allura red", "carmoisine", "erythrosine"],
+        "message": "Claims 'No Artificial Colours' but contains artificial colour additives."
+    },
+    "no msg": {
+        "banned_ingredients": ["msg", "monosodium glutamate", "flavor enhancer (msg)", "e621"],
+        "message": "Claims 'No MSG' but contains MSG or similar flavor enhancers."
+    },
+    "gluten free": {
+        "banned_ingredients": ["wheat flour", "wheat", "barley", "rye", "malt extract"],
+        "message": "Claims 'Gluten Free' but contains gluten-containing ingredients."
+    },
+    "sugar free": {
+        "banned_ingredients": ["sugar", "high fructose corn syrup", "glucose syrup",
+                               "dextrose", "sucrose", "fructose", "invert sugar"],
+        "message": "Claims 'Sugar Free' but contains sugar or sugar-derived ingredients."
+    },
+    "natural": {
+        "banned_ingredients": ["aspartame", "saccharin", "acesulfame potassium",
+                               "sucralose", "tartrazine", "sodium benzoate", "bha", "bht"],
+        "message": "Claims 'Natural' but contains artificial additives."
+    }
+}
 
+# -------------------------------
+# Route 7: Verify Marketing Claims
+# -------------------------------
+@app.route('/verify-claims', methods=['POST'])
+def verify_claims():
+    data = request.get_json()
+    claims = data.get('claims', [])
+    ingredients_text = data.get('ingredients_text', '')
+
+    if not claims or not ingredients_text:
+        return jsonify({'error': 'Both claims and ingredients_text are required'}), 400
+
+    ingredients_lower = ingredients_text.lower()
+    results = []
+
+    for claim in claims:
+        claim_clean = claim.strip().lower()
+        matched_rule = None
+        matched_key = None
+
+        for key in CLAIM_RULES:
+            if key in claim_clean or claim_clean in key:
+                matched_rule = CLAIM_RULES[key]
+                matched_key = key
+                break
+
+        if not matched_rule:
+            results.append({
+                "claim": claim,
+                "status": "Unverified",
+                "message": "We don't have a rule to verify this claim yet."
+            })
+            continue
+
+        found_violations = []
+        for banned in matched_rule["banned_ingredients"]:
+            if banned.lower() in ingredients_lower:
+                found_violations.append(banned)
+
+        if found_violations:
+            results.append({
+                "claim": claim,
+                "status": "Misleading",
+                "message": matched_rule["message"],
+                "violating_ingredients": found_violations
+            })
+        else:
+            results.append({
+                "claim": claim,
+                "status": "Verified",
+                "message": f"No ingredients found that contradict this claim."
+            })
+
+    statuses = [r["status"] for r in results]
+    if "Misleading" in statuses:
+        verdict = "⚠️ One or more claims appear misleading"
+    elif "Unverified" in statuses:
+        verdict = "Some claims could not be verified"
+    else:
+        verdict = "✅ All claims appear consistent with ingredients"
+
+    return jsonify({
+        "claims_checked": len(results),
+        "verdict": verdict,
+        "results": results
+    })
 # -------------------------------
 # Run App
 # -------------------------------

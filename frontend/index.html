@@ -1,116 +1,220 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<title>Food Safety Scanner</title>
-
-<style>
-
-body{
-font-family: Arial;
-background:#f4f6f8;
-padding:40px;
-}
-
-.container{
-width:700px;
-margin:auto;
-background:white;
-padding:30px;
-border-radius:8px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
-
-input{
-width:70%;
-padding:10px;
-font-size:16px;
-}
-
-button{
-padding:10px 20px;
-font-size:16px;
-background:#2c7be5;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-.badge{
-font-size:18px;
-margin-top:10px;
-font-weight:bold;
-}
-
-ul{
-margin-top:5px;
-}
-
-</style>
-
+  <meta charset="UTF-8"/>
+  <title>Food Safety Checker</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f9f9f9; }
+    h2 { color: #2d6a2d; }
+    input[type=text] { width: 70%; padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+    button { padding: 10px 20px; background: #2d6a2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; margin-left: 8px; }
+    button:hover { background: #1f4f1f; }
+    .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: bold; margin: 10px 0; }
+    .High { background: #fdd; color: #c00; }
+    .Moderate { background: #fff3cd; color: #856404; }
+    .Low { background: #d4edda; color: #155724; }
+    .section { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; margin: 14px 0; }
+    .section h4 { margin-top: 0; color: #333; }
+    ul { margin: 8px 0; padding-left: 20px; }
+    li { margin: 6px 0; font-size: 0.95rem; }
+    .claim-verified { color: green; font-weight: bold; }
+    .claim-misleading { color: red; font-weight: bold; }
+    .claim-unverified { color: orange; font-weight: bold; }
+    .claim-box { background: #f0f0f0; border-radius: 8px; padding: 12px; margin: 8px 0; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+    #result { margin-top: 20px; }
+    .claim-input-row { display: flex; gap: 8px; margin-top: 6px; }
+    .claim-input-row input { flex: 1; }
+    textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; resize: vertical; }
+  </style>
 </head>
-
-
 <body>
 
-<div class="container">
+<h2>🛡️ Food Safety & Ingredient Risk Checker</h2>
 
-<h2>Food Safety & Ingredient Risk Checker</h2>
-
-<input id="productName" placeholder="Enter product name (example: maggi)">
-<button type="button" onclick="searchProduct()">Analyze</button>
-
-<div id="result"></div>
-
+<!-- SEARCH SECTION -->
+<div class="section">
+  <h4>🔍 Search Product by Name</h4>
+  <div style="display:flex; gap:8px">
+    <input type="text" id="productName" placeholder="e.g. maggi, kurkure, bournvita"/>
+    <button onclick="searchProduct()">Analyze</button>
+  </div>
 </div>
 
+<!-- MANUAL INGREDIENTS SECTION -->
+<div class="section">
+  <h4>📋 Or Paste Ingredients Manually (from OCR / label)</h4>
+  <textarea id="manualIngredients" rows="3" placeholder="e.g. wheat flour, palm oil, salt, sugar, msg..."></textarea>
+  <button type="button" style="margin-top:8px" onclick="analyzeManual()">Analyze Ingredients</button>
+</div>
+
+<!-- CLAIM VERIFICATION SECTION -->
+<div class="section" id="claimSection" style="display:none">
+  <h4>🏷️ Verify Marketing Claims (optional)</h4>
+  <p style="color:#666; font-size:0.88rem">Type claims you saw on the front of the product, e.g. "No Added Sugar", "Gluten Free"</p>
+  <div id="claimsContainer">
+    <div class="claim-input-row">
+      <input type="text" placeholder="e.g. No Added Sugar" class="claim-input"/>
+      <button onclick="addClaimField()">+ Add</button>
+    </div>
+  </div>
+  <button style="margin-top:10px; background:#b35a00" onclick="verifyClaims()">Verify Claims</button>
+</div>
+
+<!-- RESULTS -->
+<div id="result"></div>
+<div id="claimResult"></div>
 
 <script>
+  const API = 'http://127.0.0.1:5000';
+  let currentIngredients = '';
 
-async function searchProduct(){
+  async function searchProduct() {
+    const name = document.getElementById('productName').value.trim();
+    if (!name) { alert('Please enter a product name'); return; }
 
-console.log("Button clicked");
+    const response = await fetch(`${API}/search?name=${encodeURIComponent(name)}`);
+    const data = await response.json();
 
-let name = document.getElementById("productName").value;
+    if (data.error) {
+      document.getElementById('result').innerHTML = `<p style="color:red">⚠️ ${data.error}</p>`;
+      return;
+    }
 
-let response = await fetch(`http://127.0.0.1:5000/search?name=${name}`);
+    currentIngredients = data.product.ingredients_text;
+    document.getElementById('manualIngredients').value = currentIngredients;
+    document.getElementById('claimSection').style.display = 'block';
+    renderSearchResult(data);
+  }
 
-let data = await response.json();
+  async function analyzeManual() {
+    const text = document.getElementById('manualIngredients').value.trim();
+    if (!text) { alert('Please enter ingredients text'); return; }
 
-let html="";
+    currentIngredients = text;
+    document.getElementById('claimSection').style.display = 'block';
 
-html += `<h3>${data.product.product_name}</h3>`;
+    const response = await fetch(`${API}/analyze-ingredients`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ingredients_text: text })
+    });
+    const data = await response.json();
+    renderAnalyzeResult(data);
+  }
 
-html += `<p class="badge">Overall Risk: ${data.overall_risk}</p>`;
+  function renderSearchResult(data) {
+    let html = '';
+    html += `<div class="section">`;
+    html += `<h3>${data.product.product_name} <small style="color:#888">(${data.product.brand})</small></h3>`;
+    html += `<span class="badge ${data.overall_risk}">Overall Risk: ${data.overall_risk}</span>`;
+    html += `</div>`;
 
-if(data.moderate_risk_ingredients.length>0){
-html += "<h4>⚠ Risk Ingredients</h4><ul>";
-data.moderate_risk_ingredients.forEach(i=>{
-html += `<li><b>${i.ingredient}</b> – ${i.reason}</li>`;
-});
-html+="</ul>";
-}
+    if (data.high_risk_ingredients.length > 0) {
+      html += `<div class="section">`;
+      html += `<h4>🔴 High Risk Ingredients</h4><ul>`;
+      data.high_risk_ingredients.forEach(i => {
+        html += `<li><b>${i.ingredient}</b> — ${i.reason} <br><small>⚠ Caution for: ${i.caution_for}</small></li>`;
+      });
+      html += `</ul></div>`;
+    }
 
-if(data.allergens.length>0){
-html += "<h4>Allergens</h4><ul>";
-data.allergens.forEach(a=>{
-html += `<li>${a}</li>`;
-});
-html+="</ul>";
-}
+    if (data.moderate_risk_ingredients.length > 0) {
+      html += `<div class="section">`;
+      html += `<h4>🟡 Moderate Risk Ingredients</h4><ul>`;
+      data.moderate_risk_ingredients.forEach(i => {
+        html += `<li><b>${i.ingredient}</b> — ${i.reason} <br><small>⚠ Caution for: ${i.caution_for}</small></li>`;
+      });
+      html += `</ul></div>`;
+    }
 
-if(data.health_warnings.length>0){
-html += "<h4>Health Warnings</h4><ul>";
-data.health_warnings.forEach(w=>{
-html += `<li>${w}</li>`;
-});
-html+="</ul>";
-}
+    if (data.allergens.length > 0) {
+      html += `<div class="section">`;
+      html += `<h4>🥜 Allergen Alerts</h4><ul>`;
+      data.allergens.forEach(a => { html += `<li>${a}</li>`; });
+      html += `</ul></div>`;
+    }
 
-document.getElementById("result").innerHTML=html;
+    if (data.health_warnings.length > 0) {
+      html += `<div class="section">`;
+      html += `<h4>🏥 Health Warnings</h4><ul>`;
+      data.health_warnings.forEach(w => { html += `<li>${w}</li>`; });
+      html += `</ul></div>`;
+    }
 
-}
+    document.getElementById('result').innerHTML = html;
+    document.getElementById('claimResult').innerHTML = '';
+  }
 
+  function renderAnalyzeResult(data) {
+    let html = '';
+    html += `<div class="section">`;
+    html += `<h3>Ingredient Analysis</h3>`;
+    html += `<span class="badge ${data.overall_risk}">${data.risk_badge}</span>`;
+    html += `</div>`;
+
+    if (data.ingredient_risks.length > 0) {
+      html += `<div class="section"><h4>⚠️ Flagged Ingredients</h4><ul>`;
+      data.ingredient_risks.forEach(i => {
+        html += `<li><b>${i.ingredient_name}</b> (${i.risk_level}) — ${i.explanation}<br>
+                 <small>Caution for: ${i.caution_group}</small></li>`;
+      });
+      html += `</ul></div>`;
+    } else {
+      html += `<div class="section"><p>✅ No flagged ingredients found in our database.</p></div>`;
+    }
+
+    if (data.allergens.length > 0) {
+      html += `<div class="section"><h4>🥜 Allergens</h4><ul>`;
+      data.allergens.forEach(a => { html += `<li>${a}</li>`; });
+      html += `</ul></div>`;
+    }
+
+    document.getElementById('result').innerHTML = html;
+    document.getElementById('claimResult').innerHTML = '';
+  }
+
+  function addClaimField() {
+    const container = document.getElementById('claimsContainer');
+    const row = document.createElement('div');
+    row.className = 'claim-input-row';
+    row.innerHTML = `<input type="text" placeholder="e.g. Gluten Free" class="claim-input"/>`;
+    container.appendChild(row);
+  }
+
+  async function verifyClaims() {
+    const inputs = document.querySelectorAll('.claim-input');
+    const claims = Array.from(inputs).map(i => i.value.trim()).filter(v => v !== '');
+
+    if (claims.length === 0) { alert('Please enter at least one claim to verify'); return; }
+    if (!currentIngredients) { alert('Please search or analyze a product first'); return; }
+
+    const response = await fetch(`${API}/verify-claims`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ claims, ingredients_text: currentIngredients })
+    });
+    const data = await response.json();
+
+    let html = `<div class="section">`;
+    html += `<h4>🏷️ Claim Verification Results</h4>`;
+    html += `<p><b>${data.verdict}</b></p>`;
+
+    data.results.forEach(r => {
+      const cls = r.status === 'Verified' ? 'claim-verified' :
+                  r.status === 'Misleading' ? 'claim-misleading' : 'claim-unverified';
+      html += `<div class="claim-box">`;
+      html += `<span class="${cls}">${r.status === 'Verified' ? '✅' : r.status === 'Misleading' ? '❌' : '❓'} ${r.claim}</span>`;
+      html += `<p style="margin:4px 0; font-size:0.88rem">${r.message}</p>`;
+      if (r.violating_ingredients && r.violating_ingredients.length > 0) {
+        html += `<small>Found: ${r.violating_ingredients.join(', ')}</small>`;
+      }
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+    document.getElementById('claimResult').innerHTML = html;
+  }
 </script>
 
 </body>
