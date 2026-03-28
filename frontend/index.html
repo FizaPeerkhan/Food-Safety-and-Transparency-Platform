@@ -2,220 +2,965 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Food Safety Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
+  <title>Food Safety Checker - Smart Ingredient Analyzer</title>
   <style>
-    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f9f9f9; }
-    h2 { color: #2d6a2d; }
-    input[type=text] { width: 70%; padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; }
-    button { padding: 10px 20px; background: #2d6a2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; margin-left: 8px; }
-    button:hover { background: #1f4f1f; }
-    .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: bold; margin: 10px 0; }
-    .High { background: #fdd; color: #c00; }
-    .Moderate { background: #fff3cd; color: #856404; }
-    .Low { background: #d4edda; color: #155724; }
-    .section { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; margin: 14px 0; }
-    .section h4 { margin-top: 0; color: #333; }
-    ul { margin: 8px 0; padding-left: 20px; }
-    li { margin: 6px 0; font-size: 0.95rem; }
-    .claim-verified { color: green; font-weight: bold; }
-    .claim-misleading { color: red; font-weight: bold; }
-    .claim-unverified { color: orange; font-weight: bold; }
-    .claim-box { background: #f0f0f0; border-radius: 8px; padding: 12px; margin: 8px 0; }
-    .divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
-    #result { margin-top: 20px; }
-    .claim-input-row { display: flex; gap: 8px; margin-top: 6px; }
-    .claim-input-row input { flex: 1; }
-    textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; resize: vertical; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f9f0 0%, #e8f0e3 100%);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Animated background effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(76, 174, 76, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header with animation */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #1e5a2a, #3cac3c, #2d8f2d);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      animation: gradientShift 3s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .subtitle {
+      color: #5a7c4a;
+      font-size: 1rem;
+    }
+
+    /* Mode Selection with hover effects */
+    .mode-selector {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.6s ease-out 0.1s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .mode-btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+      color: #2c6e2c;
+      border: 2px solid #c8e0bc;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(76, 174, 76, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .mode-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .mode-btn.active {
+      background: #2c7a2c;
+      color: white;
+      border-color: #2c7a2c;
+      box-shadow: 0 4px 12px rgba(44, 122, 44, 0.3);
+      animation: pulse 0.5s ease;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(44, 122, 44, 0.2);
+    }
+
+    /* Cards with entrance animations */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.8rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeScale 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes fadeScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #2c7a2c, #4cae4c, #2c7a2c);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover::after {
+      transform: translateX(0);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1f4f1f;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-left: 4px solid #4cae4c;
+      padding-left: 1rem;
+    }
+
+    /* Forms with focus animations */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #3a5c2a;
+      transition: color 0.3s;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e2e8dc;
+      border-radius: 1rem;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #4cae4c;
+      box-shadow: 0 0 0 4px rgba(76, 174, 76, 0.1);
+      transform: scale(1.01);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Buttons with ripple effect */
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2c7a2c, #3cac3c);
+      color: white;
+      box-shadow: 0 2px 8px rgba(44, 122, 44, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1f5e1f, #2c7a2c);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(44, 122, 44, 0.4);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #4cae4c;
+      color: #2c7a2c;
+    }
+
+    .btn-outline:hover {
+      background: #f0f9ec;
+      transform: translateY(-2px);
+    }
+
+    /* Risk Badges with glow effect */
+    .risk-badge {
+      display: inline-block;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .risk-High { 
+      background: linear-gradient(135deg, #fee, #ffe6e6);
+      color: #c33;
+      border-left: 3px solid #c33;
+    }
+    .risk-Moderate { 
+      background: linear-gradient(135deg, #fff3e0, #fff0e0);
+      color: #c97e00;
+      border-left: 3px solid #c97e00;
+    }
+    .risk-Low { 
+      background: linear-gradient(135deg, #e8f5e9, #d4edd8);
+      color: #2e7d32;
+      border-left: 3px solid #2e7d32;
+    }
+
+    /* Ingredient Items with hover effects */
+    .ingredient-item {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 0.8rem;
+      border-left: 4px solid;
+      transition: all 0.3s;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .ingredient-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .high-risk { background: #fff5f5; border-left-color: #e53e3e; }
+    .moderate-risk { background: #fffaf0; border-left-color: #ed8936; }
+
+    /* Ingredients Tag Cloud */
+    .ingredients-tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .ingredient-tag {
+      background: linear-gradient(135deg, #e8f0e3, #d4e8ca);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      color: #2c6e2c;
+      transition: all 0.3s;
+      cursor: default;
+      animation: fadeInScale 0.3s ease;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .ingredient-tag:hover {
+      transform: scale(1.05);
+      background: #c8e0bc;
+      box-shadow: 0 2px 8px rgba(44, 122, 44, 0.2);
+    }
+
+    /* Toast Notifications */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideInToast 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    @keyframes slideInToast {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-success { background: linear-gradient(135deg, #2c7a2c, #3cac3c); }
+    .toast-error { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .toast-info { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+
+    /* Claim Box */
+    .claim-box {
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 0.8rem;
+      background: linear-gradient(135deg, #f9f9f9, #ffffff);
+      transition: all 0.3s;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .claim-box:hover {
+      transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .claim-verified { color: #2e7d32; font-weight: bold; }
+    .claim-misleading { color: #c62828; font-weight: bold; }
+
+    /* Loading animation */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #6c8c5e;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 1rem;
+      border: 3px solid #e8f0e3;
+      border-top-color: #2c7a2c;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Hide sections */
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .mode-btn { padding: 0.5rem 1rem; font-size: 0.9rem; }
+      h1 { font-size: 1.8rem; }
+    }
   </style>
 </head>
 <body>
-
-<h2>🛡️ Food Safety & Ingredient Risk Checker</h2>
-
-<!-- SEARCH SECTION -->
-<div class="section">
-  <h4>🔍 Search Product by Name</h4>
-  <div style="display:flex; gap:8px">
-    <input type="text" id="productName" placeholder="e.g. maggi, kurkure, bournvita"/>
-    <button onclick="searchProduct()">Analyze</button>
-  </div>
-</div>
-
-<!-- MANUAL INGREDIENTS SECTION -->
-<div class="section">
-  <h4>📋 Or Paste Ingredients Manually (from OCR / label)</h4>
-  <textarea id="manualIngredients" rows="3" placeholder="e.g. wheat flour, palm oil, salt, sugar, msg..."></textarea>
-  <button type="button" style="margin-top:8px" onclick="analyzeManual()">Analyze Ingredients</button>
-</div>
-
-<!-- CLAIM VERIFICATION SECTION -->
-<div class="section" id="claimSection" style="display:none">
-  <h4>🏷️ Verify Marketing Claims (optional)</h4>
-  <p style="color:#666; font-size:0.88rem">Type claims you saw on the front of the product, e.g. "No Added Sugar", "Gluten Free"</p>
-  <div id="claimsContainer">
-    <div class="claim-input-row">
-      <input type="text" placeholder="e.g. No Added Sugar" class="claim-input"/>
-      <button onclick="addClaimField()">+ Add</button>
+  <div class="container">
+    <div class="header">
+      <h1>🛡️ Food Safety Checker</h1>
+      <p class="subtitle">Smart ingredient analysis | Verify claims | Make healthier choices</p>
     </div>
+
+    <!-- Mode Selection -->
+    <div class="mode-selector">
+      <button class="mode-btn active" onclick="setMode('search')">🔍 Search Product</button>
+      <button class="mode-btn" onclick="setMode('add')">📤 Add Product</button>
+      <button class="mode-btn" onclick="setMode('manual')">📝 Manual Analysis</button>
+      <button class="mode-btn" onclick="setMode('ocr')">📷 OCR Label</button>
+    </div>
+
+    <!-- Search Mode -->
+    <div id="searchMode" class="card">
+      <div class="card-title">🔍 Search Product Database</div>
+      <div class="form-group">
+        <label>Product Name or Brand</label>
+        <input type="text" id="searchInput" placeholder="e.g., Maggi, Butter, Amul, Lassi" autocomplete="off">
+        <small style="color: #718096; margin-top: 5px; display: block;">💡 Tip: Try searching by product name or brand name for best results</small>
+      </div>
+      <button class="btn btn-primary" onclick="searchProduct()">🔎 Analyze Product</button>
+    </div>
+
+    <!-- Add Product Mode -->
+    <div id="addMode" class="card hidden">
+      <div class="card-title">📤 Add New Product to Database</div>
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" id="newProductName" placeholder="e.g., Organic Oats">
+      </div>
+      <div class="form-group">
+        <label>Brand *</label>
+        <input type="text" id="newProductBrand" placeholder="e.g., Quaker">
+      </div>
+      <div class="form-group">
+        <label>Ingredients List *</label>
+        <textarea id="newProductIngredients" placeholder="List all ingredients separated by commas..."></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="addNewProduct()">➕ Add & Analyze</button>
+    </div>
+
+    <!-- Manual Mode -->
+    <div id="manualMode" class="card hidden">
+      <div class="card-title">📝 Manual Ingredient Analysis</div>
+      <div class="form-group">
+        <label>Paste Ingredients List</label>
+        <textarea id="manualIngredients" rows="4" placeholder="e.g., wheat flour, sugar, palm oil, salt, monosodium glutamate..."></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="analyzeManual()">🔬 Analyze Ingredients</button>
+    </div>
+
+    <!-- OCR Mode -->
+    <div id="ocrMode" class="card hidden">
+      <div class="card-title">📷 Extract Text from Label Image</div>
+      <div class="form-group">
+        <label>Upload Product Label Image</label>
+        <input type="file" id="ocrImage" accept="image/*" onchange="performOCR()">
+      </div>
+      <div id="ocrResultGroup" class="hidden" style="margin-top: 15px;">
+        <label>Extracted Text</label>
+        <textarea id="ocrIngredients" rows="4" placeholder="Extracted text will appear here..."></textarea>
+        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="analyzeOCRText()">Analyze Extracted Text</button>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results"></div>
   </div>
-  <button style="margin-top:10px; background:#b35a00" onclick="verifyClaims()">Verify Claims</button>
-</div>
 
-<!-- RESULTS -->
-<div id="result"></div>
-<div id="claimResult"></div>
+  <script>
+    const API_URL = 'http://127.0.0.1:5000';
+    let currentIngredients = '';
 
-<script>
-  const API = 'http://127.0.0.1:5000';
-  let currentIngredients = '';
-
-  async function searchProduct() {
-    const name = document.getElementById('productName').value.trim();
-    if (!name) { alert('Please enter a product name'); return; }
-
-    const response = await fetch(`${API}/search?name=${encodeURIComponent(name)}`);
-    const data = await response.json();
-
-    if (data.error) {
-      document.getElementById('result').innerHTML = `<p style="color:red">⚠️ ${data.error}</p>`;
-      return;
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'slideInToast 0.3s reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
-    currentIngredients = data.product.ingredients_text;
-    document.getElementById('manualIngredients').value = currentIngredients;
-    document.getElementById('claimSection').style.display = 'block';
-    renderSearchResult(data);
-  }
-
-  async function analyzeManual() {
-    const text = document.getElementById('manualIngredients').value.trim();
-    if (!text) { alert('Please enter ingredients text'); return; }
-
-    currentIngredients = text;
-    document.getElementById('claimSection').style.display = 'block';
-
-    const response = await fetch(`${API}/analyze-ingredients`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ingredients_text: text })
-    });
-    const data = await response.json();
-    renderAnalyzeResult(data);
-  }
-
-  function renderSearchResult(data) {
-    let html = '';
-    html += `<div class="section">`;
-    html += `<h3>${data.product.product_name} <small style="color:#888">(${data.product.brand})</small></h3>`;
-    html += `<span class="badge ${data.overall_risk}">Overall Risk: ${data.overall_risk}</span>`;
-    html += `</div>`;
-
-    if (data.high_risk_ingredients.length > 0) {
-      html += `<div class="section">`;
-      html += `<h4>🔴 High Risk Ingredients</h4><ul>`;
-      data.high_risk_ingredients.forEach(i => {
-        html += `<li><b>${i.ingredient}</b> — ${i.reason} <br><small>⚠ Caution for: ${i.caution_for}</small></li>`;
-      });
-      html += `</ul></div>`;
+    function setMode(mode) {
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.getElementById('searchMode').classList.add('hidden');
+      document.getElementById('addMode').classList.add('hidden');
+      document.getElementById('manualMode').classList.add('hidden');
+      document.getElementById('ocrMode').classList.add('hidden');
+      
+      document.getElementById(`${mode}Mode`).classList.remove('hidden');
+      document.getElementById('results').innerHTML = '';
     }
 
-    if (data.moderate_risk_ingredients.length > 0) {
-      html += `<div class="section">`;
-      html += `<h4>🟡 Moderate Risk Ingredients</h4><ul>`;
-      data.moderate_risk_ingredients.forEach(i => {
-        html += `<li><b>${i.ingredient}</b> — ${i.reason} <br><small>⚠ Caution for: ${i.caution_for}</small></li>`;
-      });
-      html += `</ul></div>`;
-    }
-
-    if (data.allergens.length > 0) {
-      html += `<div class="section">`;
-      html += `<h4>🥜 Allergen Alerts</h4><ul>`;
-      data.allergens.forEach(a => { html += `<li>${a}</li>`; });
-      html += `</ul></div>`;
-    }
-
-    if (data.health_warnings.length > 0) {
-      html += `<div class="section">`;
-      html += `<h4>🏥 Health Warnings</h4><ul>`;
-      data.health_warnings.forEach(w => { html += `<li>${w}</li>`; });
-      html += `</ul></div>`;
-    }
-
-    document.getElementById('result').innerHTML = html;
-    document.getElementById('claimResult').innerHTML = '';
-  }
-
-  function renderAnalyzeResult(data) {
-    let html = '';
-    html += `<div class="section">`;
-    html += `<h3>Ingredient Analysis</h3>`;
-    html += `<span class="badge ${data.overall_risk}">${data.risk_badge}</span>`;
-    html += `</div>`;
-
-    if (data.ingredient_risks.length > 0) {
-      html += `<div class="section"><h4>⚠️ Flagged Ingredients</h4><ul>`;
-      data.ingredient_risks.forEach(i => {
-        html += `<li><b>${i.ingredient_name}</b> (${i.risk_level}) — ${i.explanation}<br>
-                 <small>Caution for: ${i.caution_group}</small></li>`;
-      });
-      html += `</ul></div>`;
-    } else {
-      html += `<div class="section"><p>✅ No flagged ingredients found in our database.</p></div>`;
-    }
-
-    if (data.allergens.length > 0) {
-      html += `<div class="section"><h4>🥜 Allergens</h4><ul>`;
-      data.allergens.forEach(a => { html += `<li>${a}</li>`; });
-      html += `</ul></div>`;
-    }
-
-    document.getElementById('result').innerHTML = html;
-    document.getElementById('claimResult').innerHTML = '';
-  }
-
-  function addClaimField() {
-    const container = document.getElementById('claimsContainer');
-    const row = document.createElement('div');
-    row.className = 'claim-input-row';
-    row.innerHTML = `<input type="text" placeholder="e.g. Gluten Free" class="claim-input"/>`;
-    container.appendChild(row);
-  }
-
-  async function verifyClaims() {
-    const inputs = document.querySelectorAll('.claim-input');
-    const claims = Array.from(inputs).map(i => i.value.trim()).filter(v => v !== '');
-
-    if (claims.length === 0) { alert('Please enter at least one claim to verify'); return; }
-    if (!currentIngredients) { alert('Please search or analyze a product first'); return; }
-
-    const response = await fetch(`${API}/verify-claims`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ claims, ingredients_text: currentIngredients })
-    });
-    const data = await response.json();
-
-    let html = `<div class="section">`;
-    html += `<h4>🏷️ Claim Verification Results</h4>`;
-    html += `<p><b>${data.verdict}</b></p>`;
-
-    data.results.forEach(r => {
-      const cls = r.status === 'Verified' ? 'claim-verified' :
-                  r.status === 'Misleading' ? 'claim-misleading' : 'claim-unverified';
-      html += `<div class="claim-box">`;
-      html += `<span class="${cls}">${r.status === 'Verified' ? '✅' : r.status === 'Misleading' ? '❌' : '❓'} ${r.claim}</span>`;
-      html += `<p style="margin:4px 0; font-size:0.88rem">${r.message}</p>`;
-      if (r.violating_ingredients && r.violating_ingredients.length > 0) {
-        html += `<small>Found: ${r.violating_ingredients.join(', ')}</small>`;
+    async function searchProduct() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) {
+        showToast('Please enter a product name', 'error');
+        return;
       }
+
+      showLoading('Searching database...');
+      
+      try {
+        const response = await fetch(`${API_URL}/search?name=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        
+        if (data.error) {
+          showToast(data.error, 'error');
+          return;
+        }
+        
+        currentIngredients = data.product.ingredients_text;
+        displayResults(data);
+        showToast(`✅ Found "${data.product.product_name}" by ${data.product.brand}`, 'success');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('Cannot connect to server. Make sure Flask is running on port 5000', 'error');
+      }
+    }
+
+    async function addNewProduct() {
+      const name = document.getElementById('newProductName').value.trim();
+      const brand = document.getElementById('newProductBrand').value.trim();
+      const ingredients = document.getElementById('newProductIngredients').value.trim();
+      
+      if (!name || !brand || !ingredients) {
+        showToast('Please fill all fields', 'error');
+        return;
+      }
+      
+      showLoading('Adding product to database...');
+      
+      try {
+        const response = await fetch(`${API_URL}/add-product`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            product_name: name, 
+            brand: brand, 
+            ingredients_text: ingredients 
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          currentIngredients = ingredients;
+          showToast(`✅ ${data.message}`, 'success');
+          displayAnalysisResults(data.analysis, ingredients, name, brand);
+          document.getElementById('newProductName').value = '';
+          document.getElementById('newProductBrand').value = '';
+          document.getElementById('newProductIngredients').value = '';
+        } else {
+          showToast(data.error || 'Failed to add product', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('Failed to add product', 'error');
+      }
+    }
+
+    async function analyzeManual() {
+      const ingredients = document.getElementById('manualIngredients').value.trim();
+      if (!ingredients) {
+        showToast('Please enter ingredients to analyze', 'error');
+        return;
+      }
+      
+      currentIngredients = ingredients;
+      showLoading('Analyzing ingredients...');
+      
+      try {
+        const response = await fetch(`${API_URL}/analyze-ingredients`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ingredients_text: ingredients })
+        });
+        
+        const data = await response.json();
+        displayAnalysisResults(data.ingredient_risks, ingredients);
+        showToast('✅ Analysis complete!', 'success');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('Failed to analyze ingredients', 'error');
+      }
+    }
+
+    async function performOCR() {
+      const file = document.getElementById('ocrImage').files[0];
+      if (!file) return;
+      
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      document.getElementById('ocrResultGroup').classList.add('hidden');
+      showLoading('Extracting text from image...');
+      
+      try {
+        const response = await fetch(`${API_URL}/ocr`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          showToast(data.error, 'error');
+          return;
+        }
+        
+        document.getElementById('ocrIngredients').value = data.extracted_text;
+        document.getElementById('ocrResultGroup').classList.remove('hidden');
+        document.getElementById('results').innerHTML = '';
+        showToast('✅ Text extracted successfully! Click "Analyze" to continue.', 'success');
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('OCR failed. Please make sure Tesseract is installed.', 'error');
+      }
+    }
+
+    async function analyzeOCRText() {
+      const ingredients = document.getElementById('ocrIngredients').value.trim();
+      if (!ingredients) {
+        showToast('No ingredients to analyze', 'error');
+        return;
+      }
+      
+      currentIngredients = ingredients;
+      showLoading('Analyzing ingredients...');
+      
+      try {
+        const response = await fetch(`${API_URL}/analyze-ingredients`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ingredients_text: ingredients })
+        });
+        
+        const data = await response.json();
+        displayAnalysisResults(data.ingredient_risks, ingredients);
+        showToast('✅ Analysis complete!', 'success');
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('Analysis failed', 'error');
+      }
+    }
+
+    function displayResults(data) {
+      let html = '<div class="card">';
+      html += '<div class="card-title">📊 Analysis Results</div>';
+      
+      html += `<h2 style="margin-bottom: 10px; color: #2d3748;">${escapeHtml(data.product.product_name)}</h2>`;
+      html += `<p style="color: #718096; margin-bottom: 15px;">Brand: <strong>${escapeHtml(data.product.brand)}</strong></p>`;
+      
+      // Ingredients Tag Cloud
+      html += `<div style="margin: 15px 0;"><strong>📋 Ingredients:</strong></div>`;
+      html += `<div class="ingredients-tag-cloud">`;
+      const ingredientsArray = data.product.ingredients_text.split(',').map(i => i.trim());
+      ingredientsArray.forEach(ing => {
+        html += `<span class="ingredient-tag">${escapeHtml(ing)}</span>`;
+      });
       html += `</div>`;
+      
+      // Risk badge
+      html += `<div class="risk-badge risk-${data.overall_risk}" style="margin: 15px 0;"><strong>Overall Risk: ${data.overall_risk}</strong></div>`;
+      
+      // INS numbers
+      if (data.ins_numbers && data.ins_numbers.length > 0) {
+        html += `<div style="background: #edf2f7; padding: 12px; border-radius: 8px; margin: 15px 0;">
+          <strong>🔬 INS/E-Numbers Detected:</strong><br>
+          ${data.ins_numbers.join(', ')}
+        </div>`;
+      }
+      
+      // High risk ingredients
+      if (data.high_risk_ingredients && data.high_risk_ingredients.length > 0) {
+        html += '<h3 style="margin: 20px 0 10px;">🔴 High Risk Ingredients</h3>';
+        data.high_risk_ingredients.forEach(ing => {
+          html += `
+            <div class="ingredient-item high-risk">
+              <strong>⚠️ ${escapeHtml(ing.ingredient)}</strong><br>
+              ${escapeHtml(ing.reason)}<br>
+              <small style="color: #718096;">Caution: ${escapeHtml(ing.caution_for)}</small>
+            </div>
+          `;
+        });
+      }
+      
+      // Moderate risk ingredients
+      if (data.moderate_risk_ingredients && data.moderate_risk_ingredients.length > 0) {
+        html += '<h3 style="margin: 20px 0 10px;">🟡 Moderate Risk Ingredients</h3>';
+        data.moderate_risk_ingredients.forEach(ing => {
+          html += `
+            <div class="ingredient-item moderate-risk">
+              <strong>⚠️ ${escapeHtml(ing.ingredient)}</strong><br>
+              ${escapeHtml(ing.reason)}<br>
+              <small style="color: #718096;">Caution: ${escapeHtml(ing.caution_for)}</small>
+            </div>
+          `;
+        });
+      }
+      
+      // Health warnings
+      if (data.health_warnings && data.health_warnings.length > 0) {
+        html += '<h3 style="margin: 20px 0 10px;">🏥 Health Warnings</h3>';
+        data.health_warnings.forEach(warning => {
+          html += `<div class="ingredient-item" style="background: #feebc8;">⚠️ ${escapeHtml(warning)}</div>`;
+        });
+      }
+      
+      html += `
+        <button class="btn btn-outline" style="margin-top: 20px; width: 100%;" onclick="showClaimVerification()">
+          🏷️ Verify Marketing Claims
+        </button>
+      `;
+      
+      html += '</div>';
+      document.getElementById('results').innerHTML = html;
+    }
+
+    function displayAnalysisResults(ingredientRisks, ingredientsText, productName = null, brand = null) {
+      let html = '<div class="card">';
+      html += '<div class="card-title">🧪 Ingredient Analysis Results</div>';
+      
+      if (productName) {
+        html += `<h2 style="margin-bottom: 10px; color: #2d3748;">${escapeHtml(productName)}</h2>`;
+        html += `<p style="color: #718096; margin-bottom: 15px;">Brand: <strong>${escapeHtml(brand)}</strong></p>`;
+      }
+      
+      // Ingredients Tag Cloud
+      html += `<div style="margin: 15px 0;"><strong>📋 Ingredients Analyzed:</strong></div>`;
+      html += `<div class="ingredients-tag-cloud">`;
+      const ingredientsArray = ingredientsText.split(',').map(i => i.trim());
+      ingredientsArray.forEach(ing => {
+        html += `<span class="ingredient-tag">${escapeHtml(ing)}</span>`;
+      });
+      html += `</div>`;
+      
+      if (ingredientRisks && ingredientRisks.length > 0) {
+        html += '<h3 style="margin: 20px 0 10px;">⚠️ Flagged Ingredients</h3>';
+        ingredientRisks.forEach(risk => {
+          const riskClass = risk.risk_level === 'High' ? 'high-risk' : 'moderate-risk';
+          html += `
+            <div class="ingredient-item ${riskClass}">
+              <strong>${escapeHtml(risk.ingredient_name)}</strong> (${risk.risk_level})<br>
+              ${escapeHtml(risk.explanation)}<br>
+              <small style="color: #718096;">Caution: ${escapeHtml(risk.caution_group)}</small>
+            </div>
+          `;
+        });
+      } else {
+        html += '<div style="background: #e8f5e9; padding: 1rem; border-radius: 0.8rem; margin: 1rem 0;">✅ No concerning ingredients found in our database!</div>';
+      }
+      
+      html += `
+        <button class="btn btn-outline" style="margin-top: 20px; width: 100%;" onclick="showClaimVerification()">
+          🏷️ Verify Marketing Claims
+        </button>
+      `;
+      
+      html += '</div>';
+      document.getElementById('results').innerHTML = html;
+    }
+
+    function showClaimVerification() {
+      const claimHtml = `
+        <div class="card" id="claimCard">
+          <div class="card-title">🏷️ Verify Marketing Claims</div>
+          <div class="form-group">
+            <label>Enter claims to verify (one per line)</label>
+            <textarea id="claimsInput" rows="3" placeholder="e.g.,&#10;No Added Sugar&#10;Gluten Free&#10;All Natural"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="verifyClaims()">Verify Claims</button>
+        </div>
+      `;
+      document.getElementById('results').insertAdjacentHTML('beforeend', claimHtml);
+    }
+
+    async function verifyClaims() {
+      const claimsText = document.getElementById('claimsInput').value;
+      const claims = claimsText.split('\n').filter(c => c.trim().length > 0);
+      
+      if (claims.length === 0) {
+        showToast('Please enter at least one claim', 'error');
+        return;
+      }
+      
+      showLoading('Verifying claims...');
+      
+      try {
+        const response = await fetch(`${API_URL}/verify-claims`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            claims: claims, 
+            ingredients_text: currentIngredients 
+          })
+        });
+        
+        const data = await response.json();
+        
+        let html = '<div class="card"><div class="card-title">📋 Verification Results</div>';
+        
+        if (data.verdict.includes('Warning')) {
+          html += `<div class="risk-badge risk-Moderate" style="margin-bottom: 15px;">${data.verdict}</div>`;
+        } else {
+          html += `<div class="risk-badge risk-Low" style="margin-bottom: 15px; background: #e8f5e9;">${data.verdict}</div>`;
+        }
+        
+        data.results.forEach(result => {
+          const statusClass = result.status === 'Verified' ? 'claim-verified' : 'claim-misleading';
+          const icon = result.status === 'Verified' ? '✅' : (result.status === 'Misleading' ? '❌' : 'ℹ️');
+          html += `
+            <div class="claim-box">
+              <span class="${statusClass}">${icon} ${escapeHtml(result.claim)}</span>
+              <p style="margin-top: 8px; color: #4a5568;">${escapeHtml(result.message)}</p>
+              ${result.violating_ingredients && result.violating_ingredients.length > 0 ? 
+                `<small style="color: #c53030;">Found: ${result.violating_ingredients.join(', ')}</small>` : ''}
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        document.getElementById('claimCard').outerHTML = html;
+        showToast('Claim verification complete!', 'success');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('Verification failed', 'error');
+      }
+    }
+
+    function showLoading(message) {
+      document.getElementById('results').innerHTML = `
+        <div class="card">
+          <div class="loading">
+            <div class="spinner"></div>
+            <div>⏳ ${message}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Enter key support
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') searchProduct();
     });
-
-    html += `</div>`;
-    document.getElementById('claimResult').innerHTML = html;
-  }
-</script>
-
+  </script>
 </body>
 </html>

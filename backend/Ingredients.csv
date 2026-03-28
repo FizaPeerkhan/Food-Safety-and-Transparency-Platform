@@ -1,0 +1,1000 @@
+ingredient_name,category,risk_level,explanation,caution_group,allergen_type
+Sugar,Natural Sweetener,Moderate,Raises blood glucose levels when consumed in excess,Diabetic individuals,NULL
+Salt,Natural Mineral,Low,Essential mineral but excess intake increases blood pressure,Hypertension patients,NULL
+Wheat flour,Natural Ingredient,Moderate,Contains gluten protein which may cause intolerance,People with celiac disease,Gluten
+Milk powder,Natural Ingredient,Moderate,Dairy product containing lactose and milk proteins,Lactose intolerant individuals,Dairy
+Aspartame,Artificial Sweetener,High,Artificial sugar substitute affecting glucose metabolism,Diabetic individuals; PKU patients,NULL
+MSG (Monosodium Glutamate),Flavor Enhancer,Moderate,Enhances taste but may trigger sensitivity in some individuals,MSG-sensitive individuals,NULL
+Citric acid,Preservative,Low,Used as acidity regulator and preservative,Generally safe,NULL
+Sodium benzoate,Preservative,Moderate,Prevents microbial growth but may cause sensitivity,Sensitive individuals,NULL
+Tartrazine (E102),Artificial Color,High,Synthetic food coloring linked to allergic reactions,Children; allergy-prone individuals,NULL
+Palm oil,Vegetable Oil,Moderate,High saturated fat content impacting heart health,Heart patients,NULL
+Soy lecithin,Emulsifier,Moderate,Helps mix ingredients but may trigger soy allergies,Soy allergy patients,Soy
+Artificial flavor,Flavor Additive,Moderate,Synthetic compound used to enhance taste,Sensitive individuals,NULL
+High fructose corn syrup,Artificial Sweetener,High,Rapidly increases blood glucose levels,Diabetic individuals,NULL
+Potassium sorbate,Preservative,Low,Prevents mold and yeast growth in food,Generally safe,NULL
+Calcium carbonate,Stabilizer,Low,Used to stabilize and fortify food products,Generally safe,NULL
+Sodium nitrate,Preservative,High,Used in processed meats may form harmful compounds,General population (long-term risk),NULL
+Caramel color,Artificial Color,Moderate,Used for coloring food products,Sensitive individuals,NULL
+Maltodextrin,Additive,Moderate,Processed carbohydrate affecting blood sugar levels,Diabetic individuals,NULL
+Guar gum,Stabilizer,Low,Thickening agent derived from guar beans,Generally safe,NULL
+Xanthan gum,Stabilizer,Low,Thickening agent used in food products,Generally safe,NULL
+Artificial sweetener (Sucralose),Artificial Sweetener,High,Synthetic sugar substitute affecting metabolism,Diabetic individuals,NULL
+Corn starch,Natural Ingredient,Low,Used as thickener and stabilizer,Generally safe,NULL
+Skim milk solids,Natural Ingredient,Moderate,Dairy protein source,Lactose intolerant individuals,Dairy
+Peanut oil,Vegetable Oil,High,May trigger severe allergic reactions,Peanut allergy patients,Nut
+Egg powder,Natural Ingredient,Moderate,Protein source but allergenic to some individuals,Egg allergy patients,Egg
+Sodium bicarbonate,Stabilizer,Low,Used as raising agent in baking,Generally safe,NULL
+BHA (Butylated hydroxyanisole),Preservative,High,Synthetic antioxidant linked to long-term risks,General population (long-term risk),NULL
+BHT (Butylated hydroxytoluene),Preservative,High,Synthetic preservative used to extend shelf life,General population (long-term risk),NULL
+Natural flavor,Flavor Additive,Low,Derived from natural sources for flavor enhancement,Generally safe,NULL
+Casein,Milk Protein,Moderate,Milk-derived protein causing allergic reactions,Dairy allergy patients,Dairy
+Sunflower oil,Vegetable Oil,Low,Common cooking oil generally safe when consumed in moderation,Generally safe,NULL
+Invert sugar,Sweetener,Moderate,Processed sugar that raises blood glucose quickly,Diabetic individuals,NULL
+Glucose syrup,Sweetener,High,Rapidly absorbed sugar increasing blood glucose levels,Diabetic individuals,NULL
+Fructose,Sweetener,Moderate,Natural sugar but excessive intake impacts metabolism,Diabetic individuals,NULL
+Sucrose,Sweetener,Moderate,Common table sugar affecting blood glucose levels,Diabetic individuals,NULL
+Lactose,Milk Sugar,Moderate,Milk sugar causing digestive issues in lactose intolerant individuals,Lactose intolerant individuals,Dairy
+Caseinate,Milk Protein,Moderate,Milk-derived protein triggering allergic reactions,Dairy allergy patients,Dairy
+Sodium chloride,Natural Mineral,Low,Common salt essential in small amounts but harmful in excess,Hypertension patients,NULL
+Potassium nitrate,Preservative,High,Used in processed foods may form harmful compounds over time,General population (long-term risk),NULL
+Annatto,Natural Color,Low,Natural coloring agent generally safe for consumption,Generally safe,NULL
+Beta carotene,Natural Color,Low,Natural pigment and vitamin precursor safe in moderate amounts,Generally safe,NULL
+Titanium dioxide,Artificial Color,High,Whitening agent with potential long-term safety concerns,General population (long-term risk),NULL
+Polysorbate 80,Emulsifier,Moderate,Used to stabilize food mixtures may cause sensitivity,Sensitive individuals,NULL
+Mono and diglycerides,Emulsifier,Moderate,Helps blend ingredients but may affect lipid metabolism,Heart patients,NULL
+Sodium citrate,Acidity Regulator,Low,Controls acidity levels and stabilizes food,Generally safe,NULL
+Calcium propionate,Preservative,Moderate,Prevents mold growth but may cause sensitivity,Sensitive individuals,NULL
+Propylene glycol,Stabilizer,Moderate,Used to retain moisture may cause irritation in excess,Sensitive individuals,NULL
+Acesulfame potassium,Artificial Sweetener,High,Synthetic sugar substitute affecting metabolic response,Diabetic individuals,NULL
+Neotame,Artificial Sweetener,High,Highly potent artificial sweetener affecting metabolism,Diabetic individuals,NULL
+Carrageenan,Stabilizer,Moderate,Used for thickening may cause digestive discomfort,Sensitive individuals,NULL
+Pectin,Stabilizer,Low,Natural thickening agent derived from fruits,Generally safe,NULL
+Gelatin,Protein Additive,Moderate,Animal-derived protein causing allergic reactions in some individuals,Sensitive individuals,NULL
+Cocoa butter,Natural Fat,Low,Natural fat from cocoa generally safe in moderate amounts,Generally safe,NULL
+Buttermilk powder,Dairy Ingredient,Moderate,Dairy-based ingredient causing lactose intolerance issues,Lactose intolerant individuals,Dairy
+Whey protein,Dairy Protein,Moderate,Milk-derived protein causing allergic reactions,Dairy allergy patients,Dairy
+Soy protein,Soy Ingredient,Moderate,Plant protein triggering soy allergies,Soy allergy patients,Soy
+Almond oil,Nut Oil,High,Oil derived from almonds triggering severe nut allergies,Nut allergy patients,Nut
+Rice starch,Natural Ingredient,Low,Used as thickening agent generally safe,Generally safe,NULL
+Vegetable shortening,Fat Additive,Moderate,Processed fat affecting cardiovascular health,Heart patients,NULL
+Disodium inosinate,Flavor Enhancer,Moderate,Enhances savory taste often used with MSG,Sensitive individuals,NULL
+Disodium guanylate,Flavor Enhancer,Moderate,Flavor enhancer used in processed foods,Sensitive individuals,NULL
+Modified starch,Stabilizer,Low,Processed starch used to improve texture,Generally safe,NULL
+Hydrogenated vegetable oil,Fat Additive,High,Contains trans fats increasing cardiovascular risk,Heart patients,NULL
+Partially hydrogenated oil,Fat Additive,High,Source of trans fats harmful for heart health,Heart patients,NULL
+Corn syrup solids,Sweetener,High,Concentrated sugar source raising blood glucose,Diabetic individuals,NULL
+Dextrose,Sweetener,High,Simple sugar rapidly increasing blood glucose,Diabetic individuals,NULL
+Liquid glucose,Sweetener,High,Refined glucose used as sweetener,Diabetic individuals,NULL
+Artificial vanilla flavor,Flavor Additive,Moderate,Synthetic flavor compound,Sensitive individuals,NULL
+Ethyl vanillin,Flavor Additive,Moderate,Artificial vanilla flavoring agent,Sensitive individuals,NULL
+Vanillin,Flavor Additive,Low,Flavor compound used in vanilla flavoring,Generally safe,NULL
+Acetic acid,Acidity Regulator,Low,Used to control acidity and preserve food,Generally safe,NULL
+Lactic acid,Acidity Regulator,Low,Controls acidity and improves shelf life,Generally safe,NULL
+Malic acid,Acidity Regulator,Low,Used to enhance flavor and acidity,Generally safe,NULL
+Phosphoric acid,Acidity Regulator,Moderate,Used in soft drinks affecting dental health,General population,NULL
+Sodium phosphate,Stabilizer,Moderate,Used as stabilizer affecting mineral balance,Sensitive individuals,NULL
+Calcium phosphate,Stabilizer,Low,Used as anti-caking and fortifying agent,Generally safe,NULL
+Magnesium carbonate,Anti-caking Agent,Low,Prevents clumping in powdered foods,Generally safe,NULL
+Silicon dioxide,Anti-caking Agent,Low,Prevents clumping in powders,Generally safe,NULL
+Glycerol,Humectant,Moderate,Maintains moisture content in food,Sensitive individuals,NULL
+Propionic acid,Preservative,Moderate,Prevents mold growth,Sensitive individuals,NULL
+Benzoic acid,Preservative,Moderate,Prevents bacterial growth,Sensitive individuals,NULL
+Sorbitol,Artificial Sweetener,Moderate,Sugar alcohol affecting digestion,Sensitive individuals,NULL
+Mannitol,Artificial Sweetener,Moderate,Sugar substitute causing digestive discomfort,Sensitive individuals,NULL
+Isomalt,Artificial Sweetener,Moderate,Sugar substitute affecting digestion,Sensitive individuals,NULL
+Polydextrose,Additive,Moderate,Used as fiber substitute,Sensitive individuals,NULL
+Yeast extract,Flavor Enhancer,Moderate,Enhances savory taste,Sensitive individuals,NULL
+Malt extract,Flavor Additive,Moderate,Derived from grains may affect glucose,Diabetic individuals,Gluten
+Barley malt extract,Flavor Additive,Moderate,Derived from barley affecting gluten sensitive individuals,Celiac patients,Gluten
+Chocolate liquor,Natural Ingredient,Low,Processed cocoa product,Generally safe,NULL
+Cocoa powder,Natural Ingredient,Low,Processed cocoa used in chocolate products,Generally safe,NULL
+Butter oil,Dairy Fat,Moderate,Milk fat affecting lactose sensitive individuals,Lactose intolerant individuals,Dairy
+Cream powder,Dairy Ingredient,Moderate,Dairy product causing lactose intolerance,Lactose intolerant individuals,Dairy
+Milk solids,Dairy Ingredient,Moderate,Contains lactose and milk proteins,Lactose intolerant individuals,Dairy
+Vegetable glycerin,Humectant,Low,Maintains moisture in food products,Generally safe,NULL
+Lecithin,Emulsifier,Moderate,Helps mix ingredients may cause soy allergy,Soy allergy patients,Soy
+Ammonium bicarbonate,Leavening Agent,Low,Used in baking to produce gas,Generally safe,NULL
+Sodium acid pyrophosphate,Leavening Agent,Moderate,Used in baking affecting mineral balance,Sensitive individuals,NULL
+Potassium bromate,Flour Treatment Agent,High,Linked to potential carcinogenic risk,General population,NULL
+Azodicarbonamide,Flour Treatment Agent,High,Used to improve dough quality,Sensitive individuals,NULL
+Aluminium ammonium sulfate,Stabilizer,Moderate,Used in baking powder as leavening stabilizer,Sensitive individuals,NULL
+Aluminium sodium sulfate,Stabilizer,Moderate,Common additive in baking powders,Sensitive individuals,NULL
+Sodium sulfite,Preservative,High,Used to prevent discoloration and microbial growth in processed foods,Sensitive individuals,NULL
+Calcium acetate,Preservative,Moderate,Used to control acidity and extend shelf life,Sensitive individuals,NULL
+Potassium acetate,Preservative,Moderate,Acidity regulator used in processed foods,Sensitive individuals,NULL
+Sodium malate,Acidity Regulator,Low,Used to control acidity and improve flavor balance,Generally safe,NULL
+Potassium malate,Acidity Regulator,Low,Used in beverages and candies for acidity control,Generally safe,NULL
+Calcium malate,Stabilizer,Low,Used as mineral supplement and stabilizer,Generally safe,NULL
+Sodium gluconate,Stabilizer,Low,Used to stabilize food formulations,Generally safe,NULL
+Potassium gluconate,Stabilizer,Low,Used as mineral additive in processed foods,Generally safe,NULL
+Calcium gluconate,Stabilizer,Low,Used for calcium fortification,Generally safe,NULL
+Ammonium carbonate,Leavening Agent,Moderate,Used in bakery products as raising agent,Sensitive individuals,NULL
+Sodium aluminum sulfate,Stabilizer,Moderate,Used in baking powders and processed foods,Sensitive individuals,NULL
+Potassium aluminum sulfate,Stabilizer,Moderate,Used in baking powders and pickling,Sensitive individuals,NULL
+Sodium stearate,Emulsifier,Moderate,Helps maintain uniform mixture in processed foods,Sensitive individuals,NULL
+Glyceryl monostearate,Emulsifier,Moderate,Used to improve texture in bakery and confectionery,Sensitive individuals,NULL
+Glyceryl distearate,Emulsifier,Moderate,Used to stabilize fats and oils,Sensitive individuals,NULL
+Sucrose acetate isobutyrate,Stabilizer,Moderate,Used in soft drinks to stabilize flavor oils,Sensitive individuals,NULL
+Brominated vegetable oil,Stabilizer,High,Used in citrus flavored drinks to stabilize emulsions,General population (long-term risk),NULL
+Ethyl cellulose,Stabilizer,Low,Used to improve texture and stability,Generally safe,NULL
+Hydroxypropyl cellulose,Stabilizer,Low,Used as thickener and stabilizer,Generally safe,NULL
+Hydroxypropyl methylcellulose,Stabilizer,Low,Used as thickening agent in processed foods,Generally safe,NULL
+Microcrystalline cellulose,Stabilizer,Low,Used to improve texture and stability,Generally safe,NULL
+Cellulose gum,Stabilizer,Low,Used as thickener in sauces and beverages,Generally safe,NULL
+Calcium peroxide,Flour Treatment Agent,Moderate,Used to bleach and improve flour quality,Sensitive individuals,NULL
+Benzoyl peroxide,Flour Treatment Agent,Moderate,Used to whiten flour in processed foods,Sensitive individuals,NULL
+Ammonium persulfate,Flour Treatment Agent,Moderate,Used to strengthen dough in baking,Sensitive individuals,NULL
+Potassium persulfate,Flour Treatment Agent,Moderate,Used as dough conditioner,Sensitive individuals,NULL
+Sodium erythorbate,Antioxidant,Low,Used to preserve color and flavor in processed foods,Generally safe,NULL
+Calcium ascorbate,Antioxidant,Low,Used as antioxidant and vitamin C source,Generally safe,NULL
+Potassium ascorbate,Antioxidant,Low,Used to prevent oxidation in processed foods,Generally safe,NULL
+Ascorbyl palmitate,Antioxidant,Moderate,Fat soluble antioxidant used in oils and snacks,Sensitive individuals,NULL
+Carbonated water,Base Ingredient,Low,Carbon dioxide infused water used as base in soft drinks and energy drinks,Generally safe,NULL
+Taurine,Functional Additive,Moderate,Amino acid commonly added to energy drinks to support energy metabolism,Sensitive individuals,NULL
+Caffeine,Stimulant,Moderate,Natural stimulant affecting the central nervous system and increasing alertness,Children; caffeine-sensitive individuals,NULL
+Niacin (Vitamin B3),Vitamin Additive,Low,Essential B vitamin used in beverages for energy metabolism support,Generally safe,NULL
+Pantothenic acid (Vitamin B5),Vitamin Additive,Low,B vitamin used to support metabolic processes and energy production,Generally safe,NULL
+Vitamin B6 (Pyridoxine),Vitamin Additive,Low,Essential vitamin supporting brain development and metabolism,Generally safe,NULL
+Vitamin B2 (Riboflavin),Vitamin Additive,Low,Vitamin involved in energy production and cellular function,Generally safe,NULL
+Vitamin B12 (Cobalamin),Vitamin Additive,Low,Vitamin important for nerve function and red blood cell production,Generally safe,NULL
+Cumin,Spice,Low,Common Indian spice used for flavor and digestion support,General consumers,NULL
+Cinnamon,Spice,Low,Aromatic spice used in sweets and beverages,General consumers,NULL
+Almond,Nut,Moderate,Tree nut used in beverages and desserts,People with nut allergy,Tree Nut
+Sesame oil,Edible Oil,Moderate,Vegetable oil extracted from sesame seeds,People with sesame allergy,Sesame
+Rava,Grain Product,Low,Coarsely ground wheat semolina used in snacks and sweets,People with gluten intolerance,Gluten
+Palmolein oil,Edible Oil,Moderate,Refined palm oil commonly used for frying,Heart patients,NULL
+Edible vegetable fat,Fat Source,Moderate,Processed vegetable fat used for texture and shelf life,Heart patients,NULL
+Acidity regulator,Food Additive,Low,Used to control acidity and maintain pH in foods,General consumers,NULL
+Raising agents,Leavening Agent,Low,Substances like baking soda that help dough rise,General consumers,NULL
+Dough conditioner,Food Additive,Low,Improves dough texture and baking performance,General consumers,NULL
+Carbon dioxide,Propellant,Low,Gas used in carbonated beverages,General consumers,NULL
+Orange juice,Fruit Ingredient,Low,Natural juice extracted from oranges used in beverages,General consumers,NULL
+Fruit juice,Fruit Ingredient,Low,Juice extracted from fruits used for flavor and nutrition,General consumers,NULL
+Orange fruit powder,Fruit Ingredient,Low,Dehydrated orange powder used for flavoring,General consumers,NULL
+Bay leaves,Spice,Low,Aromatic leaf used in Indian cooking for flavor,General consumers,NULL
+Asafoetida,Spice,Moderate,Strong spice used in Indian cooking which may cause sensitivity,Sensitive individuals,NULL
+Herbs,Flavoring Ingredient,Low,Plant leaves used for flavoring foods,General consumers,NULL
+Gelling agent,Food Additive,Low,Substance used to thicken or stabilize food texture,General consumers,NULL
+Nature identical flavouring substance,Flavoring Agent,Low,Synthetic flavor chemically identical to natural flavor,General consumers,NULL
+Artificial flavouring substances,Flavoring Agent,Moderate,Lab-created flavor compounds used to enhance taste,Sensitive individuals,NULL
+Colour,Food Additive,Moderate,Used to enhance or restore color in food products,Children and sensitive individuals,NULL
+Fruit puree,Fruit Ingredient,Low,Blended fruit used in desserts and beverages,General consumers,NULL
+Cocoa,Flavoring Ingredient,Low,Chocolate flavor ingredient derived from cocoa beans,General consumers,NULL
+Peanuts,Nut,Moderate,Legume widely used in snacks but common allergen,People with peanut allergy,Peanut
+Gram dal,Legume Ingredient,Low,Split chickpeas used in Indian snacks,General consumers,NULL
+Moth dal,Legume Ingredient,Low,Protein rich lentil used in Indian snacks,General consumers,NULL
+Chili,Spice,Moderate,Hot spice used to add heat and flavor to foods,People with gastric sensitivity,NULL
+Spices,Flavoring Ingredient,Low,Mix of plant spices used to enhance taste and aroma,General consumers,NULL
+Cardamom,Spice,Low,Aromatic spice used in sweets and beverages,General consumers,NULL
+Saffron,Spice,Low,Premium spice used for flavor and natural color,General consumers,NULL
+Skimmed milk powder,Dairy Ingredient,Moderate,Low fat milk powder used in dairy products,Lactose intolerant individuals,Milk
+Stabilizer,Food Additive,Low,Helps maintain texture and consistency in processed foods,General consumers,NULL
+Thickener,Food Additive,Low,Substance added to increase viscosity of food products,General consumers,NULL
+Preservative,Food Additive,Moderate,Added to prevent spoilage and extend shelf life,Sensitive individuals,NULL
+Antioxidant,Food Additive,Low,Prevents oxidation and maintains freshness of food products,General consumers,NULL
+Caramel colour,Food Colour,Moderate,Brown colouring agent used in beverages and sauces,Children and sensitive individuals,NULL
+Annatto colour,Food Colour,Low,Natural colour derived from annatto seeds used in dairy products,General consumers,NULL
+Paprika extract,Food Colour,Low,Natural red colour extracted from paprika peppers,General consumers,NULL
+Yeast,Leavening Agent,Low,Microorganism used in baking and fermentation processes,General consumers,NULL
+Baking soda,Leavening Agent,Low,Sodium bicarbonate used to make baked goods rise,General consumers,NULL
+Baking powder,Leavening Agent,Low,Combination leavening agent used in baking products,General consumers,NULL
+Vinegar,Acidity Regulator,Low,Acidic liquid used for flavor and preservation,General consumers,NULL
+Tomato paste,Vegetable Ingredient,Low,Concentrated tomato used in sauces and snacks,General consumers,NULL
+Onion powder,Flavoring Ingredient,Low,Dehydrated onion used to enhance flavor,General consumers,NULL
+Garlic powder,Flavoring Ingredient,Low,Dehydrated garlic powder used in seasoning mixes,General consumers,NULL
+Black pepper,Spice,Low,Common spice used for flavor and mild heat,General consumers,NULL
+Mustard seeds,Spice,Moderate,Spice used in Indian cooking that may trigger allergies,Sensitive individuals,Mustard
+Coriander powder,Spice,Low,Ground coriander seeds used for flavoring foods,General consumers,NULL
+Turmeric,Spice,Low,Yellow spice used for flavor and natural coloring,General consumers,NULL
+Fenugreek,Spice,Low,Seed used for flavoring and traditional cooking,General consumers,NULL
+Tamarind pulp,Fruit Ingredient,Low,Sour fruit pulp used in sauces and chutneys,General consumers,NULL
+Jaggery,Natural Sweetener,Moderate,Traditional unrefined sugar made from sugarcane juice,Diabetic individuals,NULL
+Calcium lactate,Food Additive,Low,Calcium salt used as firming agent and preservative,General consumers,NULL
+Sodium lactate,Food Additive,Low,Sodium salt of lactic acid used for preservation and moisture retention,General consumers,NULL
+Potassium lactate,Food Additive,Low,Potassium salt used to control microbial growth in foods,General consumers,NULL
+Ammonium chloride,Food Additive,Moderate,Acidity regulator used in bakery and confectionery,Sensitive individuals,NULL
+Magnesium sulfate,Food Additive,Low,Mineral salt used as firming agent and nutrient source,General consumers,NULL
+Calcium sulfate,Food Additive,Low,Food grade mineral used as firming agent and stabilizer,General consumers,NULL
+Sodium metabisulfite,Preservative,Moderate,Antioxidant and preservative used in processed foods,People with sulphite sensitivity,NULL
+Potassium metabisulfite,Preservative,Moderate,Preservative used to prevent microbial growth,Sensitive individuals,NULL
+Sodium bisulfite,Preservative,Moderate,Antioxidant preservative used in food processing,Sensitive individuals,NULL
+Calcium disodium EDTA,Stabilizer,Moderate,Chelating agent used to maintain color and flavor stability,Sensitive individuals,NULL
+Tetrasodium EDTA,Stabilizer,Moderate,Metal chelating agent used to improve shelf life,Sensitive individuals,NULL
+Sodium tripolyphosphate,Food Additive,Moderate,Used to retain moisture and improve texture in processed foods,Sensitive individuals,NULL
+Sodium hexametaphosphate,Food Additive,Moderate,Sequestrant used in dairy and beverage processing,Sensitive individuals,NULL
+Potassium phosphate,Food Additive,Low,Buffering agent used to regulate acidity in foods,General consumers,NULL
+Ammonium phosphate,Food Additive,Low,Nutrient salt used in fermentation and food processing,General consumers,NULL
+Magnesium chloride,Food Additive,Low,Used as coagulant and mineral source in foods,General consumers,NULL
+Calcium chloride,Food Additive,Low,Used as firming agent in canned vegetables and cheese,General consumers,NULL
+Sodium diacetate,Preservative,Moderate,Used to inhibit microbial growth in packaged foods,Sensitive individuals,NULL
+Potassium diacetate,Preservative,Moderate,Acid salt used as preservative in processed foods,Sensitive individuals,NULL
+Ethyl maltol,Flavor Enhancer,Low,Flavor compound used to enhance sweet aroma in foods,General consumers,NULL
+Methyl cellulose,Thickener,Low,Cellulose derivative used as thickener and stabilizer,General consumers,NULL
+Sodium carboxymethyl cellulose,Thickener,Low,Cellulose gum used to stabilize food texture,General consumers,NULL
+Propyl gallate,Antioxidant,Moderate,Synthetic antioxidant used to prevent fat oxidation,Sensitive individuals,NULL
+Octyl gallate,Antioxidant,Moderate,Antioxidant used to extend shelf life of fats and oils,Sensitive individuals,NULL
+Dodecyl gallate,Antioxidant,Moderate,Synthetic antioxidant used in processed foods,Sensitive individuals,NULL
+Calcium stearate,Emulsifier,Low,Metal salt of stearic acid used as anti caking agent,General consumers,NULL
+Magnesium stearate,Emulsifier,Low,Used as anti caking and flow agent in powdered foods,General consumers,NULL
+Sodium stearoyl lactylate,Emulsifier,Low,Used in bakery products to improve dough strength,General consumers,NULL
+Calcium stearoyl lactylate,Emulsifier,Low,Emulsifier used in baked goods for texture improvement,General consumers,NULL
+Polyglycerol esters of fatty acids,Emulsifier,Moderate,Emulsifier used in margarine and bakery products,Sensitive individuals,NULL
+Sucrose esters of fatty acids,Emulsifier,Low,Emulsifier used in beverages and dairy products,General consumers,NULL
+Rice flour,Grain Ingredient,Low,Flour produced from ground rice used in snacks and bakery products,General consumers,NULL
+Oat flour,Grain Ingredient,Low,Flour made from oats used in cereals and baked foods,People with gluten sensitivity,Gluten
+Millet flour,Grain Ingredient,Low,Flour made from millet grains used in traditional foods,General consumers,NULL
+Sorghum flour,Grain Ingredient,Low,Gluten free flour derived from sorghum grain,General consumers,NULL
+Buckwheat flour,Grain Ingredient,Low,Flour made from buckwheat seeds used in gluten free products,General consumers,NULL
+Chickpea flour,Legume Ingredient,Low,Protein rich flour made from chickpeas used in snacks,General consumers,NULL
+Lentil flour,Legume Ingredient,Low,Flour derived from lentils used in processed foods,General consumers,NULL
+Pea protein,Protein Ingredient,Low,Plant protein extracted from peas used in food processing,General consumers,NULL
+Rice bran oil,Edible Oil,Low,Oil extracted from rice bran used for cooking and frying,General consumers,NULL
+Cottonseed oil,Edible Oil,Moderate,Vegetable oil derived from cotton seeds used in processed foods,Heart patients,NULL
+Groundnut oil,Edible Oil,Moderate,Oil extracted from peanuts used in cooking,People with peanut allergy,Peanut
+Coconut oil,Edible Oil,Moderate,Oil derived from coconut widely used in cooking and confectionery,Heart patients,NULL
+Shortening,Fat Source,Moderate,Solid fat used in bakery products to improve texture,Heart patients,NULL
+Milk protein concentrate,Dairy Protein,Moderate,Concentrated milk protein used in dairy products,Lactose intolerant individuals,Milk
+Egg albumin,Animal Protein,Moderate,Protein extracted from egg whites used as stabilizer,People with egg allergy,Egg
+Honey,Natural Sweetener,Moderate,Natural sweetener produced by bees used in foods,Diabetic individuals,NULL
+Maple syrup,Natural Sweetener,Moderate,Sweet syrup extracted from maple tree sap,Diabetic individuals,NULL
+Date syrup,Natural Sweetener,Moderate,Syrup derived from dates used as sweetener,Diabetic individuals,NULL
+Molasses,Sweetener,Moderate,Byproduct of sugar refining used in bakery products,Diabetic individuals,NULL
+Brown sugar,Sweetener,Moderate,Sugar containing molasses used in bakery and confectionery,Diabetic individuals,NULL
+Vanilla extract,Flavoring Agent,Low,Natural extract used to flavor desserts and beverages,General consumers,NULL
+Strawberry flavour,Flavoring Agent,Low,Flavor compound used to impart strawberry taste,General consumers,NULL
+Mango pulp,Fruit Ingredient,Low,Processed mango fruit used in beverages and desserts,General consumers,NULL
+Pineapple concentrate,Fruit Ingredient,Low,Concentrated pineapple juice used in beverages,General consumers,NULL
+Lemon juice concentrate,Fruit Ingredient,Low,Concentrated lemon juice used in beverages and sauces,General consumers,NULL
+Apple pulp,Fruit Ingredient,Low,Processed apple used in beverages and desserts,General consumers,NULL
+Banana puree,Fruit Ingredient,Low,Blended banana used in baby foods and bakery products,General consumers,NULL
+Beetroot powder,Vegetable Ingredient,Low,Dried beetroot powder used for color and flavor,General consumers,NULL
+Spinach powder,Vegetable Ingredient,Low,Dehydrated spinach used in processed foods,General consumers,NULL
+Carrot powder,Vegetable Ingredient,Low,Dried carrot powder used in food processing,General consumers,NULL
+Celery powder,Vegetable Ingredient,Moderate,Vegetable powder sometimes used as natural preservative,Sensitive individuals,Celery
+Ginger powder,Spice,Low,Dried ginger powder used as flavoring spice,General consumers,NULL
+Nutmeg,Spice,Moderate,Aromatic spice used in desserts and spice blends,Sensitive individuals,NULL
+Cloves,Spice,Low,Strong aromatic spice used in foods and beverages,General consumers,NULL
+White pepper,Spice,Low,Mild pepper spice used for seasoning foods,General consumers,NULL
+Star anise,Spice,Low,Star shaped spice used in flavoring and cooking,General consumers,NULL
+Fennel seeds,Spice,Low,Aromatic seeds used in Indian cooking and digestion support,General consumers,NULL
+Sesame seeds,Seed Ingredient,Moderate,Oil rich seeds used in bakery and snack products,People with sesame allergy,Sesame
+Poppy seeds,Seed Ingredient,Moderate,Small seeds used in bakery and confectionery products,Sensitive individuals,NULL
+Pumpkin seeds,Seed Ingredient,Low,Nutrient rich seeds used in snacks and cereals,General consumers,NULL
+Flax seeds,Seed Ingredient,Low,Omega rich seeds used in health foods and cereals,General consumers,NULL
+Chia seeds,Seed Ingredient,Low,Nutrient rich seeds used in beverages and health foods,General consumers,NULL
+Glucono delta lactone,Acidity Regulator,Low,Slow release acid used in bakery and tofu processing,General consumers,NULL
+Sodium stearyl lactylate,Emulsifier,Low,Emulsifier used to improve texture of baked goods,General consumers,NULL
+DATEM (Diacetyl tartaric acid esters of mono and diglycerides),Emulsifier,Moderate,Used in bakery products to strengthen dough,Sensitive individuals,NULL
+Polyglycerol polyricinoleate,Emulsifier,Moderate,Emulsifier used mainly in chocolate and confectionery,Sensitive individuals,NULL
+Sodium alginate,Thickener,Low,Seaweed derived thickener used in beverages and desserts,General consumers,NULL
+Potassium alginate,Thickener,Low,Food stabilizer derived from seaweed used in gels and desserts,General consumers,NULL
+Ammonium alginate,Stabilizer,Low,Alginic acid salt used as thickener and stabilizer,General consumers,NULL
+Calcium alginate,Stabilizer,Low,Used in gel formation and food texture stabilization,General consumers,NULL
+Agar agar,Thickener,Low,Seaweed based gelling agent used in desserts and confectionery,General consumers,NULL
+Konjac gum,Thickener,Low,Plant based thickener used in noodles and dietary foods,General consumers,NULL
+Tara gum,Thickener,Low,Natural gum used as stabilizer in processed foods,General consumers,NULL
+Gellan gum,Stabilizer,Low,Microbial polysaccharide used to stabilize beverages and desserts,General consumers,NULL
+Sodium ferrocyanide,Anti caking agent,Moderate,Used in salt products to prevent clumping,Sensitive individuals,NULL
+Calcium silicate,Anti caking agent,Low,Prevents powdered foods from clumping,General consumers,NULL
+Magnesium silicate,Anti caking agent,Low,Used to maintain free flowing powders,General consumers,NULL
+Tricalcium phosphate,Anti caking agent,Low,Used in powdered foods and supplements to prevent clumping,General consumers,NULL
+Potassium sorbate solution,Preservative,Low,Used in beverages and sauces to inhibit microbial growth,General consumers,NULL
+Dimethyl polysiloxane,Antifoaming Agent,Moderate,Used to reduce foam in frying oils and beverages,Sensitive individuals,NULL
+Polysorbate 60,Emulsifier,Moderate,Used to stabilize emulsions in bakery and dairy products,Sensitive individuals,NULL
+Polysorbate 65,Emulsifier,Moderate,Used in dessert toppings and confectionery products,Sensitive individuals,NULL
+Polysorbate 20,Emulsifier,Moderate,Used to mix oil and water ingredients in beverages,Sensitive individuals,NULL
+Isoascorbic acid,Antioxidant,Low,Synthetic antioxidant used in processed meats and beverages,General consumers,NULL
+Calcium sorbate,Preservative,Low,Calcium salt of sorbic acid used as food preservative,General consumers,NULL
+Propyl paraben,Preservative,Moderate,Antimicrobial preservative used in processed foods,Sensitive individuals,NULL
+Methyl paraben,Preservative,Moderate,Preservative used to extend shelf life of foods,Sensitive individuals,NULL
+Ethyl acetate,Flavor solvent,Moderate,Used as solvent in flavoring and food processing,Sensitive individuals,NULL
+Triacetin,Humectant,Low,Used as solvent and plasticizer in food flavorings,General consumers,NULL
+Acetylated monoglycerides,Emulsifier,Moderate,Used in bakery products to improve texture,Sensitive individuals,NULL
+Lactic acid esters of mono and diglycerides,Emulsifier,Moderate,Used to stabilize food emulsions,Sensitive individuals,NULL
+Stearyl tartrate,Emulsifier,Moderate,Used in baking to improve dough stability,Sensitive individuals,NULL
+Potassium stearate,Emulsifier,Low,Used as stabilizer and emulsifying agent in foods,General consumers,NULL
+Sodium lauryl sulfate,Emulsifier,Moderate,Surfactant used in some food processing applications,Sensitive individuals,NULL
+Rice bran extract,Flavor Enhancer,Low,Extract used to enhance savory taste in snack seasonings,General consumers,NULL
+Hydrolyzed vegetable protein,Flavor Enhancer,Moderate,Protein hydrolysate used to create strong umami flavor in noodles and snacks,Sensitive individuals,Soy
+Autolyzed yeast extract,Flavor Enhancer,Moderate,Processed yeast ingredient used to enhance savory flavor in instant foods,Sensitive individuals,NULL
+Yeast powder,Flavoring Ingredient,Low,Dried yeast used in seasoning mixes for savory taste,General consumers,NULL
+Spice oleoresin,Flavor Concentrate,Low,Concentrated extract of spices used in masala blends,General consumers,NULL
+Capsicum extract,Flavoring Agent,Moderate,Concentrated chili extract used to add heat to snacks,Sensitive individuals,NULL
+Onion extract,Flavoring Agent,Low,Concentrated onion flavor used in seasoning powders,General consumers,NULL
+Garlic extract,Flavoring Agent,Low,Concentrated garlic flavor used in processed foods,General consumers,NULL
+Curry powder blend,Seasoning Mix,Low,Blend of ground spices used in instant noodles and snacks,General consumers,NULL
+Masala seasoning,Seasoning Mix,Low,Prepared spice mixture used in instant foods,General consumers,NULL
+Salt substitute blend,Mineral Additive,Moderate,Low sodium salt mixture used in processed foods,Hypertension patients,NULL
+Potato granules,Thickener,Low,Dehydrated potato particles used to thicken soups and sauces,General consumers,NULL
+Rice maltodextrin,Carbohydrate Additive,Moderate,Processed carbohydrate used as filler in seasoning mixes,Diabetic individuals,NULL
+Dried glucose syrup,Carbohydrate Additive,Moderate,Solid form of glucose syrup used in snacks and biscuits,Diabetic individuals,NULL
+Palm stearin,Fat Source,Moderate,Fraction of palm oil used in biscuits and bakery fats,Heart patients,NULL
+Vegetable monoesters,Emulsifier,Moderate,Used in bakery products to improve dough texture,Sensitive individuals,NULL
+Sorbitan monostearate,Emulsifier,Moderate,Emulsifier used in bakery and confectionery products,Sensitive individuals,NULL
+Sorbitan tristearate,Emulsifier,Moderate,Stabilizer used in processed bakery products,Sensitive individuals,NULL
+Enzyme modified starch,Thickener,Moderate,Starch modified using enzymes to improve texture,Sensitive individuals,NULL
+Thermally modified starch,Thickener,Moderate,Heat processed starch used to stabilize food texture,Sensitive individuals,NULL
+Hydrolyzed corn protein,Flavor Enhancer,Moderate,Protein ingredient used in savory seasoning blends,Sensitive individuals,NULL
+Dehydrated soy sauce powder,Flavoring Ingredient,Moderate,Dried soy sauce used in instant noodle seasoning,People with soy allergy,Soy
+Mushroom powder,Flavor Enhancer,Low,Natural umami ingredient used in seasoning blends,General consumers,NULL
+Seaweed powder,Flavor Enhancer,Low,Marine plant powder used in noodle seasoning,General consumers,NULL
+Tomato powder,Flavoring Ingredient,Low,Dehydrated tomato used in sauces and seasoning mixes,General consumers,NULL
+Spinach extract powder,Coloring Agent,Low,Plant extract used for natural green coloring,General consumers,NULL
+Caramelized sugar syrup,Coloring Agent,Moderate,Dark sugar syrup used to enhance color and flavor,Sensitive individuals,NULL
+Butter flavor compound,Flavoring Agent,Moderate,Synthetic compound used to mimic butter flavor,Sensitive individuals,NULL
+Cheese flavor powder,Flavoring Agent,Moderate,Processed flavor used in snack and noodle seasonings,Lactose intolerant individuals,Milk
+Cream flavor compound,Flavoring Agent,Moderate,Artificial flavor used in biscuits and dairy snacks,Sensitive individuals,NULL
+Roasted garlic powder,Flavoring Ingredient,Low,Processed garlic used in seasoning blends,General consumers,NULL
+Roasted onion powder,Flavoring Ingredient,Low,Processed onion powder used in snack flavoring,General consumers,NULL
+Milk fat,Dairy Fat,Moderate,Primary fat component used in ice cream for creamy texture,Lactose intolerant individuals,Milk
+Milk permeate,Dairy Ingredient,Moderate,Dairy byproduct used in chocolate and dairy products,Lactose intolerant individuals,Milk
+Sweet whey powder,Dairy Ingredient,Moderate,Byproduct of cheese production used in confectionery,Lactose intolerant individuals,Milk
+Butterfat,Dairy Fat,Moderate,Milk derived fat used to enhance richness in ice cream,Lactose intolerant individuals,Milk
+Milk crumb,Chocolate Ingredient,Moderate,Mixture of milk and sugar used in milk chocolate production,Lactose intolerant individuals,Milk
+Chocolate coating compound,Confectionery Ingredient,Moderate,Chocolate like coating used in confectionery products,General consumers,NULL
+Cocoa mass,Chocolate Ingredient,Low,Ground cocoa beans used as base ingredient in chocolate,General consumers,NULL
+Cocoa nibs,Chocolate Ingredient,Low,Crushed cocoa bean pieces used in chocolates,General consumers,NULL
+Hazelnut paste,Nut Ingredient,Moderate,Ground hazelnuts used in chocolate fillings,People with nut allergy,Tree Nut
+Hazelnut pieces,Nut Ingredient,Moderate,Chopped hazelnuts used in confectionery products,People with nut allergy,Tree Nut
+Cashew nut pieces,Nut Ingredient,Moderate,Chopped cashews used in ice creams and sweets,People with nut allergy,Tree Nut
+Wafer crumbs,Bakery Ingredient,Moderate,Crushed wafer pieces used in ice cream inclusions,People with gluten intolerance,Gluten
+Cookie crumbs,Bakery Ingredient,Moderate,Crushed biscuit pieces added to ice creams and desserts,People with gluten intolerance,Gluten
+Chocolate chips,Confectionery Ingredient,Moderate,Small chocolate pieces used in desserts and ice creams,General consumers,NULL
+Chocolate flakes,Confectionery Ingredient,Moderate,Thin chocolate shavings used in ice cream toppings,General consumers,NULL
+Caramel syrup,Flavoring Agent,Moderate,Sweet syrup used to flavor desserts and ice creams,Diabetic individuals,NULL
+Butterscotch flavor,Flavoring Agent,Moderate,Artificial flavor used in ice cream and confectionery,Sensitive individuals,NULL
+Toffee bits,Confectionery Ingredient,Moderate,Small caramelized sugar pieces used in desserts,General consumers,NULL
+Cheese powder,Flavoring Ingredient,Moderate,Dehydrated cheese used in chips and snack seasonings,Lactose intolerant individuals,Milk
+Sour cream powder,Dairy Ingredient,Moderate,Dehydrated sour cream used in chips flavoring,Lactose intolerant individuals,Milk
+Buttermilk solids,Dairy Ingredient,Moderate,Dried buttermilk used in snack seasoning,Lactose intolerant individuals,Milk
+Barbecue seasoning,Seasoning Mix,Moderate,Flavor blend used in potato chips and snacks,Sensitive individuals,NULL
+Cheddar flavor,Flavoring Agent,Moderate,Artificial cheddar flavor used in snack foods,Lactose intolerant individuals,Milk
+Sour cream flavor,Flavoring Agent,Moderate,Flavor compound used in chips seasoning,Sensitive individuals,NULL
+Wasabi powder,Flavoring Ingredient,Moderate,Spicy flavoring used in flavored snack products,Sensitive individuals,NULL
+Sea salt seasoning,Seasoning Mix,Low,Seasoned salt blend used in snack flavoring,General consumers,NULL
+Smoked flavor,Flavoring Agent,Moderate,Flavor compound used to create smoky taste in snacks,Sensitive individuals,NULL
+Caramel fudge sauce,Flavoring Ingredient,Moderate,Sweet sauce used in ice cream products,Diabetic individuals,NULL
+Chocolate syrup,Flavoring Ingredient,Moderate,Sweet chocolate sauce used in desserts and beverages,Diabetic individuals,NULL
+Peanut butter paste,Nut Ingredient,Moderate,Ground peanut spread used in chocolates and desserts,People with peanut allergy,Peanut
+Praline paste,Nut Ingredient,Moderate,Caramelized nut paste used in chocolates and desserts,People with nut allergy,Tree Nut
+Crispy rice pieces,Texture Ingredient,Low,Expanded rice pieces used for crunch in chocolates,General consumers,NULL
+Corn snack pellets,Snack Base,Moderate,Processed corn base used in chip manufacturing,General consumers,NULL
+Potato granules base,Snack Base,Low,Processed potato material used in chips production,General consumers,NULL
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
