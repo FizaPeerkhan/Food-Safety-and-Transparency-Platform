@@ -36,85 +36,120 @@ def get_db():
 # Helper: Parse Ingredients
 # -------------------------------
 def parse_ingredients(text):
-    """Parse ingredients text into list"""
     if not text:
         return []
-    ingredients = re.split(r'[,;]\s*|and\s+', str(text).lower())
-    return [i.strip() for i in ingredients if i.strip()]
+    parts = re.split(r'[,;]\s*', str(text))
+    seen, result = set(), []
+    for p in parts:
+        clean = p.strip().lower()
+        # strip percentages like "wheat flour (67%)" → "wheat flour"
+        clean = re.sub(r'\s*\(\d+[\.\d]*\s*%?\)', '', clean).strip()
+        if clean and len(clean) > 1 and clean not in seen:
+            seen.add(clean)
+            result.append(clean)
+    return result
 
+def build_ingredient_analysis(ingredient_list, cursor):
+    """Single source of truth for ingredient risk analysis."""
+    seen_ingredients = set()
+    all_ingredients, high_risk, moderate_risk = [], [], []
+    allergens, health_warnings = set(), set()
+ 
+    for ing in ingredient_list:
+        # PATCH 3: reverse LIKE — DB ingredient name is substring of the input text
+        cursor.execute("""
+            SELECT * FROM ingredients
+            WHERE LOWER(%s) LIKE CONCAT('%%', LOWER(ingredient_name), '%%')
+            LIMIT 1
+        """, (ing,))
+        row = cursor.fetchone()
+ 
+        category = row.get('category', 'General Ingredient') if row else 'General Ingredient'
+        risk_level = row.get('risk_level') if row else None
+        flagged = False
+ 
+        if row:
+            caution = str(row.get('caution_group') or '').strip()
+            allergen = str(row.get('allergen_type') or '').strip()
+            if allergen.lower() in {'null', 'nan', 'none', ''}:
+                allergen = None
+ 
+            is_general = caution.lower() in {
+                'general consumers', 'general consumer', 'general', 'generally safe', 'none', ''
+            }
+ 
+            if not is_general and caution:
+                flagged = True
+                ing_key = row['ingredient_name'].lower()
+                if ing_key not in seen_ingredients:
+                    seen_ingredients.add(ing_key)
+                    entry = {
+                        'ingredient':    row['ingredient_name'],
+                        'original_text': ing,
+                        'category':      category,
+                        'risk_level':    row['risk_level'],
+                        'explanation':   row.get('explanation', ''),
+                        'caution_for':   caution,
+                        'allergen':      allergen,
+                    }
+                    if row['risk_level'] == 'High':
+                        high_risk.append(entry)
+                    elif row['risk_level'] == 'Moderate':
+                        moderate_risk.append(entry)
+ 
+                    if allergen:
+                        allergens.add(allergen)
+                    health_warnings.add(f"{row['ingredient_name']} → Avoid for: {caution}")
+ 
+        all_ingredients.append({
+            'name':       ing,
+            'category':   category,
+            'risk_level': risk_level,
+            'flagged':    flagged,
+        })
+ 
+    overall = 'High' if high_risk else ('Moderate' if moderate_risk else 'Low')
+    return {
+        'all_ingredients':           all_ingredients,
+        'high_risk_ingredients':     high_risk,
+        'moderate_risk_ingredients': moderate_risk,
+        'allergens':                 list(allergens),
+        'health_warnings':           list(health_warnings),
+        'overall_risk':              overall,
+    }
+ 
 # -------------------------------
 # Helper: Extract INS Numbers
 # -------------------------------
-def extract_ins_numbers(ingredients_text):
-    """Extract INS/E numbers from ingredients text"""
-    if not ingredients_text:
+INS_MAP = {
+    '102':'Tartrazine','110':'Sunset Yellow','122':'Carmoisine',
+    '129':'Allura Red','133':'Brilliant Blue','150a':'Caramel Color',
+    '150c':'Caramel Color','150d':'Caramel Color','160c':'Paprika Extract',
+    '171':'Titanium Dioxide','202':'Potassium Sorbate','211':'Sodium Benzoate',
+    '220':'Sulphur Dioxide','250':'Sodium Nitrate','260':'Acetic Acid',
+    '282':'Calcium Propionate','300':'Ascorbic Acid','319':'TBHQ',
+    '320':'BHA','321':'BHT','322':'Lecithin','330':'Citric Acid',
+    '407':'Carrageenan','412':'Guar Gum','415':'Xanthan Gum',
+    '440':'Pectin','450':'Diphosphates','451':'Triphosphates',
+    '460':'Cellulose','466':'CMC','471':'Mono & Diglycerides',
+    '476':'PGPR','500':'Sodium Bicarbonate','503':'Ammonium Bicarbonate',
+    '508':'Potassium Chloride','551':'Silicon Dioxide',
+    '621':'Monosodium Glutamate','627':'Disodium Guanylate',
+    '631':'Disodium Inosinate','635':'Disodium Ribonucleotides',
+    '950':'Acesulfame K','951':'Aspartame','954':'Saccharin','955':'Sucralose',
+}
+ 
+def extract_ins_numbers(text):
+    if not text:
         return []
-    
-    ins_mapping = {
-        '621': 'Monosodium Glutamate (MSG)',
-        '635': 'Disodium Ribonucleotides',
-        '627': 'Disodium Guanylate',
-        '631': 'Disodium Inosinate',
-        '211': 'Sodium Benzoate',
-        '202': 'Potassium Sorbate',
-        '330': 'Citric Acid',
-        '322': 'Lecithin',
-        '407': 'Carrageenan',
-        '412': 'Guar Gum',
-        '415': 'Xanthan Gum',
-        '500': 'Sodium Carbonate',
-        '451': 'Triphosphate',
-        '450': 'Diphosphate',
-        '452': 'Polyphosphate',
-        '950': 'Acesulfame K',
-        '951': 'Aspartame',
-        '952': 'Cyclamate',
-        '954': 'Saccharin',
-        '955': 'Sucralose',
-        '150a': 'Caramel Color',
-        '150c': 'Caramel Color III',
-        '150d': 'Caramel Color IV',
-        '160c': 'Paprika Extract',
-        '102': 'Tartrazine',
-        '110': 'Sunset Yellow',
-        '122': 'Azorubine',
-        '124': 'Ponceau 4R',
-        '129': 'Allura Red',
-        '133': 'Brilliant Blue',
-        '171': 'Titanium Dioxide',
-        '319': 'TBHQ',
-        '260': 'Acetic Acid',
-        '270': 'Lactic Acid',
-        '296': 'Malic Acid',
-        '334': 'Tartaric Acid',
-        '338': 'Phosphoric Acid',
-        '440': 'Pectin',
-        '466': 'Carboxymethyl Cellulose',
-        '471': 'Mono- and Diglycerides',
-        '472': 'Esters of Mono- and Diglycerides',
-        '475': 'Polyglycerol Esters',
-        '476': 'Polyglycerol Polyricinoleate',
-        '477': 'Propylene Glycol Esters',
-        '481': 'Sodium Stearoyl Lactylate',
-        '482': 'Calcium Stearoyl Lactylate',
-        '491': 'Sorbitan Monostearate',
-        '492': 'Sorbitan Tristearate',
-        '503': 'Ammonium Carbonate',
-        '504': 'Magnesium Carbonate',
-        '508': 'Potassium Chloride',
-        '509': 'Calcium Chloride',
-        '551': 'Silicon Dioxide'
-    }
-    
-    ins_pattern = r'(?:INS|E)?\s*(\d{3,4}[a-z]?)'
-    matches = re.findall(ins_pattern, ingredients_text, re.IGNORECASE)
-    result = []
-    for match in matches:
-        if match in ins_mapping:
-            result.append(f"INS {match} ({ins_mapping[match]})")
-        else:
-            result.append(f"INS {match}")
-    return list(set(result))
+    seen, result = set(), []
+    for code in re.findall(r'(?:INS|E)\s*(\d{2,4}[a-z]?)', text, re.IGNORECASE):
+        c = code.lower()
+        if c not in seen:
+            seen.add(c)
+            name = INS_MAP.get(c)
+            result.append({'code': f'INS {code.upper()}', 'name': name or 'Unknown additive'})
+    return result  # empty list = caller hides the section
 
 # -------------------------------
 # Helper: Calculate Overall Risk
@@ -134,7 +169,7 @@ def calculate_overall_risk(risks):
         return 'Low'
 
 # -------------------------------
-# Route 1: Search Product
+# Route 1: Search Product (FIXED - removed broken loop)
 # -------------------------------
 @app.route('/search', methods=['GET'])
 def search_product():
@@ -143,7 +178,7 @@ def search_product():
         return jsonify({'error': 'Product name is required'}), 400
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor(dictionary=True, buffered=True)
 
     # Search using actual column names: product_name and brand
     cursor.execute("""
@@ -164,48 +199,11 @@ def search_product():
     ingredients_text = product.get('ingredients_text', '')
     ingredient_list = parse_ingredients(ingredients_text)
 
-    high_risk = []
-    moderate_risk = []
-    allergens = []
-    health_warnings = []
-    all_flagged = []
-
-    for ing in ingredient_list:
-        risk_cursor = db.cursor(dictionary=True)
-        risk_cursor.execute("""
-            SELECT * FROM ingredients 
-            WHERE LOWER(ingredient_name) LIKE LOWER(%s)
-            LIMIT 1
-        """, (f"%{ing}%",))
-        result = risk_cursor.fetchone()
-        
-        if result:
-            caution_group = result.get('caution_group', '')
-            if caution_group and caution_group.lower() not in ['general consumers', 'general consumer', 'general']:
-                flagged_item = {
-                    "ingredient": ing,
-                    "risk": result['risk_level'],
-                    "reason": result.get('explanation', 'May cause issues'),
-                    "caution_for": caution_group
-                }
-                all_flagged.append(flagged_item)
-                
-                if result['risk_level'] == 'High':
-                    high_risk.append(flagged_item)
-                elif result['risk_level'] == 'Moderate':
-                    moderate_risk.append(flagged_item)
-                
-                if result.get('allergen_type'):
-                    allergens.append(result['allergen_type'])
-                
-                if caution_group:
-                    health_warnings.append(f"{ing}: {result.get('explanation', '')}")
-        risk_cursor.close()
+    # FIXED: Use build_ingredient_analysis instead of broken loop
+    analysis = build_ingredient_analysis(ingredient_list, cursor)
 
     cursor.close()
     db.close()
-
-    overall_risk = calculate_overall_risk(all_flagged)
 
     return jsonify({
         "product": {
@@ -213,17 +211,12 @@ def search_product():
             "brand": product['brand'],
             "ingredients_text": ingredients_text
         },
-        "overall_risk": overall_risk,
-        "high_risk_ingredients": high_risk,
-        "moderate_risk_ingredients": moderate_risk,
-        "all_flagged_ingredients": all_flagged,
-        "allergens": list(set(allergens)),
-        "health_warnings": list(set(health_warnings)),
+        **analysis,
         "ins_numbers": extract_ins_numbers(ingredients_text)
     })
 
 # -------------------------------
-# Route 2: Analyze Ingredients
+# Route 2: Analyze Ingredients (FIXED - added missing route)
 # -------------------------------
 @app.route('/analyze-ingredients', methods=['POST'])
 def analyze_ingredients():
@@ -234,59 +227,23 @@ def analyze_ingredients():
         return jsonify({'error': 'Ingredients text is required'}), 400
 
     ingredient_list = parse_ingredients(ingredients_text)
-    ingredient_risks = []
-    allergens = []
-    health_warnings = []
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor(dictionary=True, buffered=True)
 
-    for ing in ingredient_list:
-        cursor.execute("""
-            SELECT * FROM ingredients 
-            WHERE LOWER(ingredient_name) LIKE LOWER(%s)
-            LIMIT 1
-        """, (f"%{ing}%",))
-        result = cursor.fetchone()
-        
-        if result:
-            caution_group = result.get('caution_group', '')
-            if caution_group and caution_group.lower() not in ['general consumers', 'general consumer', 'general']:
-                ingredient_risks.append({
-                    'ingredient_name': result['ingredient_name'],
-                    'risk_level': result['risk_level'],
-                    'explanation': result.get('explanation', ''),
-                    'caution_group': caution_group
-                })
-                
-                if result.get('allergen_type'):
-                    allergens.append(result['allergen_type'])
-                if caution_group:
-                    health_warnings.append(f"{result['ingredient_name']}: {result.get('explanation', '')}")
+    analysis = build_ingredient_analysis(ingredient_list, cursor)
 
     cursor.close()
     db.close()
 
-    high_count = sum(1 for r in ingredient_risks if r['risk_level'] == 'High')
-    moderate_count = sum(1 for r in ingredient_risks if r['risk_level'] == 'Moderate')
-
-    if high_count > 0:
-        overall_risk = 'High'
-        risk_badge = f'🔴 High Risk - {high_count} concerning ingredient(s) found'
-    elif moderate_count > 0:
-        overall_risk = 'Moderate'
-        risk_badge = f'🟡 Moderate Risk - {moderate_count} ingredient(s) may affect sensitive individuals'
-    else:
-        overall_risk = 'Low'
-        risk_badge = '🟢 Low Risk - Generally safe for most consumers'
-
     return jsonify({
-        'overall_risk': overall_risk,
-        'risk_badge': risk_badge,
-        'ingredient_risks': ingredient_risks,
-        'allergens': list(set(allergens)),
-        'health_warnings': list(set(health_warnings)),
-        'ins_numbers': extract_ins_numbers(ingredients_text)
+        "product": {
+            "product_name": "Manual Analysis",
+            "brand": "—",
+            "ingredients_text": ingredients_text
+        },
+        **analysis,
+        "ins_numbers": extract_ins_numbers(ingredients_text)
     })
 
 # -------------------------------
@@ -346,7 +303,56 @@ def ocr_extract():
     })
 
 # -------------------------------
-# Route 4: Verify Marketing Claims
+# Route 4: OCR Nutrition
+# -------------------------------
+@app.route('/ocr-nutrition', methods=['POST'])
+def ocr_nutrition():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+    
+    file = request.files['image']
+    image_data = np.frombuffer(file.read(), np.uint8)
+    image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
+    
+    if image is None:
+        return jsonify({'error': 'Could not read image'}), 400
+    
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    
+    with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+        temp_path = tmp.name
+    cv2.imwrite(temp_path, gray)
+    
+    output_path = temp_path.replace('.png', '')
+    
+    try:
+        subprocess.run(
+            [TESSERACT_PATH, temp_path, output_path],
+            check=True,
+            capture_output=True
+        )
+        with open(output_path + '.txt', 'r', encoding='utf-8') as f:
+            extracted_text = f.read()
+    except Exception as e:
+        return jsonify({'error': f'OCR failed: {str(e)}'}), 500
+    finally:
+        try:
+            os.unlink(temp_path)
+        except:
+            pass
+        try:
+            os.unlink(output_path + '.txt')
+        except:
+            pass
+    
+    return jsonify({
+        'success': True,
+        'extracted_text': extracted_text
+    })
+
+# -------------------------------
+# Route 5: Verify Marketing Claims
 # -------------------------------
 CLAIM_RULES = {
     "no added sugar": {
@@ -465,7 +471,7 @@ def verify_claims():
     })
 
 # -------------------------------
-# Route 5: Add New Product
+# Route 6: Add New Product (FIXED - returns analysis)
 # -------------------------------
 @app.route('/add-product', methods=['POST'])
 def add_product():
@@ -487,16 +493,24 @@ def add_product():
     """, (product_name, brand, ingredients_text))
     
     db.commit()
+    
+    # FIXED: Return analysis for the added product
+    ingredient_list = parse_ingredients(ingredients_text)
+    analysis_cursor = db.cursor(dictionary=True, buffered=True)
+    analysis = build_ingredient_analysis(ingredient_list, analysis_cursor)
+    analysis_cursor.close()
+    
     cursor.close()
     db.close()
     
     return jsonify({
         'success': True,
-        'message': f'✅ Product "{product_name}" added successfully'
+        'message': f'✅ Product "{product_name}" added successfully',
+        'analysis': analysis
     })
 
 # -------------------------------
-# Route 6: List All Products
+# Route 7: List All Products
 # -------------------------------
 @app.route('/products', methods=['GET'])
 def list_products():
@@ -513,7 +527,7 @@ def list_products():
     })
 
 # -------------------------------
-# Route 7: Disease-Aware Filter
+# Route 8: Disease-Aware Filter
 # -------------------------------
 @app.route('/disease-aware', methods=['GET'])
 def disease_aware():
@@ -537,7 +551,7 @@ def disease_aware():
     })
 
 # -------------------------------
-# Route 8: Get All Ingredients
+# Route 9: Get All Ingredients
 # -------------------------------
 @app.route('/ingredients', methods=['GET'])
 def get_all_ingredients():
@@ -550,7 +564,7 @@ def get_all_ingredients():
     return jsonify(results)
 
 # -------------------------------
-# Route 9: Health Score Calculator
+# Route 10: Health Score Calculator
 # -------------------------------
 @app.route('/health-score', methods=['POST'])
 def health_score():
@@ -605,7 +619,141 @@ def health_score():
     })
 
 # -------------------------------
-# Route 10: Home
+# Route 11: Nutrition Analysis (FIXED - uses proper thresholds)
+# -------------------------------
+NUTRIENT_THRESHOLDS = {
+    'calories':      {'unit':'kcal', 'high':400,  'moderate':200, 'worse':True,  'advice_high':'High calorie density — watch portion size.'},
+    'total_fat':     {'unit':'g',    'high':20,   'moderate':10,  'worse':True,  'advice_high':'High fat content.'},
+    'saturated_fat': {'unit':'g',    'high':5,    'moderate':2,   'worse':True,  'advice_high':'High saturated fat — raises cholesterol, risk for heart patients.'},
+    'trans_fat':     {'unit':'g',    'high':0.5,  'moderate':0,   'worse':True,  'advice_high':'Trans fats detected — harmful for cardiovascular health.'},
+    'sodium':        {'unit':'mg',   'high':600,  'moderate':300, 'worse':True,  'advice_high':'Very high sodium — people with hypertension should limit this.'},
+    'sugar':         {'unit':'g',    'high':22.5, 'moderate':11,  'worse':True,  'advice_high':'High sugar content — diabetics and children should limit.'},
+    'added_sugar':   {'unit':'g',    'high':10,   'moderate':5,   'worse':True,  'advice_high':'High added sugar content.'},
+    'fiber':         {'unit':'g',    'good':6,    'moderate':3,   'worse':False, 'advice_low':'Low fiber — pair with vegetables and whole grains.'},
+    'protein':       {'unit':'g',    'good':10,   'moderate':5,   'worse':False, 'advice_low':'Low protein content.'},
+}
+
+def parse_nutrition_text(text):
+    t = text.lower()
+    result = {}
+    patterns = {
+        'calories':      [r'(?:energy|calories?)[:\s]*(\d+(?:\.\d+)?)\s*(?:kcal|cal)?', r'(\d+(?:\.\d+)?)\s*kcal'],
+        'total_fat':     [r'(?:total\s+)?fat[:\s]*(\d+(?:\.\d+)?)\s*g'],
+        'saturated_fat': [r'saturated[:\s]*(\d+(?:\.\d+)?)\s*g', r'sat\.?\s*fat[:\s]*(\d+(?:\.\d+)?)\s*g'],
+        'trans_fat':     [r'trans[:\s]*(\d+(?:\.\d+)?)\s*g'],
+        'sodium':        [r'sodium[:\s]*(\d+(?:\.\d+)?)\s*(mg|g)', r'salt[:\s]*(\d+(?:\.\d+)?)\s*(mg|g)'],
+        'sugar':         [r'(?:total\s+)?sugar[s]?[:\s]*(\d+(?:\.\d+)?)\s*g'],
+        'added_sugar':   [r'added\s+sugar[s]?[:\s]*(\d+(?:\.\d+)?)\s*g'],
+        'fiber':         [r'(?:dietary\s+)?fi[b]?[e]?r[:\s]*(\d+(?:\.\d+)?)\s*g'],
+        'protein':       [r'protein[s]?[:\s]*(\d+(?:\.\d+)?)\s*g'],
+    }
+    for key, pats in patterns.items():
+        for pat in pats:
+            m = re.search(pat, t)
+            if m:
+                val = float(m.group(1))
+                if key == 'sodium':
+                    groups = m.groups()
+                    unit = str(groups[1]).strip() if len(groups) > 1 and groups[1] else 'mg'
+                    val = round(val * 1000, 2) if unit == 'g' else round(val, 2)
+                result[key] = round(val, 2)
+                break
+    return result
+
+def analyze_nutrients(data):
+    """Returns per-nutrient status + overall score + verdict."""
+    nutrients = []
+    score = 100
+    issues, cautions = [], []
+ 
+    for key, cfg in NUTRIENT_THRESHOLDS.items():
+        val = data.get(key)
+        if val is None:
+            continue
+        unit = cfg['unit']
+ 
+        if cfg['worse']:
+            if val > cfg['high']:
+                status, msg, bar = 'high', f"{val}{unit} — {cfg['advice_high']}", '#e53e3e'
+                score -= 20 if key in ('sodium','saturated_fat','sugar','trans_fat') else 10
+                issues.append(key.replace('_',' '))
+            elif val > cfg['moderate']:
+                status, msg, bar = 'moderate', f"{val}{unit} — moderate level", '#dd6b20'
+                score -= 8 if key in ('sodium','saturated_fat','sugar') else 4
+                cautions.append(key.replace('_',' '))
+            else:
+                status, msg, bar = 'low', f"{val}{unit} — within healthy range", '#38a169'
+        else:
+            if val >= cfg['good']:
+                status, msg, bar = 'good', f"{val}{unit} — good level", '#38a169'
+                score += 8
+            elif val >= cfg['moderate']:
+                status, msg, bar = 'moderate', f"{val}{unit} — moderate level", '#dd6b20'
+            else:
+                status, msg, bar = 'low', f"{val}{unit} — {cfg['advice_low']}", '#e53e3e'
+                score -= 5
+ 
+        nutrients.append({
+            "label": key.replace('_', ' ').capitalize(),
+            "value": val,
+            "unit": unit,
+            "status": status,
+            "message": msg,
+            "percentage": min(val * 2, 100),
+            "bar_color": bar
+        })
+ 
+    score = max(0, min(100, score))
+    rating = ('Excellent' if score >= 80 else 'Good' if score >= 60 else 'Fair' if score >= 40 else 'Poor')
+    rating_color = {'Excellent':'#38a169','Good':'#68d391','Fair':'#ed8936','Poor':'#e53e3e'}[rating]
+ 
+    # Build verdict
+    parts = []
+    if issues:    parts.append(f"This product is high in {' and '.join(issues)}")
+    if cautions:  parts.append(f"moderate in {' and '.join(cautions)}")
+ 
+    advice_groups = []
+    if data.get('sodium',0) > 600 or data.get('saturated_fat',0) > 5:
+        advice_groups.append('hypertension or heart conditions')
+    if data.get('sugar',0) > 22.5:
+        advice_groups.append('diabetes')
+    if data.get('calories',0) > 400:
+        advice_groups.append('weight management')
+ 
+    verdict = '. '.join(parts) + '.' if parts else 'Nutritional profile looks balanced.'
+    if advice_groups:
+        verdict += f" People managing {', '.join(advice_groups)} should limit consumption."
+ 
+    return {
+        'health_score':  score,
+        'rating':        rating,
+        'rating_color':  rating_color,
+        'nutrients':     nutrients,
+        'verdict':       verdict,
+    }
+
+@app.route('/nutrition-analysis', methods=['POST'])
+def nutrition_analysis():
+    data = request.get_json() or {}
+    text = data.get('nutrition_text', '').strip()
+    serving_size = data.get('serving_size', '100g')
+
+    if not text:
+        return jsonify({'error': 'Nutrition text is required'}), 400
+
+    nutrition_info = parse_nutrition_text(text)
+
+    if not nutrition_info:
+        return jsonify({'error': 'Could not parse nutrition values'}), 400
+
+    result = analyze_nutrients(nutrition_info)
+    result['serving_size'] = serving_size
+    result['nutrition_info'] = nutrition_info
+
+    return jsonify(result)
+
+# -------------------------------
+# Route 12: Home
 # -------------------------------
 @app.route('/', methods=['GET'])
 def home():
@@ -622,11 +770,13 @@ def home():
             'analyze': 'POST /analyze-ingredients',
             'verify': 'POST /verify-claims',
             'ocr': 'POST /ocr (upload image)',
+            'ocr-nutrition': 'POST /ocr-nutrition (upload image)',
             'add': 'POST /add-product',
             'products': 'GET /products',
             'ingredients': 'GET /ingredients',
             'disease-aware': 'GET /disease-aware?condition=<condition>',
-            'health-score': 'POST /health-score'
+            'health-score': 'POST /health-score',
+            'nutrition-analysis': 'POST /nutrition-analysis'
         }
     })
 
@@ -666,6 +816,7 @@ if __name__ == '__main__':
     print("   http://127.0.0.1:5000/search?name=amul")
     print("   http://127.0.0.1:5000/products")
     print("   http://127.0.0.1:5000/ingredients")
+    print("   http://127.0.0.1:5000/nutrition-analysis (POST)")
     print("\n🚀 Server running on http://127.0.0.1:5000")
     print("="*60 + "\n")
     
