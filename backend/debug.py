@@ -12,7 +12,7 @@ cursor = conn.cursor()
 
 # Check products table columns
 print("Products table columns:")
-cursor.execute("SHOW COLUMNS FROM Ingredients")
+cursor.execute("SHOW COLUMNS FROM Ing")
 for col in cursor.fetchall():
     print(f"  {col[0]}")
 

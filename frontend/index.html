@@ -911,7 +911,7 @@
             <strong>⚠️ ${esc(i.ingredient)}</strong>
             <span style="font-size:.75rem;color:#718096;float:right">${esc(i.category || '')}</span><br>
             ${esc(i.explanation || i.reason || '')}<br>
-            <small style="color:#718096">Avoid for: ${esc(i.caution_for)}</small>
+            
             ${i.allergen ? `<span class="a-tag" style="margin-left:6px">${esc(i.allergen)}</span>` : ''}
           </div>`;
         });
@@ -925,7 +925,7 @@
             <strong>${esc(i.ingredient)}</strong>
             <span style="font-size:.75rem;color:#718096;float:right">${esc(i.category || '')}</span><br>
             ${esc(i.explanation || i.reason || '')}<br>
-            <small style="color:#718096">Caution for: ${esc(i.caution_for)}</small>
+            
             ${i.allergen ? `<span class="a-tag" style="margin-left:6px">${esc(i.allergen)}</span>` : ''}
           </div>`;
         });
