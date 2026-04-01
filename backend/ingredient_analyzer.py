@@ -44,34 +44,30 @@ def parse_ingredients(text):
     if not text:
         return []
 
-    text = str(text)
+    text = str(text).lower()
 
-    # Step 1: Remove nested parenthetical sub-lists like (Palm Oil, Sunflower Oil)
-    # but KEEP the main ingredient name before the bracket
-    # e.g. "Edible Vegetable Oil (Palm Oil, Sunflower Oil)" → "Edible Vegetable Oil"
-    text = re.sub(r'\([^)]*\)', '', text)
+    # Expand brackets instead of removing
+    patterns = [r'\(([^)]*)\)', r'\[([^\]]*)\]', r'\{([^}]*)\}']
 
-    # Step 2: Remove square bracket annotations like [INS 330, INS 412]
-    text = re.sub(r'\[[^\]]*\]', '', text)
+    for p in patterns:
+        matches = re.findall(p, text)
+        text = re.sub(p, '', text)
+        text += ',' + ','.join(matches)
 
-    # Step 3: Remove curly bracket annotations like {Sugar, Cocoa}
-    text = re.sub(r'\{[^}]*\}', '', text)
-
-    # Step 4: Split on comma, semicolon, " and " (with word boundary)
-    parts = re.split(r'[,;]\s*|\s+and\s+', text, flags=re.IGNORECASE)
+    # Split
+    parts = re.split(r'[,;]\s*|\s+and\s+', text)
 
     seen, result = set(), []
+
     for p in parts:
-        clean = p.strip().lower()
+        clean = p.strip()
 
-        # Remove leftover percentage annotations like "67%" or "(67%)"
-        clean = re.sub(r'\(?\d+[\.\d]*\s*%?\)?', '', clean).strip()
+        # remove percentages ONLY
+        clean = re.sub(r'\b\d+(\.\d+)?\s*%\b', '', clean).strip()
 
-        # Remove trailing/leading special characters
         clean = re.sub(r'^[\s\-\*•]+|[\s\-\*•]+$', '', clean)
 
-        # Skip if too short, numeric only, or already seen
-        if clean and len(clean) > 2 and not clean.isdigit() and clean not in seen:
+        if clean and clean not in seen:
             seen.add(clean)
             result.append(clean)
 
