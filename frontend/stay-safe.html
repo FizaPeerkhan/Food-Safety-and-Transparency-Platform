@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stay Safe — Food Safety & Transparency Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── Hero ───────────────────────────── */
+    .page-hero {
+      padding: clamp(48px,7vw,88px) var(--page-px) clamp(40px,5vw,60px);
+      position: relative; overflow: hidden;
+    }
+    .hero-mesh {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 70% at 90% 20%, rgba(51,180,116,.13) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(251,191,36,.08) 0%, transparent 60%);
+    }
+    .page-hero-inner {
+      max-width: var(--max-w); margin: 0 auto; position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: var(--r-full);
+      background: var(--green-50); border: 1px solid var(--green-100);
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow span { font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--green-600); }
+    .page-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,4.5vw,3.6rem);
+      font-weight: 400; letter-spacing: -.03em; line-height: 1.08;
+      color: var(--text-primary); margin-bottom: 16px;
+    }
+    .page-hero-title em { font-style: italic; color: var(--green-600); }
+    .page-hero-sub {
+      font-size: clamp(.92rem,1.5vw,1.05rem);
+      color: var(--text-secondary); line-height: 1.65; max-width: 480px;
+    }
+    .hero-condition-preview {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .hero-cond-chip {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; border-radius: var(--r-lg);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: var(--shadow-sm);
+      font-size: .85rem; font-weight: 500; color: var(--text-secondary);
+      transition: var(--t-fast); cursor: pointer; text-decoration: none;
+    }
+    .hero-cond-chip:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); background: var(--white); }
+    .hero-cond-chip-icon { font-size: 1.3rem; }
+
+    /* ── Layout ─────────────────────────── */
+    .staysafe-layout {
+      padding: 0 var(--page-px) 80px;
+    }
+    .staysafe-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 28px; align-items: start;
+    }
+
+    /* ── Condition selector sidebar ─────── */
+    .condition-sidebar {
+      position: sticky; top: calc(var(--nav-h) + 20px);
+    }
+    .condition-sidebar-label {
+      font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 12px; padding-left: 4px;
+    }
+    .condition-list { display: flex; flex-direction: column; gap: 6px; }
+    .condition-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px; border-radius: var(--r-lg);
+      background: var(--white); border: 1.5px solid var(--border);
+      cursor: pointer; transition: var(--t-fast);
+      box-shadow: var(--shadow-xs);
+    }
+    .condition-card:hover {
+      border-color: var(--green-200);
+      background: var(--green-50);
+      transform: translateX(3px);
+    }
+    .condition-card.active {
+      border-color: var(--green-400);
+      background: var(--green-50);
+      box-shadow: 0 0 0 3px rgba(30,158,94,.1), var(--shadow-sm);
+    }
+    .condition-card-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .condition-card-label { font-size: .88rem; font-weight: 600; color: var(--text-primary); }
+    .condition-card-sub   { font-size: .72rem; color: var(--text-muted); margin-top: 1px; }
+    .condition-card-arrow {
+      margin-left: auto; color: var(--text-faint); font-size: .7rem;
+      transition: transform var(--t-fast);
+    }
+    .condition-card.active .condition-card-arrow { transform: translateX(3px); color: var(--green-500); }
+
+    /* Sidebar footer card */
+    .sidebar-info-card {
+      margin-top: 16px; padding: 16px 18px;
+      background: var(--green-900); border-radius: var(--r-lg);
+    }
+    .sidebar-info-title { font-family: var(--font-display); font-size: .95rem; color: var(--green-100); font-weight: 400; margin-bottom: 6px; }
+    .sidebar-info-text  { font-size: .78rem; color: var(--green-300); line-height: 1.55; }
+    .sidebar-info-link  {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 12px; padding: 7px 14px;
+      border-radius: var(--r-full);
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      font-size: .78rem; color: var(--green-200);
+      transition: var(--t-fast);
+    }
+    .sidebar-info-link:hover { background: rgba(255,255,255,.18); }
+
+    /* ── Content area ────────────────────── */
+    .condition-content-area {
+      min-height: 500px;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+
+    /* Condition header */
+    .cond-header {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 28px 32px; margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cond-header-top {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 16px;
+    }
+    .cond-header-emoji {
+      width: 56px; height: 56px; border-radius: var(--r-lg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; flex-shrink: 0;
+    }
+    .cond-header-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; letter-spacing: -.025em; color: var(--text-primary); }
+    .cond-header-sub   { font-size: .88rem; color: var(--text-muted); margin-top: 3px; }
+    .cond-tip-box {
+      padding: 14px 18px; border-radius: var(--r-md);
+      font-size: .9rem; color: var(--green-800);
+      background: var(--green-50); border: 1px solid var(--green-100);
+      line-height: 1.6; display: flex; gap: 10px; align-items: flex-start;
+    }
+
+    /* Safe grid — 3 columns */
+    .safe-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+    }
+    .safe-section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px;
+      box-shadow: var(--shadow-xs); transition: var(--t-base);
+    }
+    .safe-section:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .safe-section-title {
+      font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .safe-list { display: flex; flex-direction: column; gap: 10px; }
+    .safe-list-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: .86rem; color: var(--text-secondary); line-height: 1.5;
+    }
+    .safe-list-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      flex-shrink: 0; margin-top: 5px;
+    }
+
+    /* Watch list — danger styling */
+    .watch-item {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 9px 12px; border-radius: var(--r-md);
+      background: var(--cream); border: 1px solid var(--stone-200);
+      transition: var(--t-fast); margin-bottom: 8px;
+    }
+    .watch-item:last-child { margin-bottom: 0; }
+    .watch-item:hover { background: var(--red-50); border-color: rgba(248,113,113,.25); }
+    .watch-item-name { font-size: .83rem; font-weight: 500; color: var(--text-primary); }
+    .watch-item-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--red-400); flex-shrink: 0; }
+
+    /* Risky products */
+    .risky-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--r-md);
+      background: var(--cream); border: 1px solid var(--stone-200);
+      margin-bottom: 8px; transition: var(--t-fast);
+    }
+    .risky-item:last-child { margin-bottom: 0; }
+    .risky-item:hover { background: var(--amber-50); border-color: rgba(251,191,36,.3); }
+    .risky-item-icon { font-size: .85rem; color: var(--amber-500); flex-shrink: 0; }
+    .risky-item-name { font-size: .83rem; font-weight: 500; color: var(--text-secondary); }
+
+    /* Safer alternatives */
+    .safer-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--r-md);
+      background: var(--cream); border: 1px solid var(--stone-200);
+      margin-bottom: 8px; transition: var(--t-fast);
+    }
+    .safer-item:last-child { margin-bottom: 0; }
+    .safer-item:hover { background: var(--green-50); border-color: var(--green-100); }
+    .safer-item-icon { font-size: .85rem; color: var(--green-400); flex-shrink: 0; }
+    .safer-item-name { font-size: .83rem; font-weight: 500; color: var(--text-secondary); }
+
+    /* ── Quick scan banner ───────────────── */
+    .quick-scan-banner {
+      margin-top: 20px;
+      padding: 20px 24px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-lg); box-shadow: var(--shadow-xs);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .quick-scan-text { font-size: .9rem; color: var(--text-secondary); }
+    .quick-scan-text strong { color: var(--text-primary); display: block; margin-bottom: 3px; font-size: .95rem; }
+
+    /* ── Disclaimer ──────────────────────── */
+    .medical-disclaimer {
+      margin-top: 20px; padding: 16px 20px;
+      border-radius: var(--r-lg);
+      background: #f8faff; border: 1px solid #dbeafe;
+      font-size: .8rem; color: #374151; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .medical-disclaimer-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Responsive ──────────────────────── */
+    @media (max-width: 1020px) {
+      .staysafe-inner { grid-template-columns: 1fr; }
+      .condition-sidebar { position: static; }
+      .condition-list { flex-direction: row; flex-wrap: wrap; }
+      .condition-card { flex: 1; min-width: 140px; flex-direction: column; align-items: flex-start; gap: 6px; }
+      .condition-card-arrow { display: none; }
+      .safe-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .page-hero-inner { grid-template-columns: 1fr; }
+      .hero-condition-preview { grid-template-columns: 1fr 1fr; }
+      .safe-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .hero-condition-preview { grid-template-columns: 1fr; }
+      .condition-list { flex-direction: column; }
+      .condition-card { flex-direction: row; }
+    }
+  </style>
+</head>
+<body>
+<div id="staysafe-page">
+
+  <!-- ── Navigation ────────────────────── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-logo-label">
+          <span class="nav-logo-name">SafePlate</span>
+          <span class="nav-logo-tagline">Food Safety Platform</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"         class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
+        <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
+        <li><a href="awareness.html"     class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+        <li><a href="stay-safe.html"     class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+      </ul>
+      <div class="nav-action">
+        <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
+      </div>
+      <button class="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile">
+      <a href="index.html"         class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a>
+      <a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a>
+      <a href="awareness.html"     class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a>
+      <a href="stay-safe.html"     class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a>
+      <a href="report.html"        class="nav-report-btn">⚑ Report Product</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- ── Hero ─────────────────────────── -->
+    <section class="page-hero">
+      <div class="hero-mesh"></div>
+      <div class="page-hero-inner">
+        <div class="anim-fade-up">
+          <div class="hero-eyebrow">
+            <span>❤️</span>
+            <span>Personalised Safety</span>
+          </div>
+          <h1 class="page-hero-title">
+            Food guidance<br>built around<br><em>your health.</em>
+          </h1>
+          <p class="page-hero-sub">
+            Select your health condition to get a personalised list of ingredients to avoid,
+            risky products to watch out for, and safer alternatives — all in one calm, clear view.
+          </p>
+        </div>
+        <div class="hero-condition-preview anim-fade-up anim-delay-2">
+          <a class="hero-cond-chip" href="#condition-selector">
+            <span class="hero-cond-chip-icon">🩸</span> Diabetes
+          </a>
+          <a class="hero-cond-chip" href="#condition-selector">
+            <span class="hero-cond-chip-icon">❤️</span> Hypertension
+          </a>
+          <a class="hero-cond-chip" href="#condition-selector">
+            <span class="hero-cond-chip-icon">🌾</span> Celiac / Gluten
+          </a>
+          <a class="hero-cond-chip" href="#condition-selector">
+            <span class="hero-cond-chip-icon">🥛</span> Lactose
+          </a>
+          <a class="hero-cond-chip" href="#condition-selector">
+            <span class="hero-cond-chip-icon">🫀</span> Heart Disease
+          </a>
+          <a class="hero-cond-chip" href="#condition-selector">
+            <span class="hero-cond-chip-icon">👶</span> Children's Health
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Main ─────────────────────────── -->
+    <div class="staysafe-layout" id="condition-selector">
+      <div class="staysafe-inner">
+
+        <!-- Left: Condition Selector -->
+        <aside class="condition-sidebar anim-fade-up anim-delay-1">
+          <div class="condition-sidebar-label">Choose your condition</div>
+          <div class="condition-list">
+
+            <div class="condition-card" data-condition="diabetes">
+              <span class="condition-card-icon">🩸</span>
+              <div>
+                <div class="condition-card-label">Diabetes</div>
+                <div class="condition-card-sub">Blood sugar management</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+
+            <div class="condition-card" data-condition="hypertension">
+              <span class="condition-card-icon">❤️</span>
+              <div>
+                <div class="condition-card-label">Hypertension</div>
+                <div class="condition-card-sub">Blood pressure & sodium</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+
+            <div class="condition-card" data-condition="celiac">
+              <span class="condition-card-icon">🌾</span>
+              <div>
+                <div class="condition-card-label">Celiac / Gluten</div>
+                <div class="condition-card-sub">Gluten intolerance</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+
+            <div class="condition-card" data-condition="lactose">
+              <span class="condition-card-icon">🥛</span>
+              <div>
+                <div class="condition-card-label">Lactose Intolerance</div>
+                <div class="condition-card-sub">Dairy sensitivity</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+
+            <div class="condition-card" data-condition="heartdisease">
+              <span class="condition-card-icon">🫀</span>
+              <div>
+                <div class="condition-card-label">Heart Disease</div>
+                <div class="condition-card-sub">Trans fats & cholesterol</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+
+            <div class="condition-card" data-condition="kidshealth">
+              <span class="condition-card-icon">👶</span>
+              <div>
+                <div class="condition-card-label">Children's Health</div>
+                <div class="condition-card-sub">Safe foods for kids</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+
+          </div>
+
+          <!-- Sidebar info -->
+          <div class="sidebar-info-card">
+            <div class="sidebar-info-title">Eating out?</div>
+            <div class="sidebar-info-text">
+              Use our product checker to scan packaged foods before you buy — even at the store.
+            </div>
+            <a href="check-product.html" class="sidebar-info-link">
+              🔬 Check a product →
+            </a>
+          </div>
+        </aside>
+
+        <!-- Right: Dynamic Content -->
+        <div class="condition-content-area" id="condition-content">
+          <!-- Filled dynamically by script.js -->
+          <div style="padding:60px 32px;text-align:center;color:var(--text-muted);">
+            <div style="font-size:3rem;margin-bottom:16px;">❤️</div>
+            <p style="font-family:var(--font-display);font-size:1.3rem;color:var(--text-secondary);font-weight:400;margin-bottom:8px;">Select a condition to get started</p>
+            <p style="font-size:.88rem;">Choose from the list on the left to see personalised food safety guidance.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Bottom CTA ────────────────────── -->
+    <section style="padding: 0 var(--page-px) 80px;">
+      <div style="max-width:var(--max-w);margin:0 auto;">
+        <div style="
+          border-radius: var(--r-xl);
+          background: linear-gradient(135deg, var(--green-800), var(--green-700));
+          padding: clamp(36px,5vw,56px) clamp(28px,5vw,60px);
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 24px; flex-wrap: wrap; position: relative; overflow: hidden;
+        " data-reveal>
+          <div style="position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04);right:-80px;top:-100px;pointer-events:none;"></div>
+          <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03);left:40%;bottom:-60px;pointer-events:none;"></div>
+          <div style="position:relative;z-index:1;">
+            <p style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,1.9rem);color:#fff;font-weight:400;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px;">
+              Found something in your food?
+            </p>
+            <p style="color:var(--green-200);font-size:.92rem;line-height:1.6;max-width:440px;">
+              Don't ignore it. Every report helps protect thousands of families and triggers real regulatory action.
+            </p>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;">
+            <a href="report.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">
+              ⚑ File a Report
+            </a>
+            <a href="awareness.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">
+              📖 Learn More
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer ─────────────────────────── -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand">SafePlate</div>
+          <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
+        </div>
+        <nav class="footer-links">
+          <a href="index.html">Dashboard</a>
+          <a href="check-product.html">Check Product</a>
+          <a href="report.html">Report</a>
+          <a href="awareness.html">Awareness</a>
+          <a href="stay-safe.html">Stay Safe</a>
+        </nav>
+      </div>
+    </footer>
+
+  </div><!-- /page-wrap -->
+</div><!-- /staysafe-page -->
+
+<script src="script.js"></script>
+<script>
+  // Override script.js renderConditionContent to use richer HTML
+  function renderConditionContent(key) {
+    const DATA = {
+      diabetes: {
+        label: 'Diabetes', icon: '🩸', color: 'var(--amber-500)',
+        bg: 'var(--amber-50)', border: 'rgba(251,191,36,.2)',
+        tip: 'Focus on low-GI foods (GI < 55). Fibre slows glucose absorption and prevents spikes. Check for hidden sugar aliases on labels.',
+        watch: [
+          { name: 'High Fructose Corn Syrup', note: 'Rapid glucose spike' },
+          { name: 'White Sugar / Sucrose', note: 'High GI, avoid large quantities' },
+          { name: 'Maltodextrin', note: 'Higher GI than table sugar' },
+          { name: 'Dextrose', note: 'Pure glucose — immediate spike' },
+          { name: 'Refined Wheat Flour', note: 'Stripped of fibre, high GI' },
+          { name: 'Artificial Sweeteners', note: 'May disrupt gut microbiome' },
+        ],
+        risky: ['Packaged fruit juices', 'White bread & buns', 'Breakfast cereals', 'Flavoured yogurt', 'Energy drinks', 'Biscuits & cookies'],
+        safer: ['Steel-cut oats', 'Whole grain or rye bread', 'Plain Greek yogurt', 'Lentils & chickpeas', 'Nuts & seeds', 'Leafy greens'],
+      },
+      hypertension: {
+        label: 'Hypertension', icon: '❤️', color: 'var(--red-500)',
+        bg: 'var(--red-50)', border: 'rgba(248,113,113,.2)',
+        tip: 'Aim for under 2,300mg sodium per day. Sodium hides in bread, sauces, and cereals — not just salt shakers. Potassium-rich foods help balance blood pressure.',
+        watch: [
+          { name: 'Sodium (>200mg/serving)', note: 'Directly raises blood pressure' },
+          { name: 'MSG (Monosodium Glutamate)', note: 'High sodium additive' },
+          { name: 'Sodium Nitrate', note: 'Found in processed meats' },
+          { name: 'Sodium Benzoate', note: 'Preservative in drinks & sauces' },
+          { name: 'Disodium Phosphate', note: 'Emulsifier in processed cheese' },
+          { name: 'Baking Soda (excess)', note: 'Sodium bicarbonate adds up' },
+        ],
+        risky: ['Canned soups & broths', 'Processed deli meats', 'Pickled vegetables', 'Packaged cheese', 'Instant noodles', 'Salted snacks & chips'],
+        safer: ['Fresh / frozen vegetables', 'Bananas & sweet potatoes', 'Unsalted nuts & seeds', 'Oats & whole grains', 'Fatty fish (omega-3)', 'Herbs & spices for flavour'],
+      },
+      celiac: {
+        label: 'Celiac / Gluten Intolerance', icon: '🌾', color: 'var(--amber-600)',
+        bg: 'var(--amber-50)', border: 'rgba(251,191,36,.2)',
+        tip: 'Even trace amounts of gluten can trigger an immune response in celiac disease. Cross-contamination during manufacturing is as important as the ingredient list.',
+        watch: [
+          { name: 'Wheat / Whole Wheat', note: 'Primary gluten source' },
+          { name: 'Barley & Rye', note: 'Contain gluten proteins' },
+          { name: 'Malt Extract', note: 'Usually derived from barley' },
+          { name: 'Modified Starch', note: 'May be wheat-derived unless certified GF' },
+          { name: 'Hydrolysed Wheat Protein', note: 'Found in some soy sauces' },
+          { name: 'Triticale', note: 'Wheat-rye hybrid grain' },
+        ],
+        risky: ['Regular pasta & noodles', 'Soy sauce & teriyaki', 'Beer & malt beverages', 'Most crackers & biscuits', 'Regular baked goods', 'Oats (unless certified GF)'],
+        safer: ['Rice, quinoa & millet', 'Certified GF oat products', 'Corn tortillas & polenta', 'Lentils & all legumes', 'Potatoes & sweet potatoes', 'GF-certified breads'],
+      },
+      lactose: {
+        label: 'Lactose Intolerance', icon: '🥛', color: 'var(--green-500)',
+        bg: 'var(--green-50)', border: 'var(--green-100)',
+        tip: 'Hard aged cheeses like cheddar and parmesan are naturally very low in lactose and are often tolerated well. Fermented dairy like kefir may also be easier to digest.',
+        watch: [
+          { name: 'Milk & Cream', note: 'Highest lactose content' },
+          { name: 'Whey Protein', note: 'Derived from milk' },
+          { name: 'Casein & Caseinate', note: 'Milk proteins' },
+          { name: 'Milk Solids / Dry Milk', note: 'Concentrated lactose' },
+          { name: 'Butter & Ghee', note: 'Small amounts of lactose remain' },
+          { name: 'Lactose (listed directly)', note: 'Direct dairy-derived sugar' },
+        ],
+        risky: ['Regular cow\'s milk', 'Soft cheeses (ricotta, cottage)', 'Ice cream & gelato', 'Cream-based soups & pasta', 'Milk chocolate', 'Yogurt (may vary)'],
+        safer: ['Oat, almond, soy or coconut milk', 'Hard aged cheeses', 'Lactose-free dairy products', 'Dairy-free yogurt', 'Coconut cream', 'Lactase enzyme supplements'],
+      },
+      heartdisease: {
+        label: 'Heart Disease', icon: '🫀', color: 'var(--red-400)',
+        bg: 'var(--red-50)', border: 'rgba(248,113,113,.2)',
+        tip: 'Even "0g trans fat" products can legally contain up to 0.5g per serving. Always check for "partially hydrogenated oil" in the ingredient list — that means trans fats are present.',
+        watch: [
+          { name: 'Trans Fats / Hydrogenated Oil', note: 'Raises LDL, lowers HDL' },
+          { name: 'Partially Hydrogenated Oil', note: 'Hidden trans fat source' },
+          { name: 'Saturated Fat (>5g/serving)', note: 'Contributes to arterial plaque' },
+          { name: 'Dietary Cholesterol (>200mg)', note: 'Monitor with doctor\'s guidance' },
+          { name: 'Sodium (>600mg/serving)', note: 'Raises blood pressure, strains heart' },
+          { name: 'Refined Sugar', note: 'Linked to inflammation & triglycerides' },
+        ],
+        risky: ['Margarine & shortening', 'Fried fast food', 'Processed deli meats', 'Full-fat packaged snacks', 'Cream-based sauces', 'Coconut oil (in large amounts)'],
+        safer: ['Extra virgin olive oil', 'Fatty fish (salmon, mackerel)', 'Avocados', 'Walnuts & flaxseeds', 'Berries & dark leafy greens', 'Whole oats & barley'],
+      },
+      kidshealth: {
+        label: "Children's Health", icon: '👶', color: 'var(--green-400)',
+        bg: 'var(--green-50)', border: 'var(--green-100)',
+        tip: "Children's organs are still developing, making them more sensitive to additives and toxins than adults. Prioritise short ingredient lists with names you recognise.",
+        watch: [
+          { name: 'Artificial Colours (Red 40, Yellow 5)', note: 'Linked to hyperactivity in children' },
+          { name: 'BHA & BHT Preservatives', note: 'Possible endocrine disruption' },
+          { name: 'Aspartame & Saccharin', note: 'Not recommended under age 3' },
+          { name: 'High Sodium Content', note: 'Children\'s kidneys are more sensitive' },
+          { name: 'Excess Added Sugar', note: 'Impacts developing gut microbiome' },
+          { name: 'Nitrates (processed meat)', note: 'Particularly harmful for young children' },
+        ],
+        risky: ['Brightly coloured candy & cereals', 'Flavoured chips & puffs', 'Sweetened carbonated drinks', 'Processed chicken nuggets', 'Packaged fruit snacks (gummies)', 'Instant flavoured noodles'],
+        safer: ['Fresh seasonal fruit', 'Plain whole-milk yogurt', 'Homemade energy balls (oats+nuts)', 'Boiled or scrambled eggs', 'Carrot & cucumber sticks', 'Cheese cubes (in moderation)'],
+      },
+    };
+
+    const data = DATA[key];
+    const area = document.getElementById('condition-content');
+    if (!data || !area) return;
+
+    area.style.opacity = '0';
+    area.style.transform = 'translateY(14px)';
+
+    setTimeout(() => {
+      area.innerHTML = `
+        <!-- Header -->
+        <div class="cond-header">
+          <div class="cond-header-top">
+            <div class="cond-header-emoji" style="background:${data.bg};border:1px solid ${data.border};">
+              ${data.icon}
+            </div>
+            <div>
+              <div class="cond-header-title">${data.label}</div>
+              <div class="cond-header-sub">Personalised food safety guidance</div>
+            </div>
+          </div>
+          <div class="cond-tip-box">
+            <span style="flex-shrink:0;">💡</span>
+            <span>${data.tip}</span>
+          </div>
+        </div>
+
+        <!-- Three columns -->
+        <div class="safe-grid">
+
+          <!-- Watch -->
+          <div class="safe-section" style="border-top:3px solid var(--red-400);">
+            <div class="safe-section-title" style="color:var(--red-500);">
+              <span>⚠</span> Ingredients to Watch
+            </div>
+            ${data.watch.map(w => `
+              <div class="watch-item">
+                <div>
+                  <div class="watch-item-name">${w.name}</div>
+                  <div style="font-size:.72rem;color:var(--text-muted);margin-top:2px;">${w.note}</div>
+                </div>
+                <div class="watch-item-dot"></div>
+              </div>`).join('')}
+          </div>
+
+          <!-- Risky -->
+          <div class="safe-section" style="border-top:3px solid var(--amber-400);">
+            <div class="safe-section-title" style="color:var(--amber-600);">
+              <span>⚡</span> Risky Products
+            </div>
+            ${data.risky.map(r => `
+              <div class="risky-item">
+                <span class="risky-item-icon">▲</span>
+                <span class="risky-item-name">${r}</span>
+              </div>`).join('')}
+          </div>
+
+          <!-- Safer -->
+          <div class="safe-section" style="border-top:3px solid var(--green-400);">
+            <div class="safe-section-title" style="color:var(--green-600);">
+              <span>✓</span> Safer Alternatives
+            </div>
+            ${data.safer.map(s => `
+              <div class="safer-item">
+                <span class="safer-item-icon">●</span>
+                <span class="safer-item-name">${s}</span>
+              </div>`).join('')}
+          </div>
+
+        </div>
+
+        <!-- Quick scan banner -->
+        <div class="quick-scan-banner">
+          <div class="quick-scan-text">
+            <strong>Scan a product for ${data.label}</strong>
+            Check if any packaged food is safe for your condition using our product checker.
+          </div>
+          <a href="check-product.html" class="btn btn-primary btn-sm">🔬 Check Product</a>
+        </div>
+
+        <!-- Medical disclaimer -->
+        <div class="medical-disclaimer">
+          <span class="medical-disclaimer-icon">ℹ️</span>
+          <span>This guidance is for general educational awareness only and does not constitute medical advice.
+          Always consult a qualified healthcare professional or registered dietitian for personalised dietary recommendations,
+          especially if you have a diagnosed medical condition.</span>
+        </div>
+      `;
+
+      area.style.transition = 'opacity .4s ease, transform .4s ease';
+      area.style.opacity = '1';
+      area.style.transform = 'translateY(0)';
+    }, 200);
+  }
+
+  // Wire up condition cards
+  document.querySelectorAll('.condition-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.condition-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      renderConditionContent(card.dataset.condition);
+    });
+  });
+
+  // Auto-select first
+  const firstCard = document.querySelector('.condition-card');
+  if (firstCard) {
+    firstCard.classList.add('active');
+    renderConditionContent(firstCard.dataset.condition);
+  }
+
+  // Hero chip scroll
+  document.querySelectorAll('.hero-cond-chip').forEach(chip => {
+    chip.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('condition-selector')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

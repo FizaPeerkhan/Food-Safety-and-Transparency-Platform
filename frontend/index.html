@@ -1,120 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
-  <title>Food Safety Checker - Smart Ingredient Analyzer</title>
-   <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Food Safety & Transparency Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Dashboard specific styles */
+    .hero {
+      position: relative;
+      padding: clamp(56px,8vw,100px) var(--page-px) clamp(48px,6vw,80px);
+      overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; pointer-events: none;
+      border-radius: 50%; filter: blur(80px); opacity: .45;
+    }
+    .hero-blob-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, var(--green-200), transparent 70%);
+      top: -140px; right: -80px;
+      animation: float1 9s ease-in-out infinite;
+    }
+    .hero-blob-2 {
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, var(--amber-300), transparent 70%);
+      bottom: -60px; left: 10%;
+      opacity: .2;
+      animation: float2 12s ease-in-out infinite;
+    }
+    @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,20px) scale(1.06)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-18px)} }
 
+    .hero-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 32px; align-items: end;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: var(--r-full);
+      background: var(--green-50); border: 1px solid var(--green-100);
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green-400);
+      animation: blink 2s ease-in-out infinite;
+    }
+    .hero-eyebrow span { font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--green-600); }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem,5.5vw,4.4rem);
+      font-weight: 400; line-height: 1.08;
+      letter-spacing: -.03em; color: var(--text-primary);
+      margin-bottom: 18px;
+    }
+    .hero-title em { font-style: italic; color: var(--green-600); }
+    .hero-sub {
+      font-size: clamp(.95rem,1.5vw,1.1rem);
+      color: var(--text-secondary); line-height: 1.65;
+      max-width: 520px;
+    }
+    .hero-actions {
+      display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap;
+    }
+    .hero-visual {
+      display: flex; flex-direction: column; gap: 10px;
+      flex-shrink: 0;
+    }
+    .hero-stat-pill {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px; border-radius: var(--r-lg);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: var(--shadow-sm);
+      min-width: 200px;
+    }
+    .hero-stat-icon { font-size: 1.4rem; }
+    .hero-stat-val {
+      font-family: var(--font-mono); font-size: 1.3rem;
+      font-weight: 500; color: var(--text-primary); line-height: 1;
+    }
+    .hero-stat-lbl { font-size: .72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .stats-bar {
+      padding: 0 var(--page-px) 0;
+    }
+    .stats-bar-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card {
+      padding: 22px 24px; border-radius: var(--r-lg);
+      background: var(--white); border: 1px solid var(--border);
+      box-shadow: var(--shadow-xs);
+      display: flex; align-items: center; gap: 16px;
+      transition: var(--t-base);
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .stat-card-icon {
+      width: 44px; height: 44px; border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .stat-card-num {
+      font-family: var(--font-mono); font-size: 1.7rem;
+      font-weight: 500; line-height: 1; color: var(--text-primary);
+    }
+    .stat-card-lbl {
+      font-size: .75rem; color: var(--text-muted);
+      font-weight: 500; letter-spacing: .04em; text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .filter-bar {
+      padding: 36px var(--page-px) 0;
+    }
+    .filter-bar-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 8px 18px; border-radius: var(--r-full);
+      font-size: .83rem; font-weight: 500; letter-spacing: -.01em;
+      color: var(--text-muted); background: var(--white);
+      border: 1.5px solid var(--stone-200);
+      cursor: pointer; transition: var(--t-fast);
+    }
+    .filter-btn:hover { border-color: var(--green-300); color: var(--green-600); background: var(--green-50); }
+    .filter-btn.active { background: var(--green-500); color: #fff; border-color: var(--green-500); box-shadow: 0 2px 10px rgba(30,158,94,.25); }
+    .search-wrap {
+      position: relative; flex: 0 0 260px;
+    }
+    .search-wrap input {
+      width: 100%; padding: 10px 16px 10px 40px;
+      border-radius: var(--r-full); border: 1.5px solid var(--stone-200);
+      background: var(--white); font-size: .875rem; color: var(--text-primary);
+      font-family: var(--font-body); outline: none; transition: var(--t-fast);
+    }
+    .search-wrap input:focus { border-color: var(--green-400); box-shadow: 0 0 0 3px rgba(30,158,94,.1); }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); font-size: .9rem; pointer-events: none;
+    }
+
+    .product-section {
+      padding: 28px var(--page-px) 60px;
+    }
+    .product-section-inner { max-width: var(--max-w); margin: 0 auto; }
+
+    #product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px; margin-top: 4px;
+    }
+    .prod-card {
+      position: relative; cursor: pointer;
+      border-radius: var(--r-lg) !important;
+      overflow: hidden;
+      transition: transform var(--t-base), box-shadow var(--t-base) !important;
+    }
+    .prod-card:hover { transform: translateY(-4px) !important; box-shadow: var(--shadow-lg) !important; }
+    .prod-card-accent {
+      position: absolute; inset: 0; pointer-events: none;
+      border-radius: inherit;
+    }
+    .prod-card-body { padding: 24px; position: relative; }
+    .prod-card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 16px;
+    }
+    .prod-card-emoji { font-size: 2.2rem; line-height: 1; }
+    .prod-card-name {
+      font-family: var(--font-display); font-size: 1.15rem;
+      font-weight: 400; letter-spacing: -.015em;
+      color: var(--text-primary); margin-bottom: 4px;
+    }
+    .prod-card-brand { font-size: .8rem; color: var(--text-muted); }
+    .prod-card-meter { margin: 16px 0; }
+    .prod-card-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+
+    .marquee-wrap {
+      overflow: hidden; border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--green-900); padding: 12px 0; margin-top: 12px;
+    }
+    .marquee-track {
+      display: flex; gap: 48px; width: max-content;
+      animation: marquee 22s linear infinite;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: .75rem; font-weight: 500; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--green-200); white-space: nowrap;
+    }
+    .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { flex-direction: row; flex-wrap: wrap; }
+      .stats-bar-inner { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 600px) {
+      .stats-bar-inner { grid-template-columns: repeat(2,1fr); }
+      .filter-bar-inner { flex-direction: column; align-items: flex-start; }
+      .search-wrap { flex: 1; width: 100%; }
+      #product-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>🛡️ Food Safety Checker</h1>
-      <p class="subtitle">Smart ingredient analysis | Verify claims | Make healthier choices</p>
-    </div>
+<div id="dashboard-page">
 
-    <!-- Mode Selection -->
-    <div class="mode-selector">
-      <button class="mode-btn active" onclick="setMode(this, 'search')">🔍 Search Product</button>
-      <button class="mode-btn" onclick="setMode(this, 'add')">📤 Add Product</button>
-      <button class="mode-btn" onclick="setMode(this, 'manual')">📝 Manual Analysis</button>
-      <button class="mode-btn" onclick="setMode(this, 'ocr')">📷 OCR Label</button>
-      <button class="mode-btn" onclick="setMode(this, 'nutrition')">🥗 Nutrition Scanner</button>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-logo-label">
+          <span class="nav-logo-name">SafePlate</span>
+          <span class="nav-logo-tagline">Food Safety Platform</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
+        <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
+        <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+        <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+      </ul>
+      <div class="nav-action">
+        <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
+      </div>
+      <button class="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-
-    <!-- Search Mode -->
-    <div id="searchMode" class="card">
-      <div class="card-title">🔍 Search Product Database</div>
-      <div class="form-group">
-        <label>Product Name or Brand</label>
-        <input type="text" id="searchInput" placeholder="e.g., Maggi, Butter, Amul, Lassi" autocomplete="off">
-        <small style="color: #718096; margin-top: 5px; display: block;">💡 Tip: Try searching by product name or brand name for best results</small>
-      </div>
-      <button class="btn btn-primary" onclick="searchProduct()">🔎 Analyze Product</button>
+    <div class="nav-mobile">
+      <a href="index.html" class="nav-link">Dashboard</a>
+      <a href="check-product.html" class="nav-link">Check Product</a>
+      <a href="awareness.html" class="nav-link">Awareness</a>
+      <a href="stay-safe.html" class="nav-link">Stay Safe</a>
+      <a href="report.html" class="nav-report-btn">Report Product</a>
     </div>
+  </nav>
 
-    <!-- Add Product Mode -->
-    <div id="addMode" class="card hidden">
-      <div class="card-title">📤 Add New Product to Database</div>
-      <div class="form-group">
-        <label>Product Name *</label>
-        <input type="text" id="newProductName" placeholder="e.g., Organic Oats">
-      </div>
-      <div class="form-group">
-        <label>Brand *</label>
-        <input type="text" id="newProductBrand" placeholder="e.g., Quaker">
-      </div>
-      <div class="form-group">
-        <label>Ingredients List *</label>
-        <textarea id="newProductIngredients" placeholder="List all ingredients separated by commas..."></textarea>
-      </div>
-      <button class="btn btn-primary" onclick="addNewProduct()">➕ Add & Analyze</button>
-    </div>
+  <div class="page-wrap">
 
-    <!-- Manual Mode -->
-    <div id="manualMode" class="card hidden">
-      <div class="card-title">📝 Manual Ingredient Analysis</div>
-      <div class="form-group">
-        <label>Paste Ingredients List</label>
-        <textarea id="manualIngredients" rows="4" placeholder="e.g., wheat flour, sugar, palm oil, salt, monosodium glutamate..."></textarea>
-      </div>
-      <button class="btn btn-primary" onclick="analyzeManual()">🔬 Analyze Ingredients</button>
-    </div>
-
-    <!-- OCR Mode -->
-    <div id="ocrMode" class="card hidden">
-      <div class="card-title">📷 Extract Text from Label Image</div>
-      <div class="form-group">
-        <label>Upload Product Label Image</label>
-        <input type="file" id="ocrImage" accept="image/*" onchange="performOCR()">
-      </div>
-      <div id="ocrResultGroup" class="hidden" style="margin-top: 15px;">
-        <label>Extracted Text</label>
-        <textarea id="ocrIngredients" rows="4" placeholder="Extracted text will appear here..."></textarea>
-        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="analyzeOCRText()">Analyze Extracted Text</button>
+    <!-- Marquee -->
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="marquee-item"><span class="marquee-dot"></span> Know What You Eat</span>
+        <span class="marquee-item"><span class="marquee-dot"></span> Adulteration Alerts</span>
+        <span class="marquee-item"><span class="marquee-dot"></span> Ingredient Transparency</span>
+        <span class="marquee-item"><span class="marquee-dot"></span> FSSAI Compliance</span>
+        <span class="marquee-item"><span class="marquee-dot"></span> Decode Food Labels</span>
+        <span class="marquee-item"><span class="marquee-dot"></span> Protect Your Family</span>
       </div>
     </div>
 
-    <!-- Nutrition Mode Card -->
-    <div id="nutritionMode" class="card hidden">
-      <div class="card-title">🥗 Nutrition Facts Analyzer</div>
-      <p style="color: #718096; margin-bottom: 15px;">Upload a nutrition label image or enter nutrition facts manually to get detailed analysis with health recommendations.</p>
-      
-      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="btn btn-outline" onclick="showNutritionOCR()">📷 Upload Label Image</button>
-        <button class="btn btn-outline" onclick="showNutritionManual()">✍️ Enter Manually</button>
-      </div>
-      
-      <!-- OCR Upload Section -->
-      <div id="nutritionOCR" class="hidden">
-        <div class="form-group">
-          <label>Upload Nutrition Label Image</label>
-          <input type="file" id="nutritionImage" accept="image/*" onchange="analyzeNutritionOCR()">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+      <div class="hero-inner">
+        <div class="hero-content anim-fade-up">
+          <div class="hero-eyebrow">
+            <div class="hero-eyebrow-dot"></div>
+            <span>Live Product Intelligence</span>
+          </div>
+          <h1 class="hero-title">
+            Food you trust,<br>
+            <em>transparency</em> you deserve.
+          </h1>
+          <p class="hero-sub">
+            Scan, search, and decode every ingredient in the products your family consumes.
+            Real-time adulteration alerts, label analysis, and personalized safety guidance.
+          </p>
+          <div class="hero-actions">
+            <a href="check-product.html" class="btn btn-primary btn-lg">🔬 Check a Product</a>
+            <a href="awareness.html" class="btn btn-outline btn-lg">📖 Learn More</a>
+          </div>
+        </div>
+        <div class="hero-visual anim-fade-up anim-delay-2">
+          <div class="hero-stat-pill">
+            <span class="hero-stat-icon">🛡️</span>
+            <div>
+              <div class="hero-stat-val" id="stat-total">191</div>
+              <div class="hero-stat-lbl">Products Tracked</div>
+            </div>
+          </div>
+          <div class="hero-stat-pill">
+            <span class="hero-stat-icon" style="color:var(--green-500)">✓</span>
+            <div>
+              <div class="hero-stat-val" id="stat-safe">—</div>
+              <div class="hero-stat-lbl">Safe Products</div>
+            </div>
+          </div>
+          <div class="hero-stat-pill">
+            <span class="hero-stat-icon">⚠️</span>
+            <div>
+              <div class="hero-stat-val" id="stat-flagged">—</div>
+              <div class="hero-stat-lbl">Flagged</div>
+            </div>
+          </div>
+          <div class="hero-stat-pill">
+            <span class="hero-stat-icon">🚨</span>
+            <div>
+              <div class="hero-stat-val" id="stat-adulterated">—</div>
+              <div class="hero-stat-lbl">Adulterated</div>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <!-- Manual Input Section -->
-      <div id="nutritionManual" class="hidden">
-        <div class="form-group">
-          <label>Serving Size (optional)</label>
-          <input type="text" id="servingSize" placeholder="e.g., 100g, 1 serving, 1 cup (50g)">
-        </div>
-        <div class="form-group">
-          <label>Nutrition Facts (copy from label)</label>
-          <textarea id="nutritionText" rows="6" placeholder="Example:&#10;Calories: 250&#10;Total Fat: 12g&#10;Saturated Fat: 5g&#10;Sodium: 480mg&#10;Total Carbohydrates: 31g&#10;Dietary Fiber: 2g&#10;Sugar: 15g&#10;Protein: 5g"></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="analyzeNutrition()">Analyze Nutrition</button>
-      </div>
-      
-      <!-- Results will appear here -->
-      <div id="nutritionResults"></div>
-    </div>
+    </section>
 
-    <!-- Results Section -->
-    <div id="results"></div>
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+      <div class="stats-bar-inner">
+        <div class="stat-card anim-fade-up anim-delay-1" data-reveal>
+          <div class="stat-card-icon" style="background:var(--green-50);">🧪</div>
+          <div>
+            <div class="stat-card-num" style="color:var(--green-600);">2,400+</div>
+            <div class="stat-card-lbl">Ingredients in DB</div>
+          </div>
+        </div>
+        <div class="stat-card anim-fade-up anim-delay-2" data-reveal>
+          <div class="stat-card-icon" style="background:var(--amber-50);">📋</div>
+          <div>
+            <div class="stat-card-num" style="color:var(--amber-600);">180+</div>
+            <div class="stat-card-lbl">Adulteration Tests</div>
+          </div>
+        </div>
+        <div class="stat-card anim-fade-up anim-delay-3" data-reveal>
+          <div class="stat-card-icon" style="background:var(--red-50);">🚨</div>
+          <div>
+            <div class="stat-card-num" style="color:var(--red-500);">340+</div>
+            <div class="stat-card-lbl">Reports Filed</div>
+          </div>
+        </div>
+        <div class="stat-card anim-fade-up anim-delay-4" data-reveal>
+          <div class="stat-card-icon" style="background:#eff6ff;">🏥</div>
+          <div>
+            <div class="stat-card-num" style="color:#1d4ed8;">6</div>
+            <div class="stat-card-lbl">Health Profiles</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter + Products -->
+    <section class="filter-bar" data-reveal>
+      <div class="filter-bar-inner">
+        <div class="filter-pills">
+          <button class="filter-btn active" data-filter="all">All Products</button>
+          <button class="filter-btn" data-filter="safe">✓ Safe</button>
+          <button class="filter-btn" data-filter="flagged">⚠ Flagged</button>
+          <button class="filter-btn" data-filter="adulterated">✕ Adulterated</button>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input id="dash-search" type="text" placeholder="Search products…" />
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section">
+      <div class="product-section-inner">
+        <div id="product-grid"></div>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section style="padding:0 var(--page-px) 0; margin-bottom:0;" data-reveal>
+      <div style="max-width:var(--max-w);margin:0 auto;">
+        <div style="border-radius:var(--r-xl); background:linear-gradient(135deg, var(--green-800), var(--green-700)); padding:clamp(36px,5vw,60px) clamp(28px,5vw,64px); display:flex; align-items:center; justify-content:space-between; gap:28px; flex-wrap:wrap; position:relative; overflow:hidden;">
+          <div style="position:relative;z-index:1;">
+            <p style="font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);color:#fff;font-weight:400;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px;">Found something suspicious?</p>
+            <p style="color:var(--green-200);font-size:.95rem;line-height:1.6;max-width:460px;">Help protect your community by reporting adulterated or mislabelled products.</p>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;">
+            <a href="report.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">⚑ File a Report</a>
+            <a href="check-product.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">🔬 Check Product</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand">SafePlate</div>
+          <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
+        </div>
+        <nav class="footer-links">
+          <a href="index.html">Dashboard</a>
+          <a href="check-product.html">Check Product</a>
+          <a href="report.html">Report</a>
+          <a href="awareness.html">Awareness</a>
+          <a href="stay-safe.html">Stay Safe</a>
+        </nav>
+      </div>
+    </footer>
+
   </div>
-    <script src="script.js"></script>
+</div>
 
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
+import os
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
 
 from config import get_db, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, TESSERACT_PATH
 from ingredient_analyzer import parse_ingredients, build_ingredient_analysis, extract_ins_numbers
@@ -9,13 +10,11 @@ from claim_verifier import verify_claims
 from ocr_handler import process_ocr_image, process_ocr_nutrition
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ==================== ROUTES ====================
-
 @app.route('/search', methods=['GET'])
 def search_product():
     product_name = request.args.get('name', '')
@@ -40,6 +39,8 @@ def search_product():
 
     product = products[0]
     ingredients_text = product.get('ingredients_text', '')
+    
+    # Use the new parse_ingredients and build_ingredient_analysis
     ingredient_list = parse_ingredients(ingredients_text)
     analysis = build_ingredient_analysis(ingredient_list, cursor)
 
@@ -55,7 +56,6 @@ def search_product():
         **analysis,
         "ins_numbers": extract_ins_numbers(ingredients_text)
     })
-
 @app.route('/analyze-ingredients', methods=['POST'])
 def analyze_ingredients():
     data = request.get_json()
@@ -149,11 +149,12 @@ def ocr_nutrition():
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
     
-    extracted_text, error = process_ocr_image(request.files['image'])
+    text, error = process_ocr_image(request.files['image'])
+
     if error:
-        return jsonify({'error': f'OCR failed: {error}'}), 500
-    
-    return jsonify({'success': True, 'extracted_text': extracted_text})
+        return jsonify({"error": error}), 500
+
+    return jsonify({"extracted_text": text})
 
 @app.route('/products', methods=['GET'])
 def list_products():

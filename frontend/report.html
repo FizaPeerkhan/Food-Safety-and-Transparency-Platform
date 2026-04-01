@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Product — Food Safety & Transparency Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── Page Hero ──────────────────────── */
+    .page-hero {
+      padding: clamp(44px,7vw,80px) var(--page-px) clamp(36px,5vw,56px);
+      position: relative; overflow: hidden;
+    }
+    .hero-bg-blob {
+      position: absolute; pointer-events: none; border-radius: 50%;
+      filter: blur(90px); opacity: .35;
+    }
+    .hero-bg-blob-1 {
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, var(--red-300), transparent 70%);
+      top: -160px; right: -60px;
+      animation: blobDrift 10s ease-in-out infinite;
+    }
+    .hero-bg-blob-2 {
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, var(--amber-300), transparent 70%);
+      bottom: -80px; left: 8%; opacity: .18;
+      animation: blobDrift 14s ease-in-out infinite reverse;
+    }
+    @keyframes blobDrift {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(-20px,16px) scale(1.05); }
+    }
+    .page-hero-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 32px; align-items: center;
+    }
+    .page-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: var(--r-full);
+      background: var(--red-50); border: 1px solid rgba(248,113,113,.25);
+      margin-bottom: 16px;
+    }
+    .page-hero-eyebrow span { font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--red-500); }
+    .page-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,4.5vw,3.4rem);
+      font-weight: 400; letter-spacing: -.028em; line-height: 1.1;
+      color: var(--text-primary); margin-bottom: 14px;
+    }
+    .page-hero-title em { font-style:italic; color:var(--red-500); }
+    .page-hero-sub {
+      font-size: clamp(.9rem,1.5vw,1.05rem);
+      color: var(--text-secondary); line-height: 1.65; max-width: 500px;
+    }
+    .hero-impact-cards {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .hero-impact-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: var(--r-lg);
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: var(--shadow-sm);
+      min-width: 210px;
+    }
+    .hero-impact-icon { font-size: 1.3rem; }
+    .hero-impact-val { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 500; color: var(--text-primary); line-height: 1; }
+    .hero-impact-lbl { font-size: .72rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Layout ─────────────────────────── */
+    .report-layout {
+      padding: 0 var(--page-px) 80px;
+    }
+    .report-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 28px; align-items: start;
+    }
+
+    /* ── Form card ──────────────────────── */
+    .form-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .form-card-header {
+      padding: 28px 32px 20px;
+      background: linear-gradient(to bottom, #fff9f9, var(--white));
+      border-bottom: 1px solid var(--border);
+    }
+    .form-card-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 400; letter-spacing: -.02em;
+      color: var(--text-primary);
+    }
+    .form-card-header p {
+      font-size: .85rem; color: var(--text-muted); margin-top: 6px; line-height: 1.6;
+    }
+    .form-steps {
+      display: flex; gap: 0; margin-top: 20px;
+    }
+    .form-step {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 0; flex: 1;
+      font-size: .78rem; font-weight: 500; color: var(--text-faint);
+      position: relative;
+    }
+    .form-step.active { color: var(--red-500); }
+    .form-step.done   { color: var(--green-600); }
+    .form-step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--stone-200); color: var(--stone-500);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; font-weight: 600; flex-shrink: 0;
+      transition: var(--t-fast);
+    }
+    .form-step.active .form-step-num { background: var(--red-500); color: #fff; box-shadow: 0 2px 8px rgba(239,68,68,.3); }
+    .form-step.done   .form-step-num { background: var(--green-500); color: #fff; }
+    .form-step-line {
+      flex: 1; height: 1px; background: var(--stone-200); margin: 0 8px;
+    }
+
+    .form-body { padding: 32px; }
+
+    /* ── Field overrides ─────────────────── */
+    .field { position: relative; margin-bottom: 20px; }
+    .field-input, .field-textarea, .field-select {
+      width: 100%; padding: 22px 16px 8px;
+      background: var(--cream); border: 1.5px solid var(--stone-200);
+      border-radius: var(--r-md); font-family: var(--font-body);
+      font-size: .93rem; color: var(--text-primary);
+      transition: var(--t-fast); outline: none; appearance: none;
+    }
+    .field-textarea { min-height: 120px; resize: vertical; padding-top: 24px; }
+    .field-input:focus, .field-textarea:focus, .field-select:focus {
+      border-color: var(--red-400);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(239,68,68,.09);
+    }
+    .field-label {
+      position: absolute; left: 16px; top: 15px;
+      font-size: .88rem; color: var(--text-muted);
+      transition: var(--t-fast); pointer-events: none; transform-origin: left;
+    }
+    .field-input:focus ~ .field-label,
+    .field-input:not(:placeholder-shown) ~ .field-label,
+    .field-textarea:focus ~ .field-label,
+    .field-textarea:not(:placeholder-shown) ~ .field-label,
+    .field-select:focus ~ .field-label,
+    .field-select:valid ~ .field-label {
+      transform: translateY(-9px) scale(.75);
+      color: var(--red-500);
+    }
+    .field-hint {
+      font-size: .75rem; color: var(--text-muted); margin-top: 5px; padding-left: 4px;
+    }
+    .field-counter {
+      font-size: .72rem; color: var(--text-faint);
+      text-align: right; margin-top: 4px;
+      font-family: var(--font-mono);
+    }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Severity selector */
+    .severity-group {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+      margin-bottom: 20px;
+    }
+    .severity-opt { display: none; }
+    .severity-label {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      padding: 14px 10px; border-radius: var(--r-lg);
+      border: 1.5px solid var(--stone-200);
+      background: var(--cream); cursor: pointer;
+      transition: var(--t-fast); text-align: center;
+    }
+    .severity-label:hover { border-color: var(--stone-300); background: var(--white); }
+    .severity-icon { font-size: 1.4rem; }
+    .severity-name { font-size: .8rem; font-weight: 600; color: var(--text-secondary); }
+    .severity-desc { font-size: .7rem; color: var(--text-muted); line-height: 1.4; }
+    .severity-opt:checked + .severity-label {
+      border-color: currentColor;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.06);
+    }
+    #sev-low:checked   + .severity-label { border-color: var(--amber-400); background: var(--amber-50); color: var(--amber-600); }
+    #sev-medium:checked + .severity-label { border-color: var(--red-400); background: var(--red-50); color: var(--red-500); }
+    #sev-high:checked  + .severity-label { border-color: var(--red-600); background: #fff0f0; color: var(--red-600); box-shadow: 0 0 0 3px rgba(220,38,38,.1); }
+
+    /* File attach */
+    .attach-zone {
+      border: 1.5px dashed var(--stone-300);
+      border-radius: var(--r-lg); padding: 24px;
+      text-align: center; cursor: pointer;
+      transition: var(--t-fast); background: var(--cream);
+      margin-bottom: 20px;
+    }
+    .attach-zone:hover { border-color: var(--red-300); background: var(--red-50); }
+    .attach-zone-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+    .attach-zone-text { font-size: .85rem; color: var(--text-muted); }
+    .attach-zone-text strong { color: var(--red-500); }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%; padding: 15px;
+      border-radius: var(--r-lg); border: none;
+      background: linear-gradient(135deg, var(--red-500), var(--red-600));
+      color: #fff; font-family: var(--font-body);
+      font-size: 1rem; font-weight: 600; letter-spacing: -.01em;
+      cursor: pointer; transition: var(--t-fast);
+      box-shadow: 0 4px 16px rgba(239,68,68,.28);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(239,68,68,.36);
+      background: linear-gradient(135deg, var(--red-600), #b91c1c);
+    }
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 14px; padding: 12px 16px;
+      border-radius: var(--r-md);
+      background: var(--stone-100); border: 1px solid var(--stone-200);
+      font-size: .78rem; color: var(--text-muted); line-height: 1.6;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+
+    /* ── Success state ──────────────────── */
+    #report-success {
+      display: none;
+      padding: 48px 32px; text-align: center;
+    }
+    .success-icon-wrap {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-400), var(--green-500));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 20px;
+      box-shadow: var(--glow-green);
+      animation: successPop .5s var(--t-spring) both;
+    }
+    @keyframes successPop {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem; font-weight: 400; letter-spacing: -.02em;
+      color: var(--text-primary); margin-bottom: 10px;
+    }
+    .success-sub {
+      font-size: .95rem; color: var(--text-muted);
+      line-height: 1.6; max-width: 360px; margin: 0 auto 28px;
+    }
+    .success-id {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: var(--r-full);
+      background: var(--green-50); border: 1px solid var(--green-100);
+      font-family: var(--font-mono); font-size: .82rem; color: var(--green-700);
+      margin-bottom: 28px;
+    }
+    .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Sidebar ─────────────────────────── */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-xs);
+    }
+    .sidebar-title {
+      font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-title.red  { color: var(--red-500); }
+    .sidebar-title.green{ color: var(--green-600); }
+
+    .process-step {
+      display: flex; gap: 12px; margin-bottom: 16px;
+    }
+    .process-step:last-child { margin-bottom: 0; }
+    .process-step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--green-50); border: 1.5px solid var(--green-200);
+      color: var(--green-700); font-size: .78rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .process-step-label { font-size: .88rem; font-weight: 500; color: var(--text-primary); }
+    .process-step-desc  { font-size: .78rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+
+    .report-stat {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--stone-100);
+    }
+    .report-stat:last-child { border-bottom: none; padding-bottom: 0; }
+    .report-stat-label { font-size: .83rem; color: var(--text-secondary); }
+    .report-stat-val   { font-family: var(--font-mono); font-size: .88rem; font-weight: 500; }
+
+    .do-dont { display: flex; flex-direction: column; gap: 8px; }
+    .do-item, .dont-item {
+      display: flex; gap: 8px;
+      font-size: .82rem; line-height: 1.5; color: var(--text-secondary);
+    }
+    .do-icon   { color: var(--green-500); font-weight: 600; flex-shrink: 0; }
+    .dont-icon { color: var(--red-400); font-weight: 600; flex-shrink: 0; }
+
+    /* ── Responsive ─────────────────────── */
+    @media (max-width: 900px) {
+      .page-hero-inner { grid-template-columns: 1fr; }
+      .hero-impact-cards { flex-direction: row; flex-wrap: wrap; }
+      .report-inner { grid-template-columns: 1fr; }
+      .sidebar { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); }
+    }
+    @media (max-width: 600px) {
+      .form-body { padding: 20px 18px; }
+      .form-card-header { padding: 22px 18px 16px; }
+      .field-row { grid-template-columns: 1fr; }
+      .severity-group { grid-template-columns: 1fr; }
+      .form-steps { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div id="report-page">
+
+  <!-- ── Navigation ────────────────────── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-logo-label">
+          <span class="nav-logo-name">SafePlate</span>
+          <span class="nav-logo-tagline">Food Safety Platform</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"         class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
+        <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
+        <li><a href="awareness.html"     class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+        <li><a href="stay-safe.html"     class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+      </ul>
+      <div class="nav-action">
+        <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
+      </div>
+      <button class="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile">
+      <a href="index.html"         class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a>
+      <a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a>
+      <a href="awareness.html"     class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a>
+      <a href="stay-safe.html"     class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a>
+      <a href="report.html"        class="nav-report-btn">⚑ Report Product</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- ── Hero ─────────────────────────── -->
+    <section class="page-hero">
+      <div class="hero-bg-blob hero-bg-blob-1"></div>
+      <div class="hero-bg-blob hero-bg-blob-2"></div>
+      <div class="page-hero-inner">
+        <div class="anim-fade-up">
+          <div class="page-hero-eyebrow">
+            <span>⚑</span>
+            <span>Community Reports</span>
+          </div>
+          <h1 class="page-hero-title">
+            Spotted something<br><em>unsafe?</em> Tell us.
+          </h1>
+          <p class="page-hero-sub">
+            Your report helps protect thousands of families. Every submission is reviewed
+            and forwarded to FSSAI for investigation. It takes less than 2 minutes.
+          </p>
+        </div>
+        <div class="hero-impact-cards anim-fade-up anim-delay-2">
+          <div class="hero-impact-card">
+            <span class="hero-impact-icon">📋</span>
+            <div>
+              <div class="hero-impact-val">340+</div>
+              <div class="hero-impact-lbl">Reports Submitted</div>
+            </div>
+          </div>
+          <div class="hero-impact-card">
+            <span class="hero-impact-icon">✅</span>
+            <div>
+              <div class="hero-impact-val">127</div>
+              <div class="hero-impact-lbl">Cases Resolved</div>
+            </div>
+          </div>
+          <div class="hero-impact-card">
+            <span class="hero-impact-icon">⏱️</span>
+            <div>
+              <div class="hero-impact-val">48h</div>
+              <div class="hero-impact-lbl">Avg. Response Time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Form + Sidebar ────────────────── -->
+    <div class="report-layout">
+      <div class="report-inner">
+
+        <!-- Form -->
+        <div class="anim-fade-up anim-delay-2">
+          <div class="form-card">
+            <div class="form-card-header">
+              <h2>⚑ File a Safety Report</h2>
+              <p>All fields marked with * are required. Your identity is kept confidential.</p>
+              <div class="form-steps">
+                <div class="form-step active" id="step-1">
+                  <span class="form-step-num">1</span>
+                  <span>Product Details</span>
+                </div>
+                <div class="form-step-line"></div>
+                <div class="form-step" id="step-2">
+                  <span class="form-step-num">2</span>
+                  <span>Issue Description</span>
+                </div>
+                <div class="form-step-line"></div>
+                <div class="form-step" id="step-3">
+                  <span class="form-step-num">3</span>
+                  <span>Submit</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form body -->
+            <div class="form-body">
+              <form id="report-form" novalidate>
+
+                <!-- Section 1: Product -->
+                <div style="margin-bottom:28px;">
+                  <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">① Product Information</p>
+
+                  <div class="field-row">
+                    <div class="field">
+                      <input class="field-input" id="prod-name" type="text" placeholder=" " required />
+                      <label class="field-label" for="prod-name">Product Name *</label>
+                    </div>
+                    <div class="field">
+                      <input class="field-input" id="prod-brand" type="text" placeholder=" " required />
+                      <label class="field-label" for="prod-brand">Brand / Manufacturer *</label>
+                    </div>
+                  </div>
+
+                  <div class="field-row">
+                    <div class="field">
+                      <select class="field-select" id="prod-category" required>
+                        <option value="" disabled selected></option>
+                        <option>Dairy</option>
+                        <option>Spices & Condiments</option>
+                        <option>Oils & Fats</option>
+                        <option>Processed Foods</option>
+                        <option>Beverages</option>
+                        <option>Grains & Cereals</option>
+                        <option>Sweets & Snacks</option>
+                        <option>Fruits & Vegetables</option>
+                        <option>Other</option>
+                      </select>
+                      <label class="field-label" for="prod-category">Category *</label>
+                    </div>
+                    <div class="field">
+                      <input class="field-input" id="prod-batch" type="text" placeholder=" " />
+                      <label class="field-label" for="prod-batch">Batch / Lot Number</label>
+                    </div>
+                  </div>
+
+                  <div class="field-row">
+                    <div class="field">
+                      <input class="field-input" id="prod-barcode" type="text" placeholder=" " />
+                      <label class="field-label" for="prod-barcode">Barcode / FSSAI No.</label>
+                    </div>
+                    <div class="field">
+                      <input class="field-input" id="prod-purchase" type="text" placeholder=" " />
+                      <label class="field-label" for="prod-purchase">Where Purchased</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Section 2: Issue -->
+                <div style="margin-bottom:28px;">
+                  <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">② Issue Details</p>
+
+                  <div class="field" style="margin-bottom:12px;">
+                    <select class="field-select" id="issue-type" required>
+                      <option value="" disabled selected></option>
+                      <option>Adulteration Suspected</option>
+                      <option>Misleading Label / False Claims</option>
+                      <option>Foreign Object / Contamination</option>
+                      <option>Spoiled / Expired Product</option>
+                      <option>Incorrect Nutrition Information</option>
+                      <option>Undeclared Allergens</option>
+                      <option>Packaging Defect</option>
+                      <option>Other</option>
+                    </select>
+                    <label class="field-label" for="issue-type">Type of Issue *</label>
+                  </div>
+
+                  <p style="font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Severity Level *</p>
+                  <div class="severity-group">
+                    <div>
+                      <input type="radio" name="severity" id="sev-low" class="severity-opt" value="low" />
+                      <label class="severity-label" for="sev-low">
+                        <span class="severity-icon">⚠️</span>
+                        <span class="severity-name">Moderate</span>
+                        <span class="severity-desc">Quality concern, not immediate danger</span>
+                      </label>
+                    </div>
+                    <div>
+                      <input type="radio" name="severity" id="sev-medium" class="severity-opt" value="medium" checked />
+                      <label class="severity-label" for="sev-medium">
+                        <span class="severity-icon">🚨</span>
+                        <span class="severity-name">Serious</span>
+                        <span class="severity-desc">Health risk for vulnerable groups</span>
+                      </label>
+                    </div>
+                    <div>
+                      <input type="radio" name="severity" id="sev-high" class="severity-opt" value="high" />
+                      <label class="severity-label" for="sev-high">
+                        <span class="severity-icon">☠️</span>
+                        <span class="severity-name">Critical</span>
+                        <span class="severity-desc">Immediate danger to all consumers</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <textarea class="field-textarea" id="report-description" placeholder=" " maxlength="500" required></textarea>
+                    <label class="field-label" for="report-description">Describe the issue in detail *</label>
+                    <div class="field-counter"><span id="desc-counter">0</span>/500</div>
+                  </div>
+                </div>
+
+                <!-- Section 3: Evidence -->
+                <div style="margin-bottom:28px;">
+                  <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">③ Evidence (Optional)</p>
+
+                  <div class="attach-zone" id="attach-zone">
+                    <span class="attach-zone-icon">📎</span>
+                    <div class="attach-zone-text">
+                      <strong>Attach photos or documents</strong><br>
+                      Label images, receipts, test reports — JPG, PNG, PDF up to 5MB
+                    </div>
+                  </div>
+
+                  <div class="field-row">
+                    <div class="field">
+                      <input class="field-input" id="reporter-name" type="text" placeholder=" " />
+                      <label class="field-label" for="reporter-name">Your Name (optional)</label>
+                    </div>
+                    <div class="field">
+                      <input class="field-input" id="reporter-email" type="email" placeholder=" " />
+                      <label class="field-label" for="reporter-email">Email for follow-up</label>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <input class="field-input" id="reporter-city" type="text" placeholder=" " />
+                    <label class="field-label" for="reporter-city">City / Region</label>
+                  </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                  <span>⚑</span> Submit Safety Report
+                </button>
+
+                <div class="disclaimer">
+                  <span>🔒</span>
+                  <span>Your report is confidential. Personal information is never shared publicly.
+                  All submissions are reviewed within 48 hours and referred to FSSAI where required.</span>
+                </div>
+
+              </form>
+
+              <!-- Success State -->
+              <div id="report-success">
+                <div class="success-icon-wrap">✓</div>
+                <h2 class="success-title">Report Submitted!</h2>
+                <p class="success-sub">
+                  Thank you for helping keep our food supply safe. Your report has been logged
+                  and will be reviewed within 48 hours.
+                </p>
+                <div class="success-id">
+                  🔖 Report ID: <strong id="report-id">SP-2026-0341</strong>
+                </div>
+                <div class="success-actions">
+                  <a href="index.html" class="btn btn-primary">← Back to Dashboard</a>
+                  <a href="check-product.html" class="btn btn-outline">🔬 Check Another Product</a>
+                </div>
+              </div>
+
+            </div><!-- /form-body -->
+          </div><!-- /form-card -->
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar anim-fade-up anim-delay-3">
+
+          <!-- Process -->
+          <div class="sidebar-card">
+            <div class="sidebar-title green">🔄 What Happens Next</div>
+            <div class="process-step">
+              <div class="process-step-num">1</div>
+              <div>
+                <div class="process-step-label">Report Logged</div>
+                <div class="process-step-desc">Your submission is assigned a unique ID and secured in our system.</div>
+              </div>
+            </div>
+            <div class="process-step">
+              <div class="process-step-num">2</div>
+              <div>
+                <div class="process-step-label">Expert Review</div>
+                <div class="process-step-desc">Our food safety team evaluates your report within 48 hours.</div>
+              </div>
+            </div>
+            <div class="process-step">
+              <div class="process-step-num">3</div>
+              <div>
+                <div class="process-step-label">FSSAI Referral</div>
+                <div class="process-step-desc">Serious cases are forwarded directly to FSSAI for regulatory action.</div>
+              </div>
+            </div>
+            <div class="process-step">
+              <div class="process-step-num">4</div>
+              <div>
+                <div class="process-step-label">Platform Update</div>
+                <div class="process-step-desc">Verified findings update our public product database in real time.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="sidebar-card">
+            <div class="sidebar-title red">📊 Report Statistics</div>
+            <div class="report-stat">
+              <span class="report-stat-label">Total Reports</span>
+              <span class="report-stat-val" style="color:var(--text-primary);">340</span>
+            </div>
+            <div class="report-stat">
+              <span class="report-stat-label">Resolved Cases</span>
+              <span class="report-stat-val" style="color:var(--green-600);">127</span>
+            </div>
+            <div class="report-stat">
+              <span class="report-stat-label">Under Investigation</span>
+              <span class="report-stat-val" style="color:var(--amber-600);">84</span>
+            </div>
+            <div class="report-stat">
+              <span class="report-stat-label">This Month</span>
+              <span class="report-stat-val" style="color:var(--red-500);">23</span>
+            </div>
+            <div class="report-stat">
+              <span class="report-stat-label">Top Category</span>
+              <span class="report-stat-val" style="color:var(--text-secondary);font-family:var(--font-body);font-size:.82rem;">Spices & Oils</span>
+            </div>
+          </div>
+
+          <!-- Do's and Don'ts -->
+          <div class="sidebar-card">
+            <div class="sidebar-title red">✍️ Reporting Tips</div>
+            <div class="do-dont">
+              <div class="do-item"><span class="do-icon">✓</span><span>Include batch number and expiry date if visible.</span></div>
+              <div class="do-item"><span class="do-icon">✓</span><span>Attach photos of the label, seal, and the issue.</span></div>
+              <div class="do-item"><span class="do-icon">✓</span><span>Note where and when you bought the product.</span></div>
+              <div class="dont-item"><span class="dont-icon">✕</span><span>Don't throw away the product — preserve it as evidence.</span></div>
+              <div class="dont-item"><span class="dont-icon">✕</span><span>Don't guess ingredients — only report what you observed.</span></div>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+
+    <!-- ── Footer ─────────────────────── -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand">SafePlate</div>
+          <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
+        </div>
+        <nav class="footer-links">
+          <a href="index.html">Dashboard</a>
+          <a href="check-product.html">Check Product</a>
+          <a href="report.html">Report</a>
+          <a href="awareness.html">Awareness</a>
+          <a href="stay-safe.html">Stay Safe</a>
+        </nav>
+      </div>
+    </footer>
+
+  </div><!-- /page-wrap -->
+</div><!-- /report-page -->
+
+<script src="script.js"></script>
+<script>
+  // Attach zone feedback
+  const attachZone = document.getElementById('attach-zone');
+  if (attachZone) {
+    attachZone.addEventListener('click', () => {
+      attachZone.innerHTML = `
+        <span class="attach-zone-icon">✅</span>
+        <div class="attach-zone-text"><strong style="color:var(--green-600);">evidence_photo.jpg</strong><br>
+        <span style="font-size:.78rem;">1 file attached · Click to change</span></div>`;
+      attachZone.style.borderColor = 'var(--green-400)';
+      attachZone.style.background = 'var(--green-50)';
+    });
+  }
+
+  // Step indicator progression on focus
+  const stepMap = {
+    'prod-name': 1, 'prod-brand': 1, 'prod-category': 1, 'prod-batch': 1,
+    'issue-type': 2, 'report-description': 2,
+    'reporter-name': 3, 'reporter-email': 3,
+  };
+  Object.entries(stepMap).forEach(([id, step]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('focus', () => {
+      [1,2,3].forEach(s => {
+        const stepEl = document.getElementById('step-' + s);
+        if (!stepEl) return;
+        stepEl.classList.remove('active','done');
+        if (s < step)  stepEl.classList.add('done');
+        if (s === step) stepEl.classList.add('active');
+      });
+    });
+  });
+
+  // Unique report ID generator
+  function genReportId() {
+    return 'SP-2026-' + String(Math.floor(Math.random() * 9000) + 1000);
+  }
+  const idEl = document.getElementById('report-id');
+  if (idEl) idEl.textContent = genReportId();
+</script>
+</body>
+</html>

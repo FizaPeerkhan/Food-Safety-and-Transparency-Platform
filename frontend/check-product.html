@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check Product — SafePlate</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      padding: clamp(44px,7vw,80px) var(--page-px) clamp(36px,5vw,56px);
+      position: relative; overflow: hidden;
+    }
+    .page-hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 70% 80% at 80% 50%, var(--green-50) 0%, transparent 70%);
+    }
+    .page-hero-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .page-hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: var(--r-full);
+      background: var(--green-50); border: 1px solid var(--green-100);
+      margin-bottom: 16px;
+    }
+    .page-hero-label span { font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--green-600); }
+    .page-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,4.5vw,3.4rem);
+      font-weight: 400; letter-spacing: -.028em; line-height: 1.1;
+      color: var(--text-primary); margin-bottom: 14px;
+    }
+    .page-hero-title em { font-style:italic; color:var(--green-600); }
+    .page-hero-sub {
+      font-size: clamp(.9rem,1.5vw,1.05rem);
+      color: var(--text-secondary); line-height: 1.65; max-width: 520px;
+    }
+
+    .check-layout {
+      padding: 0 var(--page-px) 72px;
+    }
+    .check-inner {
+      max-width: var(--max-w); margin: 0 auto;
+    }
+    .check-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .check-panel-header {
+      padding: 24px 28px 0;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(to bottom, var(--green-50), var(--white));
+    }
+    .check-panel-tabs {
+      display: flex; gap: 0;
+      margin-top: 20px;
+    }
+    .tab-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 22px; font-size: .875rem; font-weight: 500;
+      color: var(--text-muted); cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      transition: var(--t-fast); letter-spacing: -.01em;
+      background: none;
+    }
+    .tab-btn:hover { color: var(--text-secondary); background: rgba(30,158,94,.04); }
+    .tab-btn.active { color: var(--green-700); border-bottom-color: var(--green-500); background: rgba(30,158,94,.05); }
+    .tab-btn .tab-icon { font-size: .9rem; }
+    .check-panel-body { padding: 32px 28px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .search-bar-big { display: flex; gap: 10px; }
+    .search-input-wrap { flex: 1; position: relative; }
+    .search-input-big {
+      width: 100%; padding: 14px 18px 14px 48px;
+      border-radius: var(--r-lg); border: 1.5px solid var(--stone-200);
+      background: var(--cream); font-size: 1rem;
+      outline: none; transition: var(--t-fast);
+    }
+    .search-input-big:focus { border-color: var(--green-400); background: var(--white); box-shadow: 0 0 0 3px rgba(30,158,94,.1); }
+    .search-input-icon {
+      position: absolute; left: 16px; top: 50%;
+      transform: translateY(-50%); font-size: 1.1rem;
+    }
+    .search-btn-big {
+      padding: 14px 24px; border-radius: var(--r-lg);
+      background: var(--green-500); color: #fff;
+      font-size: .9rem; font-weight: 500;
+      cursor: pointer; border: none;
+      box-shadow: 0 2px 10px rgba(30,158,94,.28);
+    }
+    .search-btn-big:hover { background: var(--green-600); transform: translateY(-1px); }
+    .search-suggestions {
+      margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .suggestion-chip {
+      padding: 6px 14px; border-radius: var(--r-full);
+      background: var(--stone-100); border: 1px solid var(--stone-200);
+      font-size: .8rem; color: var(--text-muted); cursor: pointer;
+    }
+    .suggestion-chip:hover { background: var(--green-50); border-color: var(--green-200); color: var(--green-700); }
+
+    .upload-zone {
+      border: 2px dashed var(--stone-300);
+      border-radius: var(--r-xl);
+      padding: 52px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--t-base);
+      background: var(--cream);
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--green-400);
+      background: var(--green-50);
+    }
+    .upload-icon { font-size: 3rem; margin-bottom: 14px; display: block; }
+    .upload-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 400; margin-bottom: 8px; }
+    .upload-sub { font-size: .85rem; color: var(--text-muted); }
+    .extracted-area { margin-top: 20px; display: none; }
+    .extracted-textarea {
+      width: 100%; min-height: 90px; padding: 14px 16px;
+      border-radius: var(--r-md); border: 1.5px solid var(--green-200);
+      background: var(--green-50); resize: vertical;
+    }
+    .analyze-btn {
+      margin-top: 16px; width: 100%;
+      padding: 13px; border-radius: var(--r-lg);
+      background: var(--green-500); color: #fff;
+      font-weight: 500; cursor: pointer; border: none;
+    }
+    .analyze-btn:hover:not(:disabled) { background: var(--green-600); transform: translateY(-1px); }
+    .analyze-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* Add Product Form */
+    .add-product-form {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 24px;
+      margin-top: 20px;
+      border: 1px solid var(--border);
+    }
+    .add-product-form h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .form-row {
+      margin-bottom: 16px;
+    }
+    .form-row label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+    .form-row input, .form-row textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--stone-200);
+      border-radius: var(--r-md);
+      font-size: 0.9rem;
+      transition: var(--t-fast);
+    }
+    .form-row input:focus, .form-row textarea:focus {
+      outline: none;
+      border-color: var(--green-400);
+      box-shadow: 0 0 0 3px rgba(30,158,94,.1);
+    }
+    .add-product-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--green-500);
+      color: white;
+      border: none;
+      border-radius: var(--r-md);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--t-fast);
+    }
+    .add-product-btn:hover {
+      background: var(--green-600);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 600px) {
+      .check-panel-body { padding: 20px 18px; }
+      .check-panel-header { padding: 18px 18px 0; }
+      .tab-btn { padding: 10px 14px; font-size: .8rem; }
+      .search-bar-big { flex-direction: column; }
+      .check-panel-tabs { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<div id="check-page">
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">
+        <div class="nav-logo-icon">🛡️</div>
+        <div class="nav-logo-label">
+          <span class="nav-logo-name">SafePlate</span>
+          <span class="nav-logo-tagline">Food Safety Platform</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
+        <li><a href="check-product.html" class="nav-link active"><span class="nav-link-icon">🔬</span> Check Product</a></li>
+        <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+        <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+      </ul>
+      <div class="nav-action">
+        <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
+      </div>
+      <button class="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile">
+      <a href="index.html" class="nav-link">Dashboard</a>
+      <a href="check-product.html" class="nav-link">Check Product</a>
+      <a href="awareness.html" class="nav-link">Awareness</a>
+      <a href="stay-safe.html" class="nav-link">Stay Safe</a>
+      <a href="report.html" class="nav-report-btn">Report Product</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <section class="page-hero">
+      <div class="page-hero-bg"></div>
+      <div class="page-hero-inner">
+        <div class="page-hero-label">
+          <span>🔬</span>
+          <span>Product Intelligence</span>
+        </div>
+        <h1 class="page-hero-title">Know exactly what's<br><em>inside your food.</em></h1>
+        <p class="page-hero-sub">Search by name, upload a label photo, or paste marketing claims. Get an instant, honest breakdown.</p>
+      </div>
+    </section>
+
+    <div class="check-layout">
+      <div class="check-inner">
+        <div class="check-panel">
+          <div class="check-panel-header">
+            <div class="check-panel-tabs">
+              <button class="tab-btn active" data-tab="search"><span class="tab-icon">🔍</span> Search Product</button>
+              <button class="tab-btn" data-tab="upload"><span class="tab-icon">📷</span> Upload Label</button>
+              <button class="tab-btn" data-tab="add-product"><span class="tab-icon">📤</span> Add Product</button>
+            </div>
+          </div>
+          <div class="check-panel-body">
+            <!-- Search Tab -->
+            <div class="tab-panel active" id="tab-search">
+              <div class="search-bar-big">
+                <div class="search-input-wrap">
+                  <span class="search-input-icon">🔍</span>
+                  <input id="product-search-input" type="text" class="search-input-big" placeholder="e.g., Butter, Maggi, Amul Lassi" autocomplete="off" />
+                </div>
+                <button class="search-btn-big" id="search-btn">Analyze →</button>
+              </div>
+              <div class="search-suggestions">
+                <span style="font-size:.75rem;color:var(--text-faint);align-self:center;">Try:</span>
+                <span class="suggestion-chip" data-val="Butter">🧈 Butter</span>
+                <span class="suggestion-chip" data-val="Maggi">🍜 Maggi</span>
+                <span class="suggestion-chip" data-val="Amul Lassi">🥛 Amul Lassi</span>
+                <span class="suggestion-chip" data-val="Kurkure">🌽 Kurkure</span>
+              </div>
+              <div id="search-result"></div>
+            </div>
+
+<!-- Upload Tab -->
+<div class="tab-panel" id="tab-upload" style="display: none;">
+  <div class="upload-zone" id="upload-zone">
+    <span class="upload-icon">📸</span>
+    <div class="upload-title">Drop your label image here</div>
+    <div class="upload-sub">or click to browse your files</div>
+  </div>
+  <input type="file" id="file-input" accept="image/*" style="display:none;" />
+  <button id="browse-btn" class="btn btn-outline" style="margin-top:14px;width:100%;">📁 Browse Files</button>
+  <div class="extracted-area" id="extracted-ingredients">
+    <label style="font-size:.75rem;font-weight:600;text-transform:uppercase;">Extracted Ingredients</label>
+    <textarea id="extracted-text" rows="4" class="extracted-textarea" placeholder="Ingredients will appear here after analysis…"></textarea>
+  </div>
+  <button id="analyze-upload-btn" class="analyze-btn" disabled>🔬 Extract & Analyze Ingredients</button>
+  
+  <!-- ADD THIS - Results container inside Upload tab -->
+  <div id="upload-result" style="margin-top: 20px;"></div>
+</div>
+
+            <!-- Add Product Tab -->
+            <div class="tab-panel" id="tab-add-product" style="display: none;">
+              <div class="add-product-form">
+                <h3>📤 Add New Product to Database</h3>
+                <div class="form-row">
+                  <label>Product Name *</label>
+                  <input type="text" id="newProductName" placeholder="e.g., Organic Oats">
+                </div>
+                <div class="form-row">
+                  <label>Brand *</label>
+                  <input type="text" id="newProductBrand" placeholder="e.g., Quaker">
+                </div>
+                <div class="form-row">
+                  <label>Ingredients List *</label>
+                  <textarea id="newProductIngredients" rows="4" placeholder="List all ingredients separated by commas..."></textarea>
+                </div>
+                <button class="add-product-btn" id="add-product-btn">➕ Add & Analyze</button>
+              </div>
+              <div id="add-product-result"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand">SafePlate</div>
+          <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
+        </div>
+        <nav class="footer-links">
+          <a href="index.html">Dashboard</a>
+          <a href="check-product.html">Check Product</a>
+          <a href="report.html">Report</a>
+          <a href="awareness.html">Awareness</a>
+          <a href="stay-safe.html">Stay Safe</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
