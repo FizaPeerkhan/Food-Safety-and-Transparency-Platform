@@ -228,6 +228,102 @@ def health_score():
     
     return jsonify({'health_score': score, 'rating': rating, 'high_risk_count': high_risk_count, 'moderate_risk_count': moderate_risk_count})
 
+@app.route('/submit-report', methods=['POST'])
+def submit_report():
+    data = request.get_json()
+    
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        # Insert into flagged_products table
+        cursor.execute("""
+            INSERT INTO flagged_products (
+                product_name, brand, category, batch_number, barcode, 
+                purchase_location, issue_type, severity, description, 
+                reporter_name, reporter_email, reporter_city, status
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            data.get('product_name', ''),
+            data.get('brand', ''),
+            data.get('category', ''),
+            data.get('batch_number', ''),
+            data.get('barcode', ''),
+            data.get('purchase_location', ''),
+            data.get('issue_type', ''),
+            data.get('severity', 'medium'),
+            data.get('description', ''),
+            data.get('reporter_name', ''),
+            data.get('reporter_email', ''),
+            data.get('reporter_city', ''),
+            'Under Review'
+        ))
+        
+        db.commit()
+        report_id = cursor.lastrowid
+        cursor.close()
+        db.close()
+        
+        print(f"✅ Report saved! ID: {report_id}")  # Debug print
+        
+        return jsonify({
+            'success': True,
+            'message': 'Report submitted successfully',
+            'report_id': report_id
+        })
+        
+    except Exception as e:
+        print(f"❌ Error saving report: {str(e)}")  # Debug print
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
+
+import os
+from werkzeug.utils import secure_filename
+
+# Configure upload folder
+EVIDENCE_FOLDER = 'evidence'
+os.makedirs(EVIDENCE_FOLDER, exist_ok=True)
+
+@app.route('/upload-evidence', methods=['POST'])
+def upload_evidence():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+    
+    file = request.files['image']
+    report_id = request.form.get('report_id', 'unknown')
+    
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    
+    filename = secure_filename(f"report_{report_id}_{file.filename}")
+    filepath = os.path.join(EVIDENCE_FOLDER, filename)
+    file.save(filepath)
+    
+    # Update database with evidence path
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("UPDATE flagged_products SET evidence_path = %s WHERE id = %s", (filepath, report_id))
+    db.commit()
+    cursor.close()
+    db.close()
+    
+    return jsonify({'success': True, 'path': filepath})
+
+@app.route('/flagged-products', methods=['GET'])
+def get_flagged_products():
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM flagged_products ORDER BY id DESC")
+        products = cursor.fetchall()
+        cursor.close()
+        db.close()
+        
+        return jsonify({'products': products, 'count': len(products)})
+        
+    except Exception as e:
+        return jsonify({'error': str(e), 'products': []}), 500
+
 @app.route('/', methods=['GET'])
 def home():
     return jsonify({

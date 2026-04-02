@@ -81,35 +81,144 @@ function initDashboard() {
   const filterBtns = document.querySelectorAll('.filter-btn');
   const searchInput = document.getElementById('dash-search');
   
-  function getRiskColor(level) { return { low: 'var(--green-500)', medium: 'var(--amber-500)', high: 'var(--red-500)' }[level]; }
+  let allProducts = [];
+  let flaggedReports = [];
+  
+  function getRiskColor(level) { 
+    return { low: 'var(--green-500)', medium: 'var(--amber-500)', high: 'var(--red-500)' }[level]; 
+  }
+  
   function getStatusBadge(status) {
-    const map = { safe: { cls: 'badge-safe', label: 'Safe' }, flagged: { cls: 'badge-caution', label: 'Flagged' }, adulterated: { cls: 'badge-danger', label: 'Adulterated' } };
-    return map[status] || { cls: 'badge-info', label: 'Unknown' };
+    const map = { 
+      safe: { cls: 'badge-safe', label: 'Safe' }, 
+      flagged: { cls: 'badge-caution', label: 'Flagged' }, 
+      adulterated: { cls: 'badge-danger', label: 'Adulterated' },
+      'Under Review': { cls: 'badge-caution', label: 'Under Review' },
+      'Resolved': { cls: 'badge-safe', label: 'Resolved' }
+    };
+    return map[status] || { cls: 'badge-info', label: status || 'Unknown' };
+  }
+  
+  async function fetchFlaggedReports() {
+    try {
+      const response = await fetch(`${API_URL}/flagged-products`);
+      const data = await response.json();
+      if (data.products) {
+        flaggedReports = data.products;
+        console.log(`✅ Loaded ${flaggedReports.length} flagged reports`);
+        renderProducts();
+      }
+    } catch (error) {
+      console.error('Error fetching flagged reports:', error);
+    }
   }
   
   function renderProducts(filter = 'all', query = '') {
-    let list = DASHBOARD_PRODUCTS;
+    if (!grid) return;
+    
+    // Combine mock products with flagged reports
+    let displayProducts = [...DASHBOARD_PRODUCTS];
+    
+    // Add flagged reports as product cards
+    flaggedReports.forEach(report => {
+      displayProducts.push({
+        id: `report_${report.id}`,
+        name: report.product_name,
+        brand: report.brand,
+        category: report.category || 'Reported',
+        riskLevel: report.severity === 'high' ? 'high' : (report.severity === 'medium' ? 'medium' : 'low'),
+        riskScore: report.severity === 'high' ? 85 : (report.severity === 'medium' ? 55 : 30),
+        status: report.status === 'Under Review' ? 'flagged' : (report.status === 'Resolved' ? 'safe' : 'adulterated'),
+        image: '⚠️',
+        ingredients: [report.issue_type || 'Reported Issue'],
+        isReport: true,
+        reportId: report.id,
+        description: report.description
+      });
+    });
+    
+    let list = displayProducts;
     if (filter !== 'all') list = list.filter(p => p.status === filter || p.riskLevel === filter);
     if (query) list = list.filter(p => p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query));
     
-    if (!grid) return;
     grid.innerHTML = list.map(p => {
       const badge = getStatusBadge(p.status);
       const color = getRiskColor(p.riskLevel);
-      return `<div class="prod-card card" data-id="${p.id}" style="cursor: pointer;">
+      const isReport = p.isReport ? true : false;
+      
+      return `<div class="prod-card card" data-id="${p.id}" data-is-report="${isReport}" data-report-id="${p.reportId || ''}" style="cursor: pointer;">
         <div class="prod-card-accent" style="background: linear-gradient(135deg, ${color}22, ${color}08);"></div>
         <div class="prod-card-body">
-          <div class="prod-card-top"><span class="prod-card-emoji">${p.image}</span><span class="badge ${badge.cls}">${badge.label}</span></div>
-          <div><h3 class="prod-card-name">${escapeHtml(p.name)}</h3><p class="prod-card-brand">${escapeHtml(p.brand)} · ${p.category}</p></div>
-          <div class="prod-card-meter"><div class="risk-meter risk-${p.riskLevel}"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:.75rem;">Risk Score</span><span style="font-family:monospace;">${p.riskScore}/100</span></div><div class="risk-meter-bar"><div class="risk-meter-fill" style="width:${p.riskScore}%;background:${color};"></div></div></div></div>
-          <div class="prod-card-pills">${p.ingredients.slice(0,2).map(i => `<span class="ingredient-pill pill-neutral">${escapeHtml(i)}</span>`).join('')}</div>
+          <div class="prod-card-top">
+            <span class="prod-card-emoji">${p.image}</span>
+            <span class="badge ${badge.cls}">${badge.label}</span>
+          </div>
+          <div>
+            <h3 class="prod-card-name">${escapeHtml(p.name)}</h3>
+            <p class="prod-card-brand">${escapeHtml(p.brand)} · ${p.category}</p>
+          </div>
+          <div class="prod-card-meter">
+            <div class="risk-meter risk-${p.riskLevel}">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:.75rem;">Risk Score</span>
+                <span style="font-family:monospace;">${p.riskScore}/100</span>
+              </div>
+              <div class="risk-meter-bar">
+                <div class="risk-meter-fill" style="width:${p.riskScore}%;background:${color};"></div>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card-pills">
+            ${p.ingredients.slice(0,2).map(i => `<span class="ingredient-pill pill-neutral">${escapeHtml(i)}</span>`).join('')}
+          </div>
+          ${isReport ? `<div style="margin-top:8px; font-size:0.7rem; color:var(--red-500);">⚠️ User Reported</div>` : ''}
         </div>
       </div>`;
     }).join('');
     
+    // Add click handlers for cards
     document.querySelectorAll('.prod-card').forEach(card => {
-      card.addEventListener('click', () => window.location.href = `check-product.html?id=${card.dataset.id}`);
+      card.addEventListener('click', () => {
+        const isReport = card.dataset.isReport === 'true';
+        if (isReport) {
+          // Show report details in modal
+          const reportId = card.dataset.reportId;
+          const report = flaggedReports.find(r => r.id == reportId);
+          if (report) {
+            showReportDetails(report);
+          }
+        } else {
+          window.location.href = `check-product.html?id=${card.dataset.id}`;
+        }
+      });
     });
+  }
+  
+  // Function to show report details
+  function showReportDetails(report) {
+    const modalHtml = `
+      <div id="reportModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;">
+        <div style="background:white;border-radius:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
+          <h3 style="margin-bottom:16px;color:var(--red-500);">⚠️ User Report</h3>
+          <div style="margin-bottom:12px;">
+            <strong>Product:</strong> ${escapeHtml(report.product_name)}<br>
+            <strong>Brand:</strong> ${escapeHtml(report.brand)}<br>
+            <strong>Category:</strong> ${escapeHtml(report.category || 'N/A')}<br>
+            <strong>Issue Type:</strong> ${escapeHtml(report.issue_type)}<br>
+            <strong>Severity:</strong> <span style="color:${report.severity === 'high' ? 'red' : (report.severity === 'medium' ? 'orange' : 'green')}">${report.severity}</span><br>
+            <strong>Status:</strong> ${escapeHtml(report.status)}<br>
+            <strong>Reported by:</strong> ${escapeHtml(report.reporter_name || 'Anonymous')}<br>
+            <strong>Location:</strong> ${escapeHtml(report.reporter_city || 'N/A')}
+          </div>
+          <div style="margin-bottom:12px;padding:12px;background:#f7fafc;border-radius:8px;">
+            <strong>Description:</strong><br>
+            ${escapeHtml(report.description)}
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('reportModal')?.remove()">Close</button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
   }
   
   let currentFilter = 'all', currentQuery = '';
@@ -121,14 +230,45 @@ function initDashboard() {
       renderProducts(currentFilter, currentQuery);
     });
   });
-  if (searchInput) searchInput.addEventListener('input', e => { currentQuery = e.target.value.toLowerCase().trim(); renderProducts(currentFilter, currentQuery); });
   
+  if (searchInput) {
+    searchInput.addEventListener('input', e => { 
+      currentQuery = e.target.value.toLowerCase().trim(); 
+      renderProducts(currentFilter, currentQuery); 
+    });
+  }
+  
+  // Fetch flagged reports from backend
+  fetchFlaggedReports();
+  
+  // Update stats with report counts
+  async function updateStats() {
+    try {
+      const response = await fetch(`${API_URL}/flagged-products`);
+      const data = await response.json();
+      if (data.products) {
+        const totalReports = data.products.length;
+        const underReview = data.products.filter(p => p.status === 'Under Review').length;
+        const resolved = data.products.filter(p => p.status === 'Resolved').length;
+        
+        const statTotal = document.getElementById('stat-total');
+        const statFlagged = document.getElementById('stat-flagged');
+        
+        if (statTotal) statTotal.textContent = DASHBOARD_PRODUCTS.length + totalReports;
+        if (statFlagged) statFlagged.textContent = underReview;
+      }
+    } catch (error) {
+      console.error('Error updating stats:', error);
+    }
+  }
+  
+  updateStats();
+  
+  // Initial render with mock data only (reports will load async)
   renderProducts();
   
   const stats = DASHBOARD_PRODUCTS.reduce((acc, p) => { acc[p.status] = (acc[p.status] || 0) + 1; return acc; }, {});
-  document.getElementById('stat-total') && (document.getElementById('stat-total').textContent = DASHBOARD_PRODUCTS.length);
   document.getElementById('stat-safe') && (document.getElementById('stat-safe').textContent = stats.safe || 0);
-  document.getElementById('stat-flagged') && (document.getElementById('stat-flagged').textContent = stats.flagged || 0);
   document.getElementById('stat-adulterated') && (document.getElementById('stat-adulterated').textContent = stats.adulterated || 0);
 }
 
@@ -725,6 +865,7 @@ function initReport() {
     attachZone.style.background = 'var(--green-50)'; 
   });
 }
+
 
 // ==================== AWARENESS PAGE ====================
 function initAwareness() {
