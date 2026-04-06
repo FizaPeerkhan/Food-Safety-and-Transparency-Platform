@@ -6,8 +6,7 @@
   <title>Stay Safe — Food Safety & Transparency Platform</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-
-    /* ── Hero ───────────────────────────── */
+    /* Your existing styles remain the same */
     .page-hero {
       padding: clamp(48px,7vw,88px) var(--page-px) clamp(40px,5vw,60px);
       position: relative; overflow: hidden;
@@ -56,7 +55,6 @@
     .hero-cond-chip:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); background: var(--white); }
     .hero-cond-chip-icon { font-size: 1.3rem; }
 
-    /* ── Layout ─────────────────────────── */
     .staysafe-layout {
       padding: 0 var(--page-px) 80px;
     }
@@ -66,7 +64,6 @@
       gap: 28px; align-items: start;
     }
 
-    /* ── Condition selector sidebar ─────── */
     .condition-sidebar {
       position: sticky; top: calc(var(--nav-h) + 20px);
     }
@@ -102,7 +99,6 @@
     }
     .condition-card.active .condition-card-arrow { transform: translateX(3px); color: var(--green-500); }
 
-    /* Sidebar footer card */
     .sidebar-info-card {
       margin-top: 16px; padding: 16px 18px;
       background: var(--green-900); border-radius: var(--r-lg);
@@ -120,13 +116,11 @@
     }
     .sidebar-info-link:hover { background: rgba(255,255,255,.18); }
 
-    /* ── Content area ────────────────────── */
     .condition-content-area {
       min-height: 500px;
       transition: opacity .35s ease, transform .35s ease;
     }
 
-    /* Condition header */
     .cond-header {
       background: var(--white); border: 1px solid var(--border);
       border-radius: var(--r-xl); padding: 28px 32px; margin-bottom: 20px;
@@ -149,7 +143,6 @@
       line-height: 1.6; display: flex; gap: 10px; align-items: flex-start;
     }
 
-    /* Safe grid — 3 columns */
     .safe-grid {
       display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
     }
@@ -174,7 +167,6 @@
       flex-shrink: 0; margin-top: 5px;
     }
 
-    /* Watch list — danger styling */
     .watch-item {
       display: flex; align-items: center; justify-content: space-between;
       gap: 10px; padding: 9px 12px; border-radius: var(--r-md);
@@ -186,7 +178,6 @@
     .watch-item-name { font-size: .83rem; font-weight: 500; color: var(--text-primary); }
     .watch-item-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--red-400); flex-shrink: 0; }
 
-    /* Risky products */
     .risky-item {
       display: flex; align-items: center; gap: 10px;
       padding: 9px 12px; border-radius: var(--r-md);
@@ -198,7 +189,6 @@
     .risky-item-icon { font-size: .85rem; color: var(--amber-500); flex-shrink: 0; }
     .risky-item-name { font-size: .83rem; font-weight: 500; color: var(--text-secondary); }
 
-    /* Safer alternatives */
     .safer-item {
       display: flex; align-items: center; gap: 10px;
       padding: 9px 12px; border-radius: var(--r-md);
@@ -210,7 +200,6 @@
     .safer-item-icon { font-size: .85rem; color: var(--green-400); flex-shrink: 0; }
     .safer-item-name { font-size: .83rem; font-weight: 500; color: var(--text-secondary); }
 
-    /* ── Quick scan banner ───────────────── */
     .quick-scan-banner {
       margin-top: 20px;
       padding: 20px 24px;
@@ -222,7 +211,6 @@
     .quick-scan-text { font-size: .9rem; color: var(--text-secondary); }
     .quick-scan-text strong { color: var(--text-primary); display: block; margin-bottom: 3px; font-size: .95rem; }
 
-    /* ── Disclaimer ──────────────────────── */
     .medical-disclaimer {
       margin-top: 20px; padding: 16px 20px;
       border-radius: var(--r-lg);
@@ -232,7 +220,6 @@
     }
     .medical-disclaimer-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
 
-    /* ── Responsive ──────────────────────── */
     @media (max-width: 1020px) {
       .staysafe-inner { grid-template-columns: 1fr; }
       .condition-sidebar { position: static; }
@@ -256,7 +243,7 @@
 <body>
 <div id="staysafe-page">
 
-  <!-- ── Navigation ────────────────────── -->
+  <!-- Navigation -->
   <nav class="nav">
     <div class="nav-inner">
       <a class="nav-logo" href="index.html">
@@ -267,10 +254,10 @@
         </div>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html"         class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
+        <li><a href="index.html" class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
         <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
-        <li><a href="awareness.html"     class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
-        <li><a href="stay-safe.html"     class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+        <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+        <li><a href="stay-safe.html" class="nav-link active"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
       </ul>
       <div class="nav-action">
         <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
@@ -280,17 +267,17 @@
       </button>
     </div>
     <div class="nav-mobile">
-      <a href="index.html"         class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a>
-      <a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a>
-      <a href="awareness.html"     class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a>
-      <a href="stay-safe.html"     class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a>
-      <a href="report.html"        class="nav-report-btn">⚑ Report Product</a>
+      <a href="index.html" class="nav-link">Dashboard</a>
+      <a href="check-product.html" class="nav-link">Check Product</a>
+      <a href="awareness.html" class="nav-link">Awareness</a>
+      <a href="stay-safe.html" class="nav-link">Stay Safe</a>
+      <a href="report.html" class="nav-report-btn">Report Product</a>
     </div>
   </nav>
 
   <div class="page-wrap">
 
-    <!-- ── Hero ─────────────────────────── -->
+    <!-- Hero -->
     <section class="page-hero">
       <div class="hero-mesh"></div>
       <div class="page-hero-inner">
@@ -308,29 +295,20 @@
           </p>
         </div>
         <div class="hero-condition-preview anim-fade-up anim-delay-2">
-          <a class="hero-cond-chip" href="#condition-selector">
-            <span class="hero-cond-chip-icon">🩸</span> Diabetes
-          </a>
-          <a class="hero-cond-chip" href="#condition-selector">
-            <span class="hero-cond-chip-icon">❤️</span> Hypertension
-          </a>
-          <a class="hero-cond-chip" href="#condition-selector">
-            <span class="hero-cond-chip-icon">🌾</span> Celiac / Gluten
-          </a>
-          <a class="hero-cond-chip" href="#condition-selector">
-            <span class="hero-cond-chip-icon">🥛</span> Lactose
-          </a>
-          <a class="hero-cond-chip" href="#condition-selector">
-            <span class="hero-cond-chip-icon">🫀</span> Heart Disease
-          </a>
-          <a class="hero-cond-chip" href="#condition-selector">
-            <span class="hero-cond-chip-icon">👶</span> Children's Health
-          </a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🩸</span> Diabetes</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">❤️</span> Hypertension</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🌾</span> Celiac / Gluten</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🥛</span> Lactose</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🫀</span> Heart Disease</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">👶</span> Children's Health</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🩸</span> PCOS</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🦋</span> Thyroid</a>
+          <a class="hero-cond-chip" href="#condition-selector"><span class="hero-cond-chip-icon">🤰</span> Pregnancy</a>
         </div>
       </div>
     </section>
 
-    <!-- ── Main ─────────────────────────── -->
+    <!-- Main -->
     <div class="staysafe-layout" id="condition-selector">
       <div class="staysafe-inner">
 
@@ -338,7 +316,6 @@
         <aside class="condition-sidebar anim-fade-up anim-delay-1">
           <div class="condition-sidebar-label">Choose your condition</div>
           <div class="condition-list">
-
             <div class="condition-card" data-condition="diabetes">
               <span class="condition-card-icon">🩸</span>
               <div>
@@ -347,7 +324,6 @@
               </div>
               <span class="condition-card-arrow">›</span>
             </div>
-
             <div class="condition-card" data-condition="hypertension">
               <span class="condition-card-icon">❤️</span>
               <div>
@@ -356,7 +332,6 @@
               </div>
               <span class="condition-card-arrow">›</span>
             </div>
-
             <div class="condition-card" data-condition="celiac">
               <span class="condition-card-icon">🌾</span>
               <div>
@@ -365,7 +340,6 @@
               </div>
               <span class="condition-card-arrow">›</span>
             </div>
-
             <div class="condition-card" data-condition="lactose">
               <span class="condition-card-icon">🥛</span>
               <div>
@@ -374,7 +348,6 @@
               </div>
               <span class="condition-card-arrow">›</span>
             </div>
-
             <div class="condition-card" data-condition="heartdisease">
               <span class="condition-card-icon">🫀</span>
               <div>
@@ -383,7 +356,6 @@
               </div>
               <span class="condition-card-arrow">›</span>
             </div>
-
             <div class="condition-card" data-condition="kidshealth">
               <span class="condition-card-icon">👶</span>
               <div>
@@ -392,24 +364,43 @@
               </div>
               <span class="condition-card-arrow">›</span>
             </div>
-
+            <div class="condition-card" data-condition="pcos">
+              <span class="condition-card-icon">🩸</span>
+              <div>
+                <div class="condition-card-label">PCOS</div>
+                <div class="condition-card-sub">Hormonal balance</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+            <div class="condition-card" data-condition="thyroid">
+              <span class="condition-card-icon">🦋</span>
+              <div>
+                <div class="condition-card-label">Thyroid</div>
+                <div class="condition-card-sub">Metabolism support</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
+            <div class="condition-card" data-condition="pregnant">
+              <span class="condition-card-icon">🤰</span>
+              <div>
+                <div class="condition-card-label">Pregnancy</div>
+                <div class="condition-card-sub">Prenatal nutrition</div>
+              </div>
+              <span class="condition-card-arrow">›</span>
+            </div>
           </div>
 
-          <!-- Sidebar info -->
           <div class="sidebar-info-card">
             <div class="sidebar-info-title">Eating out?</div>
             <div class="sidebar-info-text">
               Use our product checker to scan packaged foods before you buy — even at the store.
             </div>
-            <a href="check-product.html" class="sidebar-info-link">
-              🔬 Check a product →
-            </a>
+            <a href="check-product.html" class="sidebar-info-link">🔬 Check a product →</a>
           </div>
         </aside>
 
         <!-- Right: Dynamic Content -->
         <div class="condition-content-area" id="condition-content">
-          <!-- Filled dynamically by script.js -->
           <div style="padding:60px 32px;text-align:center;color:var(--text-muted);">
             <div style="font-size:3rem;margin-bottom:16px;">❤️</div>
             <p style="font-family:var(--font-display);font-size:1.3rem;color:var(--text-secondary);font-weight:400;margin-bottom:8px;">Select a condition to get started</p>
@@ -420,39 +411,24 @@
       </div>
     </div>
 
-    <!-- ── Bottom CTA ────────────────────── -->
+    <!-- Bottom CTA -->
     <section style="padding: 0 var(--page-px) 80px;">
       <div style="max-width:var(--max-w);margin:0 auto;">
-        <div style="
-          border-radius: var(--r-xl);
-          background: linear-gradient(135deg, var(--green-800), var(--green-700));
-          padding: clamp(36px,5vw,56px) clamp(28px,5vw,60px);
-          display: flex; align-items: center; justify-content: space-between;
-          gap: 24px; flex-wrap: wrap; position: relative; overflow: hidden;
-        " data-reveal>
-          <div style="position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04);right:-80px;top:-100px;pointer-events:none;"></div>
-          <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03);left:40%;bottom:-60px;pointer-events:none;"></div>
+        <div style="border-radius: var(--r-xl); background: linear-gradient(135deg, var(--green-800), var(--green-700)); padding: clamp(36px,5vw,56px) clamp(28px,5vw,60px); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; position: relative; overflow: hidden;">
+          <div style="position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04);right:-80px;top:-100px;"></div>
           <div style="position:relative;z-index:1;">
-            <p style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,1.9rem);color:#fff;font-weight:400;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px;">
-              Found something in your food?
-            </p>
-            <p style="color:var(--green-200);font-size:.92rem;line-height:1.6;max-width:440px;">
-              Don't ignore it. Every report helps protect thousands of families and triggers real regulatory action.
-            </p>
+            <p style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,1.9rem);color:#fff;font-weight:400;margin-bottom:10px;">Found something in your food?</p>
+            <p style="color:var(--green-200);font-size:.92rem;line-height:1.6;max-width:440px;">Don't ignore it. Every report helps protect thousands of families.</p>
           </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;">
-            <a href="report.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">
-              ⚑ File a Report
-            </a>
-            <a href="awareness.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">
-              📖 Learn More
-            </a>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="report.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);">⚑ File a Report</a>
+            <a href="awareness.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">📖 Learn More</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── Footer ─────────────────────────── -->
+    <!-- Footer -->
     <footer class="footer">
       <div class="footer-inner">
         <div>
@@ -469,106 +445,149 @@
       </div>
     </footer>
 
-  </div><!-- /page-wrap -->
-</div><!-- /staysafe-page -->
+  </div>
+</div>
 
 <script src="script.js"></script>
 <script>
-  // Override script.js renderConditionContent to use richer HTML
-  function renderConditionContent(key) {
-    const DATA = {
-      diabetes: {
-        label: 'Diabetes', icon: '🩸', color: 'var(--amber-500)',
-        bg: 'var(--amber-50)', border: 'rgba(251,191,36,.2)',
-        tip: 'Focus on low-GI foods (GI < 55). Fibre slows glucose absorption and prevents spikes. Check for hidden sugar aliases on labels.',
-        watch: [
-          { name: 'High Fructose Corn Syrup', note: 'Rapid glucose spike' },
-          { name: 'White Sugar / Sucrose', note: 'High GI, avoid large quantities' },
-          { name: 'Maltodextrin', note: 'Higher GI than table sugar' },
-          { name: 'Dextrose', note: 'Pure glucose — immediate spike' },
-          { name: 'Refined Wheat Flour', note: 'Stripped of fibre, high GI' },
-          { name: 'Artificial Sweeteners', note: 'May disrupt gut microbiome' },
-        ],
-        risky: ['Packaged fruit juices', 'White bread & buns', 'Breakfast cereals', 'Flavoured yogurt', 'Energy drinks', 'Biscuits & cookies'],
-        safer: ['Steel-cut oats', 'Whole grain or rye bread', 'Plain Greek yogurt', 'Lentils & chickpeas', 'Nuts & seeds', 'Leafy greens'],
-      },
-      hypertension: {
-        label: 'Hypertension', icon: '❤️', color: 'var(--red-500)',
-        bg: 'var(--red-50)', border: 'rgba(248,113,113,.2)',
-        tip: 'Aim for under 2,300mg sodium per day. Sodium hides in bread, sauces, and cereals — not just salt shakers. Potassium-rich foods help balance blood pressure.',
-        watch: [
-          { name: 'Sodium (>200mg/serving)', note: 'Directly raises blood pressure' },
-          { name: 'MSG (Monosodium Glutamate)', note: 'High sodium additive' },
-          { name: 'Sodium Nitrate', note: 'Found in processed meats' },
-          { name: 'Sodium Benzoate', note: 'Preservative in drinks & sauces' },
-          { name: 'Disodium Phosphate', note: 'Emulsifier in processed cheese' },
-          { name: 'Baking Soda (excess)', note: 'Sodium bicarbonate adds up' },
-        ],
-        risky: ['Canned soups & broths', 'Processed deli meats', 'Pickled vegetables', 'Packaged cheese', 'Instant noodles', 'Salted snacks & chips'],
-        safer: ['Fresh / frozen vegetables', 'Bananas & sweet potatoes', 'Unsalted nuts & seeds', 'Oats & whole grains', 'Fatty fish (omega-3)', 'Herbs & spices for flavour'],
-      },
-      celiac: {
-        label: 'Celiac / Gluten Intolerance', icon: '🌾', color: 'var(--amber-600)',
-        bg: 'var(--amber-50)', border: 'rgba(251,191,36,.2)',
-        tip: 'Even trace amounts of gluten can trigger an immune response in celiac disease. Cross-contamination during manufacturing is as important as the ingredient list.',
-        watch: [
-          { name: 'Wheat / Whole Wheat', note: 'Primary gluten source' },
-          { name: 'Barley & Rye', note: 'Contain gluten proteins' },
-          { name: 'Malt Extract', note: 'Usually derived from barley' },
-          { name: 'Modified Starch', note: 'May be wheat-derived unless certified GF' },
-          { name: 'Hydrolysed Wheat Protein', note: 'Found in some soy sauces' },
-          { name: 'Triticale', note: 'Wheat-rye hybrid grain' },
-        ],
-        risky: ['Regular pasta & noodles', 'Soy sauce & teriyaki', 'Beer & malt beverages', 'Most crackers & biscuits', 'Regular baked goods', 'Oats (unless certified GF)'],
-        safer: ['Rice, quinoa & millet', 'Certified GF oat products', 'Corn tortillas & polenta', 'Lentils & all legumes', 'Potatoes & sweet potatoes', 'GF-certified breads'],
-      },
-      lactose: {
-        label: 'Lactose Intolerance', icon: '🥛', color: 'var(--green-500)',
-        bg: 'var(--green-50)', border: 'var(--green-100)',
-        tip: 'Hard aged cheeses like cheddar and parmesan are naturally very low in lactose and are often tolerated well. Fermented dairy like kefir may also be easier to digest.',
-        watch: [
-          { name: 'Milk & Cream', note: 'Highest lactose content' },
-          { name: 'Whey Protein', note: 'Derived from milk' },
-          { name: 'Casein & Caseinate', note: 'Milk proteins' },
-          { name: 'Milk Solids / Dry Milk', note: 'Concentrated lactose' },
-          { name: 'Butter & Ghee', note: 'Small amounts of lactose remain' },
-          { name: 'Lactose (listed directly)', note: 'Direct dairy-derived sugar' },
-        ],
-        risky: ['Regular cow\'s milk', 'Soft cheeses (ricotta, cottage)', 'Ice cream & gelato', 'Cream-based soups & pasta', 'Milk chocolate', 'Yogurt (may vary)'],
-        safer: ['Oat, almond, soy or coconut milk', 'Hard aged cheeses', 'Lactose-free dairy products', 'Dairy-free yogurt', 'Coconut cream', 'Lactase enzyme supplements'],
-      },
-      heartdisease: {
-        label: 'Heart Disease', icon: '🫀', color: 'var(--red-400)',
-        bg: 'var(--red-50)', border: 'rgba(248,113,113,.2)',
-        tip: 'Even "0g trans fat" products can legally contain up to 0.5g per serving. Always check for "partially hydrogenated oil" in the ingredient list — that means trans fats are present.',
-        watch: [
-          { name: 'Trans Fats / Hydrogenated Oil', note: 'Raises LDL, lowers HDL' },
-          { name: 'Partially Hydrogenated Oil', note: 'Hidden trans fat source' },
-          { name: 'Saturated Fat (>5g/serving)', note: 'Contributes to arterial plaque' },
-          { name: 'Dietary Cholesterol (>200mg)', note: 'Monitor with doctor\'s guidance' },
-          { name: 'Sodium (>600mg/serving)', note: 'Raises blood pressure, strains heart' },
-          { name: 'Refined Sugar', note: 'Linked to inflammation & triglycerides' },
-        ],
-        risky: ['Margarine & shortening', 'Fried fast food', 'Processed deli meats', 'Full-fat packaged snacks', 'Cream-based sauces', 'Coconut oil (in large amounts)'],
-        safer: ['Extra virgin olive oil', 'Fatty fish (salmon, mackerel)', 'Avocados', 'Walnuts & flaxseeds', 'Berries & dark leafy greens', 'Whole oats & barley'],
-      },
-      kidshealth: {
-        label: "Children's Health", icon: '👶', color: 'var(--green-400)',
-        bg: 'var(--green-50)', border: 'var(--green-100)',
-        tip: "Children's organs are still developing, making them more sensitive to additives and toxins than adults. Prioritise short ingredient lists with names you recognise.",
-        watch: [
-          { name: 'Artificial Colours (Red 40, Yellow 5)', note: 'Linked to hyperactivity in children' },
-          { name: 'BHA & BHT Preservatives', note: 'Possible endocrine disruption' },
-          { name: 'Aspartame & Saccharin', note: 'Not recommended under age 3' },
-          { name: 'High Sodium Content', note: 'Children\'s kidneys are more sensitive' },
-          { name: 'Excess Added Sugar', note: 'Impacts developing gut microbiome' },
-          { name: 'Nitrates (processed meat)', note: 'Particularly harmful for young children' },
-        ],
-        risky: ['Brightly coloured candy & cereals', 'Flavoured chips & puffs', 'Sweetened carbonated drinks', 'Processed chicken nuggets', 'Packaged fruit snacks (gummies)', 'Instant flavoured noodles'],
-        safer: ['Fresh seasonal fruit', 'Plain whole-milk yogurt', 'Homemade energy balls (oats+nuts)', 'Boiled or scrambled eggs', 'Carrot & cucumber sticks', 'Cheese cubes (in moderation)'],
-      },
-    };
+  // Complete DATA object with all conditions including new ones
+  const DATA = {
+    diabetes: {
+      label: 'Diabetes', icon: '🩸', color: 'var(--amber-500)',
+      bg: 'var(--amber-50)', border: 'rgba(251,191,36,.2)',
+      tip: 'Focus on low-GI foods (GI < 55). Fibre slows glucose absorption and prevents spikes. Check for hidden sugar aliases on labels.',
+      watch: [
+        { name: 'High Fructose Corn Syrup', note: 'Rapid glucose spike' },
+        { name: 'White Sugar / Sucrose', note: 'High GI, avoid large quantities' },
+        { name: 'Maltodextrin', note: 'Higher GI than table sugar' },
+        { name: 'Dextrose', note: 'Pure glucose — immediate spike' },
+        { name: 'Refined Wheat Flour', note: 'Stripped of fibre, high GI' },
+        { name: 'Artificial Sweeteners', note: 'May disrupt gut microbiome' }
+      ],
+      risky: ['Packaged fruit juices', 'White bread & buns', 'Breakfast cereals', 'Flavoured yogurt', 'Energy drinks', 'Biscuits & cookies'],
+      safer: ['Steel-cut oats', 'Whole grain or rye bread', 'Plain Greek yogurt', 'Lentils & chickpeas', 'Nuts & seeds', 'Leafy greens']
+    },
+    hypertension: {
+      label: 'Hypertension', icon: '❤️', color: 'var(--red-500)',
+      bg: 'var(--red-50)', border: 'rgba(248,113,113,.2)',
+      tip: 'Aim for under 2,300mg sodium per day. Sodium hides in bread, sauces, and cereals — not just salt shakers.',
+      watch: [
+        { name: 'Sodium (>200mg/serving)', note: 'Directly raises blood pressure' },
+        { name: 'MSG (Monosodium Glutamate)', note: 'High sodium additive' },
+        { name: 'Sodium Nitrate', note: 'Found in processed meats' },
+        { name: 'Sodium Benzoate', note: 'Preservative in drinks & sauces' },
+        { name: 'Disodium Phosphate', note: 'Emulsifier in processed cheese' },
+        { name: 'Baking Soda (excess)', note: 'Sodium bicarbonate adds up' }
+      ],
+      risky: ['Canned soups & broths', 'Processed deli meats', 'Pickled vegetables', 'Packaged cheese', 'Instant noodles', 'Salted snacks & chips'],
+      safer: ['Fresh / frozen vegetables', 'Bananas & sweet potatoes', 'Unsalted nuts & seeds', 'Oats & whole grains', 'Fatty fish (omega-3)', 'Herbs & spices']
+    },
+    celiac: {
+      label: 'Celiac / Gluten Intolerance', icon: '🌾', color: 'var(--amber-600)',
+      bg: 'var(--amber-50)', border: 'rgba(251,191,36,.2)',
+      tip: 'Even trace amounts of gluten can trigger an immune response in celiac disease.',
+      watch: [
+        { name: 'Wheat / Whole Wheat', note: 'Primary gluten source' },
+        { name: 'Barley & Rye', note: 'Contain gluten proteins' },
+        { name: 'Malt Extract', note: 'Usually derived from barley' },
+        { name: 'Modified Starch', note: 'May be wheat-derived unless certified GF' },
+        { name: 'Hydrolysed Wheat Protein', note: 'Found in some soy sauces' },
+        { name: 'Triticale', note: 'Wheat-rye hybrid grain' }
+      ],
+      risky: ['Regular pasta & noodles', 'Soy sauce & teriyaki', 'Beer & malt beverages', 'Most crackers & biscuits', 'Regular baked goods', 'Oats (unless certified GF)'],
+      safer: ['Rice, quinoa & millet', 'Certified GF oat products', 'Corn tortillas & polenta', 'Lentils & all legumes', 'Potatoes & sweet potatoes', 'GF-certified breads']
+    },
+    lactose: {
+      label: 'Lactose Intolerance', icon: '🥛', color: 'var(--green-500)',
+      bg: 'var(--green-50)', border: 'var(--green-100)',
+      tip: 'Hard aged cheeses like cheddar and parmesan are naturally very low in lactose.',
+      watch: [
+        { name: 'Milk & Cream', note: 'Highest lactose content' },
+        { name: 'Whey Protein', note: 'Derived from milk' },
+        { name: 'Casein & Caseinate', note: 'Milk proteins' },
+        { name: 'Milk Solids / Dry Milk', note: 'Concentrated lactose' },
+        { name: 'Butter & Ghee', note: 'Small amounts of lactose remain' },
+        { name: 'Lactose (listed directly)', note: 'Direct dairy-derived sugar' }
+      ],
+      risky: ['Regular cow\'s milk', 'Soft cheeses (ricotta, cottage)', 'Ice cream & gelato', 'Cream-based soups & pasta', 'Milk chocolate', 'Yogurt (may vary)'],
+      safer: ['Oat, almond, soy or coconut milk', 'Hard aged cheeses', 'Lactose-free dairy products', 'Dairy-free yogurt', 'Coconut cream', 'Lactase enzyme supplements']
+    },
+    heartdisease: {
+      label: 'Heart Disease', icon: '🫀', color: 'var(--red-400)',
+      bg: 'var(--red-50)', border: 'rgba(248,113,113,.2)',
+      tip: 'Even "0g trans fat" products can legally contain up to 0.5g per serving.',
+      watch: [
+        { name: 'Trans Fats / Hydrogenated Oil', note: 'Raises LDL, lowers HDL' },
+        { name: 'Partially Hydrogenated Oil', note: 'Hidden trans fat source' },
+        { name: 'Saturated Fat (>5g/serving)', note: 'Contributes to arterial plaque' },
+        { name: 'Dietary Cholesterol (>200mg)', note: 'Monitor with doctor\'s guidance' },
+        { name: 'Sodium (>600mg/serving)', note: 'Raises blood pressure' },
+        { name: 'Refined Sugar', note: 'Linked to inflammation & triglycerides' }
+      ],
+      risky: ['Margarine & shortening', 'Fried fast food', 'Processed deli meats', 'Full-fat packaged snacks', 'Cream-based sauces', 'Coconut oil (in large amounts)'],
+      safer: ['Extra virgin olive oil', 'Fatty fish (salmon, mackerel)', 'Avocados', 'Walnuts & flaxseeds', 'Berries & dark leafy greens', 'Whole oats & barley']
+    },
+    kidshealth: {
+      label: "Children's Health", icon: '👶', color: 'var(--green-400)',
+      bg: 'var(--green-50)', border: 'var(--green-100)',
+      tip: "Children's organs are still developing, making them more sensitive to additives.",
+      watch: [
+        { name: 'Artificial Colours (Red 40, Yellow 5)', note: 'Linked to hyperactivity' },
+        { name: 'BHA & BHT Preservatives', note: 'Possible endocrine disruption' },
+        { name: 'Aspartame & Saccharin', note: 'Not recommended under age 3' },
+        { name: 'High Sodium Content', note: 'Children\'s kidneys are more sensitive' },
+        { name: 'Excess Added Sugar', note: 'Impacts developing gut microbiome' },
+        { name: 'Nitrates (processed meat)', note: 'Particularly harmful for young children' }
+      ],
+      risky: ['Brightly coloured candy & cereals', 'Flavoured chips & puffs', 'Sweetened carbonated drinks', 'Processed chicken nuggets', 'Packaged fruit snacks (gummies)', 'Instant flavoured noodles'],
+      safer: ['Fresh seasonal fruit', 'Plain whole-milk yogurt', 'Homemade energy balls', 'Boiled or scrambled eggs', 'Carrot & cucumber sticks', 'Cheese cubes (in moderation)']
+    },
+    pcos: {
+      label: 'PCOS (Polycystic Ovary Syndrome)', icon: '🩸', color: 'var(--purple-500)',
+      bg: '#f3e8ff', border: 'rgba(168,85,247,.2)',
+      tip: 'Focus on low-glycemic foods and anti-inflammatory ingredients. Avoid refined carbs and added sugars.',
+      watch: [
+        { name: 'Added Sugar', note: 'Causes insulin spikes' },
+        { name: 'Refined Flour', note: 'High glycemic index' },
+        { name: 'High Fructose Corn Syrup', note: 'Worsens insulin resistance' },
+        { name: 'Trans Fats', note: 'Increases inflammation' },
+        { name: 'Soy Isolates', note: 'May affect hormone balance' }
+      ],
+      risky: ['Sugary drinks', 'White bread/pasta', 'Processed snacks', 'Fried foods', 'Fast food'],
+      safer: ['Whole grains (quinoa, oats)', 'Lean protein (chicken, fish)', 'Leafy greens', 'Berries', 'Nuts & seeds', 'Fenugreek', 'Turmeric', 'Green tea']
+    },
+    thyroid: {
+      label: 'Thyroid (Hypothyroidism)', icon: '🦋', color: 'var(--blue-500)',
+      bg: '#eff6ff', border: 'rgba(59,130,246,.2)',
+      tip: 'Avoid goitrogens in raw form. Ensure adequate iodine and selenium intake. Cook cruciferous vegetables.',
+      watch: [
+        { name: 'Raw Cruciferous Vegetables', note: 'Contains goitrogens' },
+        { name: 'Soy Products', note: 'May interfere with thyroid medication' },
+        { name: 'Gluten', note: 'Can trigger autoimmune response' },
+        { name: 'Processed Foods', note: 'Low in nutrients' },
+        { name: 'Excess Caffeine', note: 'Interferes with medication absorption' }
+      ],
+      risky: ['Raw kale/cabbage', 'Soy milk/tofu', 'Wheat bread', 'Sugary cereals', 'Energy drinks', 'Processed meats'],
+      safer: ['Cooked vegetables', 'Seaweed (iodine)', 'Brazil nuts (selenium)', 'Eggs', 'Fish (salmon, tuna)', 'Coconut oil', 'Bone broth', 'Berries']
+    },
+    pregnant: {
+      label: 'Pregnancy', icon: '🤰', color: 'var(--pink-500)',
+      bg: '#fdf2f8', border: 'rgba(236,72,153,.2)',
+      tip: 'Avoid raw/undercooked foods, limit caffeine to 200mg/day, avoid high-mercury fish.',
+      watch: [
+        { name: 'Raw Eggs', note: 'Risk of salmonella' },
+        { name: 'Unpasteurized Dairy', note: 'Risk of listeria' },
+        { name: 'Raw Meat/Fish', note: 'Risk of toxoplasmosis' },
+        { name: 'High Mercury Fish', note: 'Affects fetal development' },
+        { name: 'Excess Caffeine', note: 'Linked to miscarriage risk' },
+        { name: 'Alcohol', note: 'Causes fetal alcohol syndrome' }
+      ],
+      risky: ['Sushi', 'Soft cheeses (brie, camembert)', 'Deli meats', 'Tuna (large amounts)', 'Coffee (>2 cups)', 'Energy drinks', 'Raw sprouts'],
+      safer: ['Cooked eggs', 'Pasteurized dairy', 'Cooked fish (salmon, sardines)', 'Lean meats', 'Herbal tea (caffeine-free)', 'Folate-rich foods', 'Legumes', 'Citrus fruits']
+    }
+  };
 
+  function renderConditionContent(key) {
     const data = DATA[key];
     const area = document.getElementById('condition-content');
     if (!data || !area) return;
@@ -578,83 +597,35 @@
 
     setTimeout(() => {
       area.innerHTML = `
-        <!-- Header -->
         <div class="cond-header">
           <div class="cond-header-top">
-            <div class="cond-header-emoji" style="background:${data.bg};border:1px solid ${data.border};">
-              ${data.icon}
-            </div>
+            <div class="cond-header-emoji" style="background:${data.bg};border:1px solid ${data.border};">${data.icon}</div>
             <div>
               <div class="cond-header-title">${data.label}</div>
               <div class="cond-header-sub">Personalised food safety guidance</div>
             </div>
           </div>
-          <div class="cond-tip-box">
-            <span style="flex-shrink:0;">💡</span>
-            <span>${data.tip}</span>
-          </div>
+          <div class="cond-tip-box"><span>💡</span><span>${data.tip}</span></div>
         </div>
-
-        <!-- Three columns -->
         <div class="safe-grid">
-
-          <!-- Watch -->
           <div class="safe-section" style="border-top:3px solid var(--red-400);">
-            <div class="safe-section-title" style="color:var(--red-500);">
-              <span>⚠</span> Ingredients to Watch
-            </div>
-            ${data.watch.map(w => `
-              <div class="watch-item">
-                <div>
-                  <div class="watch-item-name">${w.name}</div>
-                  <div style="font-size:.72rem;color:var(--text-muted);margin-top:2px;">${w.note}</div>
-                </div>
-                <div class="watch-item-dot"></div>
-              </div>`).join('')}
+            <div class="safe-section-title" style="color:var(--red-500);"><span>⚠</span> Ingredients to Watch</div>
+            ${data.watch.map(w => `<div class="watch-item"><div><div class="watch-item-name">${w.name}</div><div style="font-size:.72rem;color:var(--text-muted);">${w.note}</div></div><div class="watch-item-dot"></div></div>`).join('')}
           </div>
-
-          <!-- Risky -->
           <div class="safe-section" style="border-top:3px solid var(--amber-400);">
-            <div class="safe-section-title" style="color:var(--amber-600);">
-              <span>⚡</span> Risky Products
-            </div>
-            ${data.risky.map(r => `
-              <div class="risky-item">
-                <span class="risky-item-icon">▲</span>
-                <span class="risky-item-name">${r}</span>
-              </div>`).join('')}
+            <div class="safe-section-title" style="color:var(--amber-600);"><span>⚡</span> Risky Products</div>
+            ${data.risky.map(r => `<div class="risky-item"><span class="risky-item-icon">▲</span><span class="risky-item-name">${r}</span></div>`).join('')}
           </div>
-
-          <!-- Safer -->
           <div class="safe-section" style="border-top:3px solid var(--green-400);">
-            <div class="safe-section-title" style="color:var(--green-600);">
-              <span>✓</span> Safer Alternatives
-            </div>
-            ${data.safer.map(s => `
-              <div class="safer-item">
-                <span class="safer-item-icon">●</span>
-                <span class="safer-item-name">${s}</span>
-              </div>`).join('')}
+            <div class="safe-section-title" style="color:var(--green-600);"><span>✓</span> Safer Alternatives</div>
+            ${data.safer.map(s => `<div class="safer-item"><span class="safer-item-icon">●</span><span class="safer-item-name">${s}</span></div>`).join('')}
           </div>
-
         </div>
-
-        <!-- Quick scan banner -->
         <div class="quick-scan-banner">
-          <div class="quick-scan-text">
-            <strong>Scan a product for ${data.label}</strong>
-            Check if any packaged food is safe for your condition using our product checker.
-          </div>
+          <div class="quick-scan-text"><strong>Scan a product for ${data.label}</strong><br>Check if any packaged food is safe for your condition.</div>
           <a href="check-product.html" class="btn btn-primary btn-sm">🔬 Check Product</a>
         </div>
-
-        <!-- Medical disclaimer -->
-        <div class="medical-disclaimer">
-          <span class="medical-disclaimer-icon">ℹ️</span>
-          <span>This guidance is for general educational awareness only and does not constitute medical advice.
-          Always consult a qualified healthcare professional or registered dietitian for personalised dietary recommendations,
-          especially if you have a diagnosed medical condition.</span>
-        </div>
+        <div class="medical-disclaimer"><span>ℹ️</span><span>This guidance is for educational purposes only. Always consult a healthcare professional.</span></div>
       `;
 
       area.style.transition = 'opacity .4s ease, transform .4s ease';

@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -228,35 +229,66 @@ def health_score():
     
     return jsonify({'health_score': score, 'rating': rating, 'high_risk_count': high_risk_count, 'moderate_risk_count': moderate_risk_count})
 
+import os
+from werkzeug.utils import secure_filename, send_from_directory
+
+# Configure upload folder
+UPLOAD_FOLDER = 'uploads'
+EVIDENCE_FOLDER = 'evidence'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'pdf'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['EVIDENCE_FOLDER'] = EVIDENCE_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max
+
+# Create folders if they don't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(EVIDENCE_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/submit-report', methods=['POST'])
 def submit_report():
-    data = request.get_json()
-    
     try:
+        # Get form data
+        product_name = request.form.get('product_name', '')
+        brand = request.form.get('brand', '')
+        category = request.form.get('category', '')
+        batch_number = request.form.get('batch_number', '')
+        barcode = request.form.get('barcode', '')
+        purchase_location = request.form.get('purchase_location', '')
+        issue_type = request.form.get('issue_type', '')
+        severity = request.form.get('severity', 'medium')
+        description = request.form.get('description', '')
+        reporter_name = request.form.get('reporter_name', '')
+        reporter_email = request.form.get('reporter_email', '')
+        reporter_city = request.form.get('reporter_city', '')
+        
+        # Handle file upload
+        evidence_path = ''
+        if 'evidence' in request.files:
+            file = request.files['evidence']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}")
+                filepath = os.path.join(EVIDENCE_FOLDER, filename)
+                file.save(filepath)
+                evidence_path = filepath
+                print(f"📁 Evidence saved: {evidence_path}")
+        
         db = get_db()
         cursor = db.cursor()
         
-        # Insert into flagged_products table
         cursor.execute("""
             INSERT INTO flagged_products (
                 product_name, brand, category, batch_number, barcode, 
                 purchase_location, issue_type, severity, description, 
-                reporter_name, reporter_email, reporter_city, status
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                reporter_name, reporter_email, reporter_city, evidence_path, status
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-            data.get('product_name', ''),
-            data.get('brand', ''),
-            data.get('category', ''),
-            data.get('batch_number', ''),
-            data.get('barcode', ''),
-            data.get('purchase_location', ''),
-            data.get('issue_type', ''),
-            data.get('severity', 'medium'),
-            data.get('description', ''),
-            data.get('reporter_name', ''),
-            data.get('reporter_email', ''),
-            data.get('reporter_city', ''),
-            'Under Review'
+            product_name, brand, category, batch_number, barcode,
+            purchase_location, issue_type, severity, description,
+            reporter_name, reporter_email, reporter_city, evidence_path, 'Under Review'
         ))
         
         db.commit()
@@ -264,50 +296,16 @@ def submit_report():
         cursor.close()
         db.close()
         
-        print(f"✅ Report saved! ID: {report_id}")  # Debug print
-        
         return jsonify({
             'success': True,
             'message': 'Report submitted successfully',
-            'report_id': report_id
+            'report_id': report_id,
+            'evidence_path': evidence_path
         })
         
     except Exception as e:
-        print(f"❌ Error saving report: {str(e)}")  # Debug print
+        print(f"❌ Error: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
-    
-
-import os
-from werkzeug.utils import secure_filename
-
-# Configure upload folder
-EVIDENCE_FOLDER = 'evidence'
-os.makedirs(EVIDENCE_FOLDER, exist_ok=True)
-
-@app.route('/upload-evidence', methods=['POST'])
-def upload_evidence():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
-    
-    file = request.files['image']
-    report_id = request.form.get('report_id', 'unknown')
-    
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-    
-    filename = secure_filename(f"report_{report_id}_{file.filename}")
-    filepath = os.path.join(EVIDENCE_FOLDER, filename)
-    file.save(filepath)
-    
-    # Update database with evidence path
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("UPDATE flagged_products SET evidence_path = %s WHERE id = %s", (filepath, report_id))
-    db.commit()
-    cursor.close()
-    db.close()
-    
-    return jsonify({'success': True, 'path': filepath})
 
 @app.route('/flagged-products', methods=['GET'])
 def get_flagged_products():
@@ -323,6 +321,17 @@ def get_flagged_products():
         
     except Exception as e:
         return jsonify({'error': str(e), 'products': []}), 500
+    
+
+from flask import send_from_directory
+
+# Add this route to serve evidence images
+@app.route('/evidence/<path:filename>')
+def serve_evidence(filename):
+    try:
+        return send_from_directory('evidence', filename)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
 
 @app.route('/', methods=['GET'])
 def home():

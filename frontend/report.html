@@ -153,67 +153,143 @@
     <div class="report-layout">
       <div class="report-inner">
 
-        <!-- Form -->
-        <div class="anim-fade-up anim-delay-2">
-          <div class="form-card">
-            <div class="form-card-header">
-              <h2>⚑ File a Safety Report</h2>
-              <p>All fields marked with * are required. Your identity is kept confidential.</p>
-              <div class="form-steps">
-                <div class="form-step active" id="step-1"><span class="form-step-num">1</span><span>Product Details</span></div>
-                <div class="form-step-line"></div>
-                <div class="form-step" id="step-2"><span class="form-step-num">2</span><span>Issue Description</span></div>
-                <div class="form-step-line"></div>
-                <div class="form-step" id="step-3"><span class="form-step-num">3</span><span>Submit</span></div>
-              </div>
-            </div>
+  <form id="report-form" enctype="multipart/form-data">
+  <!-- Product Information -->
+  <div style="margin-bottom:28px;">
+    <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">① Product Information</p>
+    <div class="field-row">
+      <div class="field">
+        <input class="field-input" id="prod-name" name="product_name" type="text" placeholder=" " required />
+        <label class="field-label" for="prod-name">Product Name *</label>
+      </div>
+      <div class="field">
+        <input class="field-input" id="prod-brand" name="brand" type="text" placeholder=" " required />
+        <label class="field-label" for="prod-brand">Brand *</label>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <select class="field-select" id="prod-category" name="category" required>
+          <option value="" disabled selected></option>
+          <option>Dairy</option>
+          <option>Spices & Condiments</option>
+          <option>Oils & Fats</option>
+          <option>Processed Foods</option>
+          <option>Beverages</option>
+          <option>Grains & Cereals</option>
+          <option>Sweets & Snacks</option>
+          <option>Fruits & Vegetables</option>
+          <option>Other</option>
+        </select>
+        <label class="field-label" for="prod-category">Category *</label>
+      </div>
+      <div class="field">
+        <input class="field-input" id="prod-batch" name="batch_number" type="text" placeholder=" " />
+        <label class="field-label" for="prod-batch">Batch Number</label>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <input class="field-input" id="prod-barcode" name="barcode" type="text" placeholder=" " />
+        <label class="field-label" for="prod-barcode">Barcode / FSSAI No.</label>
+      </div>
+      <div class="field">
+        <input class="field-input" id="prod-purchase" name="purchase_location" type="text" placeholder=" " />
+        <label class="field-label" for="prod-purchase">Where Purchased</label>
+      </div>
+    </div>
+  </div>
 
-            <div class="form-body">
-              <form id="report-form">
-                <!-- Product Information -->
-                <div style="margin-bottom:28px;">
-                  <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">① Product Information</p>
-                  <div class="field-row">
-                    <div class="field"><input class="field-input" id="prod-name" type="text" placeholder=" " required /><label class="field-label" for="prod-name">Product Name *</label></div>
-                    <div class="field"><input class="field-input" id="prod-brand" type="text" placeholder=" " required /><label class="field-label" for="prod-brand">Brand *</label></div>
-                  </div>
-                  <div class="field-row">
-                    <div class="field"><select class="field-select" id="prod-category" required><option value="" disabled selected></option><option>Dairy</option><option>Spices & Condiments</option><option>Oils & Fats</option><option>Processed Foods</option><option>Beverages</option><option>Grains & Cereals</option><option>Sweets & Snacks</option><option>Fruits & Vegetables</option><option>Other</option></select><label class="field-label" for="prod-category">Category *</label></div>
-                    <div class="field"><input class="field-input" id="prod-batch" type="text" placeholder=" " /><label class="field-label" for="prod-batch">Batch Number</label></div>
-                  </div>
-                  <div class="field-row">
-                    <div class="field"><input class="field-input" id="prod-barcode" type="text" placeholder=" " /><label class="field-label" for="prod-barcode">Barcode / FSSAI No.</label></div>
-                    <div class="field"><input class="field-input" id="prod-purchase" type="text" placeholder=" " /><label class="field-label" for="prod-purchase">Where Purchased</label></div>
-                  </div>
-                </div>
+  <!-- Issue Details -->
+  <div style="margin-bottom:28px;">
+    <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">② Issue Details</p>
+    <div class="field">
+      <select class="field-select" id="issue-type" name="issue_type" required>
+        <option value="" disabled selected></option>
+        <option>Adulteration Suspected</option>
+        <option>Misleading Label / False Claims</option>
+        <option>Foreign Object / Contamination</option>
+        <option>Spoiled / Expired Product</option>
+        <option>Incorrect Nutrition Information</option>
+        <option>Undeclared Allergens</option>
+        <option>Packaging Defect</option>
+        <option>Other</option>
+      </select>
+      <label class="field-label" for="issue-type">Type of Issue *</label>
+    </div>
+    
+    <p style="font-size:.78rem;font-weight:600;margin-bottom:10px;">Severity Level *</p>
+    <div class="severity-group">
+      <div>
+        <input type="radio" name="severity" id="sev-low" class="severity-opt" value="low" />
+        <label class="severity-label" for="sev-low">
+          <span class="severity-icon">⚠️</span>
+          <span class="severity-name">Moderate</span>
+          <span class="severity-desc">Quality concern</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="severity" id="sev-medium" class="severity-opt" value="medium" checked />
+        <label class="severity-label" for="sev-medium">
+          <span class="severity-icon">🚨</span>
+          <span class="severity-name">Serious</span>
+          <span class="severity-desc">Health risk</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="severity" id="sev-high" class="severity-opt" value="high" />
+        <label class="severity-label" for="sev-high">
+          <span class="severity-icon">☠️</span>
+          <span class="severity-name">Critical</span>
+          <span class="severity-desc">Immediate danger</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="field">
+      <textarea class="field-textarea" id="report-description" name="description" placeholder=" " maxlength="500" required></textarea>
+      <label class="field-label" for="report-description">Describe the issue in detail *</label>
+      <div class="field-counter"><span id="desc-counter">0</span>/500</div>
+    </div>
+  </div>
 
-                <!-- Issue Details -->
-                <div style="margin-bottom:28px;">
-                  <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">② Issue Details</p>
-                  <div class="field"><select class="field-select" id="issue-type" required><option value="" disabled selected></option><option>Adulteration Suspected</option><option>Misleading Label / False Claims</option><option>Foreign Object / Contamination</option><option>Spoiled / Expired Product</option><option>Incorrect Nutrition Information</option><option>Undeclared Allergens</option><option>Packaging Defect</option><option>Other</option></select><label class="field-label" for="issue-type">Type of Issue *</label></div>
-                  <p style="font-size:.78rem;font-weight:600;margin-bottom:10px;">Severity Level *</p>
-                  <div class="severity-group">
-                    <div><input type="radio" name="severity" id="sev-low" class="severity-opt" value="low" /><label class="severity-label" for="sev-low"><span class="severity-icon">⚠️</span><span class="severity-name">Moderate</span><span class="severity-desc">Quality concern</span></label></div>
-                    <div><input type="radio" name="severity" id="sev-medium" class="severity-opt" value="medium" checked /><label class="severity-label" for="sev-medium"><span class="severity-icon">🚨</span><span class="severity-name">Serious</span><span class="severity-desc">Health risk</span></label></div>
-                    <div><input type="radio" name="severity" id="sev-high" class="severity-opt" value="high" /><label class="severity-label" for="sev-high"><span class="severity-icon">☠️</span><span class="severity-name">Critical</span><span class="severity-desc">Immediate danger</span></label></div>
-                  </div>
-                  <div class="field"><textarea class="field-textarea" id="report-description" placeholder=" " maxlength="500" required></textarea><label class="field-label" for="report-description">Describe the issue in detail *</label><div class="field-counter"><span id="desc-counter">0</span>/500</div></div>
-                </div>
+  <!-- Evidence & Contact -->
+  <div style="margin-bottom:28px;">
+    <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">③ Evidence & Contact</p>
+    
+    <!-- File upload zone -->
+    <div class="attach-zone" id="attach-zone">
+      <span class="attach-zone-icon">📎</span>
+      <div class="attach-zone-text">
+        <strong>Attach photos or documents</strong><br>
+        JPG, PNG, PDF up to 5MB
+      </div>
+    </div>
+    <input type="file" id="evidence-file" name="evidence" accept="image/*,.pdf" style="display:none;" />
+    <div id="file-preview" style="display:none; margin-top:10px; padding:10px; background:var(--green-50); border-radius:8px;">
+      <span>📎 Selected: <span id="file-name"></span></span>
+      <button type="button" onclick="clearFile()" style="margin-left:10px; background:red; color:white; border:none; border-radius:5px; padding:2px 8px;">✕</button>
+    </div>
+    
+    <div class="field-row">
+      <div class="field">
+        <input class="field-input" id="reporter-name" name="reporter_name" type="text" placeholder=" " />
+        <label class="field-label" for="reporter-name">Your Name</label>
+      </div>
+      <div class="field">
+        <input class="field-input" id="reporter-email" name="reporter_email" type="email" placeholder=" " />
+        <label class="field-label" for="reporter-email">Email for follow-up</label>
+      </div>
+    </div>
+    <div class="field">
+      <input class="field-input" id="reporter-city" name="reporter_city" type="text" placeholder=" " />
+      <label class="field-label" for="reporter-city">City / Region</label>
+    </div>
+  </div>
 
-                <!-- Evidence & Reporter -->
-                <div style="margin-bottom:28px;">
-                  <p class="label-upper" style="margin-bottom:16px; color:var(--red-500);">③ Evidence & Contact</p>
-                  <div class="attach-zone" id="attach-zone"><span class="attach-zone-icon">📎</span><div class="attach-zone-text"><strong>Attach photos or documents</strong><br>JPG, PNG, PDF up to 5MB</div></div>
-                  <div class="field-row">
-                    <div class="field"><input class="field-input" id="reporter-name" type="text" placeholder=" " /><label class="field-label" for="reporter-name">Your Name</label></div>
-                    <div class="field"><input class="field-input" id="reporter-email" type="email" placeholder=" " /><label class="field-label" for="reporter-email">Email for follow-up</label></div>
-                  </div>
-                  <div class="field"><input class="field-input" id="reporter-city" type="text" placeholder=" " /><label class="field-label" for="reporter-city">City / Region</label></div>
-                </div>
-
-                <button type="submit" class="submit-btn"><span>⚑</span> Submit Safety Report</button>
-                <div class="disclaimer"><span>🔒</span><span>Your report is confidential. Personal information is never shared publicly.</span></div>
-              </form>
+  <button type="submit" class="submit-btn"><span>⚑</span> Submit Safety Report</button>
+  <div class="disclaimer"><span>🔒</span><span>Your report is confidential. Personal information is never shared publicly.</span></div>
+</form>
 
               <!-- Success State -->
               <div id="report-success">
@@ -256,32 +332,47 @@
 
 <script>
   const API_URL = 'http://127.0.0.1:5000';
-  let evidenceFile = null;
+  let selectedFile = null;
 
-  // Attach zone
+  // File upload handling
   const attachZone = document.getElementById('attach-zone');
+  const fileInput = document.getElementById('evidence-file');
+  const filePreview = document.getElementById('file-preview');
+  const fileNameSpan = document.getElementById('file-name');
+
   if (attachZone) {
     attachZone.addEventListener('click', () => {
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = 'image/*,.pdf';
-      fileInput.onchange = (e) => {
-        evidenceFile = e.target.files[0];
-        if (evidenceFile) {
-          attachZone.innerHTML = `<span class="attach-zone-icon">✅</span><div class="attach-zone-text"><strong style="color:var(--green-600);">${evidenceFile.name}</strong><br><span style="font-size:.78rem;">${(evidenceFile.size / 1024).toFixed(1)} KB · Click to change</span></div>`;
-          attachZone.style.borderColor = 'var(--green-400)';
-          attachZone.style.background = 'var(--green-50)';
-        }
-      };
       fileInput.click();
     });
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        selectedFile = e.target.files[0];
+        fileNameSpan.textContent = selectedFile.name;
+        filePreview.style.display = 'block';
+        attachZone.style.borderColor = 'var(--green-400)';
+        attachZone.style.background = 'var(--green-50)';
+      }
+    });
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    filePreview.style.display = 'none';
+    attachZone.style.borderColor = '';
+    attachZone.style.background = '';
   }
 
   // Character counter
   const desc = document.getElementById('report-description');
   const counter = document.getElementById('desc-counter');
   if (desc && counter) {
-    desc.addEventListener('input', () => { counter.textContent = `${desc.value.length}/500`; });
+    desc.addEventListener('input', () => {
+      counter.textContent = `${desc.value.length}/500`;
+    });
   }
 
   // Form submission
@@ -290,22 +381,27 @@
     reportForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const reportData = {
-        product_name: document.getElementById('prod-name')?.value || '',
-        brand: document.getElementById('prod-brand')?.value || '',
-        category: document.getElementById('prod-category')?.value || '',
-        batch_number: document.getElementById('prod-batch')?.value || '',
-        barcode: document.getElementById('prod-barcode')?.value || '',
-        purchase_location: document.getElementById('prod-purchase')?.value || '',
-        issue_type: document.getElementById('issue-type')?.value || '',
-        severity: document.querySelector('input[name="severity"]:checked')?.value || 'medium',
-        description: document.getElementById('report-description')?.value || '',
-        reporter_name: document.getElementById('reporter-name')?.value || '',
-        reporter_email: document.getElementById('reporter-email')?.value || '',
-        reporter_city: document.getElementById('reporter-city')?.value || ''
-      };
+      // Create FormData object for multipart/form-data
+      const formData = new FormData();
+      formData.append('product_name', document.getElementById('prod-name')?.value || '');
+      formData.append('brand', document.getElementById('prod-brand')?.value || '');
+      formData.append('category', document.getElementById('prod-category')?.value || '');
+      formData.append('batch_number', document.getElementById('prod-batch')?.value || '');
+      formData.append('barcode', document.getElementById('prod-barcode')?.value || '');
+      formData.append('purchase_location', document.getElementById('prod-purchase')?.value || '');
+      formData.append('issue_type', document.getElementById('issue-type')?.value || '');
+      formData.append('severity', document.querySelector('input[name="severity"]:checked')?.value || 'medium');
+      formData.append('description', document.getElementById('report-description')?.value || '');
+      formData.append('reporter_name', document.getElementById('reporter-name')?.value || '');
+      formData.append('reporter_email', document.getElementById('reporter-email')?.value || '');
+      formData.append('reporter_city', document.getElementById('reporter-city')?.value || '');
       
-      if (!reportData.product_name || !reportData.brand || !reportData.issue_type || !reportData.description) {
+      if (selectedFile) {
+        formData.append('evidence', selectedFile);
+      }
+      
+      // Validate required fields
+      if (!formData.get('product_name') || !formData.get('brand') || !formData.get('issue_type') || !formData.get('description')) {
         alert('Please fill all required fields (*)');
         return;
       }
@@ -317,8 +413,7 @@
       try {
         const response = await fetch(`${API_URL}/submit-report`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reportData)
+          body: formData  // Use FormData, not JSON
         });
         
         const data = await response.json();

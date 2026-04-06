@@ -195,31 +195,37 @@ function initDashboard() {
   }
   
   // Function to show report details
-  function showReportDetails(report) {
-    const modalHtml = `
-      <div id="reportModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;">
-        <div style="background:white;border-radius:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
-          <h3 style="margin-bottom:16px;color:var(--red-500);">⚠️ User Report</h3>
-          <div style="margin-bottom:12px;">
-            <strong>Product:</strong> ${escapeHtml(report.product_name)}<br>
-            <strong>Brand:</strong> ${escapeHtml(report.brand)}<br>
-            <strong>Category:</strong> ${escapeHtml(report.category || 'N/A')}<br>
-            <strong>Issue Type:</strong> ${escapeHtml(report.issue_type)}<br>
-            <strong>Severity:</strong> <span style="color:${report.severity === 'high' ? 'red' : (report.severity === 'medium' ? 'orange' : 'green')}">${report.severity}</span><br>
-            <strong>Status:</strong> ${escapeHtml(report.status)}<br>
-            <strong>Reported by:</strong> ${escapeHtml(report.reporter_name || 'Anonymous')}<br>
-            <strong>Location:</strong> ${escapeHtml(report.reporter_city || 'N/A')}
-          </div>
-          <div style="margin-bottom:12px;padding:12px;background:#f7fafc;border-radius:8px;">
-            <strong>Description:</strong><br>
-            ${escapeHtml(report.description)}
-          </div>
-          <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('reportModal')?.remove()">Close</button>
+function showReportDetails(report) {
+  const evidenceHtml = report.evidence_path ? `
+    <div style="margin-top:12px;">
+      <strong>Evidence Image:</strong><br>
+      <img src="/${report.evidence_path}" style="max-width:100%; border-radius:8px; margin-top:8px;" onclick="window.open(this.src)" />
+    </div>
+  ` : '';
+  
+  const modalHtml = `
+    <div id="reportModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;">
+      <div style="background:white;border-radius:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
+        <h3 style="margin-bottom:16px;color:var(--red-500);">⚠️ User Report</h3>
+        <div style="margin-bottom:12px;">
+          <strong>Product:</strong> ${escapeHtml(report.product_name)}<br>
+          <strong>Brand:</strong> ${escapeHtml(report.brand)}<br>
+          <strong>Issue:</strong> ${escapeHtml(report.issue_type || 'Not specified')}<br>
+          <strong>Severity:</strong> <span style="color:${report.severity === 'high' ? 'red' : (report.severity === 'medium' ? 'orange' : 'green')}">${report.severity}</span><br>
+          <strong>Status:</strong> ${escapeHtml(report.status)}<br>
+          <strong>Reported by:</strong> ${escapeHtml(report.reporter_name || 'Anonymous')}
         </div>
+        ${evidenceHtml}
+        <div style="margin-bottom:12px;padding:12px;background:#f7fafc;border-radius:8px;">
+          <strong>Description:</strong><br>
+          ${escapeHtml(report.description)}
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('reportModal')?.remove()">Close</button>
       </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-  }
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
   
   let currentFilter = 'all', currentQuery = '';
   filterBtns.forEach(btn => {
