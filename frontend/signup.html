@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Create Account — SafePlate</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Auth Page Specific Styles */
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--cream) 0%, #f0f5ec 100%);
+      padding: 40px var(--page-px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Animated background blobs */
+    .auth-page::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--green-100), transparent 70%);
+      border-radius: 50%;
+      top: -200px;
+      right: -100px;
+      opacity: 0.4;
+      animation: floatBlob 8s ease-in-out infinite;
+    }
+    
+    .auth-page::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--amber-200), transparent 70%);
+      border-radius: 50%;
+      bottom: -100px;
+      left: -80px;
+      opacity: 0.3;
+      animation: floatBlob 6s ease-in-out infinite reverse;
+    }
+    
+    @keyframes floatBlob {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -20px) scale(1.05); }
+    }
+    
+    .auth-card {
+      max-width: 520px;
+      width: 100%;
+      background: var(--white);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      animation: fadeUp 0.5s ease both;
+    }
+    
+    .auth-card-header {
+      padding: 32px 32px 24px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .auth-logo {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-400));
+      border-radius: var(--r-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .auth-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    
+    .auth-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    .auth-card-body {
+      padding: 32px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--cream);
+      border: 1.5px solid var(--stone-200);
+      border-radius: var(--r-md);
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--green-400);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(30,158,94,0.1);
+    }
+    
+    /* Health Conditions Section */
+    .health-section {
+      background: var(--stone-100);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin: 24px 0;
+    }
+    
+    .health-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .health-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    .health-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--white);
+      border: 1.5px solid var(--stone-200);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .health-checkbox:hover {
+      border-color: var(--green-300);
+      background: var(--green-50);
+    }
+    
+    .health-checkbox.selected {
+      border-color: var(--green-500);
+      background: var(--green-50);
+    }
+    
+    .health-checkbox input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--green-500);
+    }
+    
+    .health-checkbox label {
+      flex: 1;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .health-icon {
+      font-size: 1rem;
+    }
+    
+    /* Password Strength */
+    .password-strength {
+      margin-top: 8px;
+      font-size: 0.7rem;
+    }
+    .strength-weak { color: var(--red-500); }
+    .strength-medium { color: var(--amber-500); }
+    .strength-strong { color: var(--green-500); }
+    
+    /* Messages */
+    .message {
+      padding: 12px 16px;
+      border-radius: var(--r-md);
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .message-error {
+      background: var(--red-50);
+      color: var(--red-600);
+      border-left: 3px solid var(--red-500);
+    }
+    .message-success {
+      background: #dcfce7;
+      color: var(--green-700);
+      border-left: 3px solid var(--green-500);
+    }
+    
+    /* Button */
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--green-500);
+      color: white;
+      border: none;
+      border-radius: var(--r-lg);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-body);
+    }
+    
+    .auth-btn:hover {
+      background: var(--green-600);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .auth-link {
+      color: var(--green-600);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 560px) {
+      .auth-card-body { padding: 24px; }
+      .health-grid { grid-template-columns: 1fr; }
+      .auth-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-logo">🛡️</div>
+        <h1 class="auth-title">Create account</h1>
+        <p class="auth-subtitle">Join SafePlate for safer food choices</p>
+      </div>
+      
+      <div class="auth-card-body">
+        <div id="messageContainer"></div>
+        
+        <form id="signupForm">
+          <div class="form-group">
+            <label class="form-label">Full name</label>
+            <input type="text" id="fullname" class="form-input" placeholder="Enter your full name" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Create a password" required>
+            <div id="passwordStrength" class="password-strength"></div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Confirm password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+          </div>
+          
+          <!-- Health Conditions -->
+          <div class="health-section">
+            <div class="health-title">
+              <span>❤️</span>
+              <span>Health profile (optional)</span>
+            </div>
+            <p class="health-desc">
+              Select any conditions you have. This helps us flag ingredients that may affect you.
+            </p>
+            
+            <div class="health-grid" id="healthGrid">
+              <div class="health-checkbox" data-condition="diabetes">
+                <input type="checkbox" id="condition_diabetes" value="diabetes">
+                <label for="condition_diabetes">
+                  <span class="health-icon">🩸</span> Diabetes
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="hypertension">
+                <input type="checkbox" id="condition_hypertension" value="hypertension">
+                <label for="condition_hypertension">
+                  <span class="health-icon">❤️</span> Hypertension
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="celiac">
+                <input type="checkbox" id="condition_celiac" value="celiac">
+                <label for="condition_celiac">
+                  <span class="health-icon">🌾</span> Celiac / Gluten
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="lactose">
+                <input type="checkbox" id="condition_lactose" value="lactose">
+                <label for="condition_lactose">
+                  <span class="health-icon">🥛</span> Lactose Intolerance
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="heartdisease">
+                <input type="checkbox" id="condition_heartdisease" value="heartdisease">
+                <label for="condition_heartdisease">
+                  <span class="health-icon">🫀</span> Heart Disease
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="pcos">
+                <input type="checkbox" id="condition_pcos" value="pcos">
+                <label for="condition_pcos">
+                  <span class="health-icon">🩸</span> PCOS
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="thyroid">
+                <input type="checkbox" id="condition_thyroid" value="thyroid">
+                <label for="condition_thyroid">
+                  <span class="health-icon">🦋</span> Thyroid
+                </label>
+              </div>
+              <div class="health-checkbox" data-condition="pregnant">
+                <input type="checkbox" id="condition_pregnant" value="pregnant">
+                <label for="condition_pregnant">
+                  <span class="health-icon">🤰</span> Pregnancy
+                </label>
+              </div>
+            </div>
+            <p class="health-desc" style="margin-top: 12px; margin-bottom: 0;">
+              💡 You can always update these later in your profile settings.
+            </p>
+          </div>
+          
+          <button type="submit" class="auth-btn" id="signupBtn">
+            <span>✨</span> Create account
+          </button>
+        </form>
+        
+        <div class="auth-footer">
+          Already have an account? <a href="login.html" class="auth-link">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const API_URL = 'http://127.0.0.1:5000';
+    
+    // Health checkbox styling
+    document.querySelectorAll('.health-checkbox').forEach(option => {
+      const checkbox = option.querySelector('input');
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          option.classList.add('selected');
+        } else {
+          option.classList.remove('selected');
+        }
+      });
+    });
+    
+    // Password strength checker
+    const passwordInput = document.getElementById('password');
+    const strengthDiv = document.getElementById('passwordStrength');
+    
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      let strength = 0;
+      
+      if (password.length >= 8) strength++;
+      if (password.match(/[a-z]/)) strength++;
+      if (password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/)) strength++;
+      if (password.match(/[^a-zA-Z0-9]/)) strength++;
+      
+      if (password.length === 0) {
+        strengthDiv.innerHTML = '';
+      } else if (strength <= 2) {
+        strengthDiv.innerHTML = '<span class="strength-weak">⚠️ Weak — add more characters and numbers</span>';
+      } else if (strength <= 4) {
+        strengthDiv.innerHTML = '<span class="strength-medium">⚠️ Medium — could be stronger</span>';
+      } else {
+        strengthDiv.innerHTML = '<span class="strength-strong">✅ Strong password</span>';
+      }
+    });
+    
+    async function signupUser(event) {
+      event.preventDefault();
+      
+      const fullname = document.getElementById('fullname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const messageContainer = document.getElementById('messageContainer');
+      const signupBtn = document.getElementById('signupBtn');
+      
+      // Get selected health conditions
+      const selectedConditions = [];
+      document.querySelectorAll('#healthGrid input:checked').forEach(checkbox => {
+        selectedConditions.push(checkbox.value);
+      });
+      
+      // Clear previous messages
+      messageContainer.innerHTML = '';
+      
+      // Validation
+      if (!fullname || !email || !password) {
+        messageContainer.innerHTML = '<div class="message message-error">❌ Please fill all fields</div>';
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        messageContainer.innerHTML = '<div class="message message-error">❌ Passwords do not match</div>';
+        return;
+      }
+      
+      if (password.length < 6) {
+        messageContainer.innerHTML = '<div class="message message-error">❌ Password must be at least 6 characters</div>';
+        return;
+      }
+      
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        messageContainer.innerHTML = '<div class="message message-error">❌ Please enter a valid email address</div>';
+        return;
+      }
+      
+      // Disable button
+      signupBtn.disabled = true;
+      signupBtn.innerHTML = '<span>⏳</span> Creating account...';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: fullname,
+            email: email,
+            password: password,
+            health_conditions: selectedConditions
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          messageContainer.innerHTML = '<div class="message message-success">✅ Account created! Redirecting to login...</div>';
+          
+          // Store health conditions in localStorage for personalized experience
+          if (selectedConditions.length > 0) {
+            localStorage.setItem('user_health_conditions', JSON.stringify(selectedConditions));
+          }
+          
+          // Clear form
+          document.getElementById('signupForm').reset();
+          document.querySelectorAll('.health-checkbox').forEach(opt => opt.classList.remove('selected'));
+          document.querySelectorAll('.health-checkbox input').forEach(chk => chk.checked = false);
+          passwordStrengthDiv.innerHTML = '';
+          
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        } else {
+          messageContainer.innerHTML = `<div class="message message-error">❌ ${data.error}</div>`;
+          signupBtn.disabled = false;
+          signupBtn.innerHTML = '<span>✨</span> Create account';
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        messageContainer.innerHTML = '<div class="message message-error">❌ Cannot connect to server. Make sure Flask is running.</div>';
+        signupBtn.disabled = false;
+        signupBtn.innerHTML = '<span>✨</span> Create account';
+      }
+    }
+    
+    // Attach event listener
+    document.getElementById('signupForm').addEventListener('submit', signupUser);
+  </script>
+</body>
+</html>

@@ -41,6 +41,74 @@ if (!document.querySelector('#toast-style')) {
   document.head.appendChild(style);
 }
 
+// ==================== AUTHENTICATION FUNCTIONS ====================
+
+async function checkAuthState() {
+  try {
+    const response = await fetch(`${API_URL}/api/me`, {
+      credentials: 'include'
+    });
+    const data = await response.json();
+    
+    const adminInfo = document.getElementById('adminInfo');
+    const userInfo = document.getElementById('userInfo');
+    const authButtons = document.getElementById('authButtons');
+    const mobileAuthLinks = document.getElementById('mobileAuthLinks');
+    
+    if (data.authenticated) {
+      const user = data.user;
+      
+      if (user.role === 'admin') {
+        if (adminInfo) adminInfo.style.display = 'flex';
+        if (userInfo) userInfo.style.display = 'none';
+        if (authButtons) authButtons.style.display = 'none';
+        if (mobileAuthLinks) {
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Logout</a>';
+        }
+        if (document.getElementById('adminName')) {
+          document.getElementById('adminName').textContent = user.username;
+        }
+      } else {
+        if (adminInfo) adminInfo.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'flex';
+        if (authButtons) authButtons.style.display = 'none';
+        if (mobileAuthLinks) {
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
+        }
+        if (document.getElementById('userName')) {
+          document.getElementById('userName').textContent = user.username;
+        }
+        if (document.getElementById('userAvatar')) {
+          document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
+        }
+      }
+    } else {
+      if (adminInfo) adminInfo.style.display = 'none';
+      if (userInfo) userInfo.style.display = 'none';
+      if (authButtons) authButtons.style.display = 'flex';
+      if (mobileAuthLinks) {
+        mobileAuthLinks.innerHTML = '<a href="login.html" class="nav-link">Login</a><a href="signup.html" class="nav-link">Sign Up</a>';
+      }
+    }
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    const authButtons = document.getElementById('authButtons');
+    if (authButtons) authButtons.style.display = 'flex';
+  }
+}
+
+async function logout() {
+  try {
+    await fetch(`${API_URL}/api/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+  window.location.href = 'index.html';
+}
+
 // ==================== NAVIGATION ====================
 function initNav() {
   const nav = document.querySelector('.nav');
@@ -65,7 +133,7 @@ function initNav() {
   });
 }
 
-// ==================== DASHBOARD (Mock Data) ====================
+// ==================== DASHBOARD ====================
 const DASHBOARD_PRODUCTS = [
   { id: 'p1', name: 'Classic Milk', brand: 'DairyPure', category: 'Dairy', riskLevel: 'low', riskScore: 12, status: 'safe', image: '🥛', ingredients: ['Whole Milk', 'Vitamin D3'] },
   { id: 'p2', name: 'Refined Honey', brand: 'GoldenHive', category: 'Sweetener', riskLevel: 'medium', riskScore: 54, status: 'flagged', image: '🍯', ingredients: ['Honey', 'High Fructose Corn Syrup'] },
@@ -80,8 +148,6 @@ function initDashboard() {
   const grid = document.getElementById('product-grid');
   const filterBtns = document.querySelectorAll('.filter-btn');
   const searchInput = document.getElementById('dash-search');
-  
-  let allProducts = [];
   let flaggedReports = [];
   
   function getRiskColor(level) { 
@@ -105,7 +171,6 @@ function initDashboard() {
       const data = await response.json();
       if (data.products) {
         flaggedReports = data.products;
-        console.log(`✅ Loaded ${flaggedReports.length} flagged reports`);
         renderProducts();
       }
     } catch (error) {
@@ -115,11 +180,8 @@ function initDashboard() {
   
   function renderProducts(filter = 'all', query = '') {
     if (!grid) return;
-    
-    // Combine mock products with flagged reports
     let displayProducts = [...DASHBOARD_PRODUCTS];
     
-    // Add flagged reports as product cards
     flaggedReports.forEach(report => {
       displayProducts.push({
         id: `report_${report.id}`,
@@ -176,17 +238,13 @@ function initDashboard() {
       </div>`;
     }).join('');
     
-    // Add click handlers for cards
     document.querySelectorAll('.prod-card').forEach(card => {
       card.addEventListener('click', () => {
         const isReport = card.dataset.isReport === 'true';
         if (isReport) {
-          // Show report details in modal
           const reportId = card.dataset.reportId;
           const report = flaggedReports.find(r => r.id == reportId);
-          if (report) {
-            showReportDetails(report);
-          }
+          if (report) showReportDetails(report);
         } else {
           window.location.href = `check-product.html?id=${card.dataset.id}`;
         }
@@ -194,38 +252,37 @@ function initDashboard() {
     });
   }
   
-  // Function to show report details
-function showReportDetails(report) {
-  const evidenceHtml = report.evidence_path ? `
-    <div style="margin-top:12px;">
-      <strong>Evidence Image:</strong><br>
-      <img src="/${report.evidence_path}" style="max-width:100%; border-radius:8px; margin-top:8px;" onclick="window.open(this.src)" />
-    </div>
-  ` : '';
-  
-  const modalHtml = `
-    <div id="reportModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;">
-      <div style="background:white;border-radius:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
-        <h3 style="margin-bottom:16px;color:var(--red-500);">⚠️ User Report</h3>
-        <div style="margin-bottom:12px;">
-          <strong>Product:</strong> ${escapeHtml(report.product_name)}<br>
-          <strong>Brand:</strong> ${escapeHtml(report.brand)}<br>
-          <strong>Issue:</strong> ${escapeHtml(report.issue_type || 'Not specified')}<br>
-          <strong>Severity:</strong> <span style="color:${report.severity === 'high' ? 'red' : (report.severity === 'medium' ? 'orange' : 'green')}">${report.severity}</span><br>
-          <strong>Status:</strong> ${escapeHtml(report.status)}<br>
-          <strong>Reported by:</strong> ${escapeHtml(report.reporter_name || 'Anonymous')}
-        </div>
-        ${evidenceHtml}
-        <div style="margin-bottom:12px;padding:12px;background:#f7fafc;border-radius:8px;">
-          <strong>Description:</strong><br>
-          ${escapeHtml(report.description)}
-        </div>
-        <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('reportModal')?.remove()">Close</button>
+  function showReportDetails(report) {
+    const evidenceHtml = report.evidence_path ? `
+      <div style="margin-top:12px;">
+        <strong>Evidence Image:</strong><br>
+        <img src="/${report.evidence_path}" style="max-width:100%; border-radius:8px; margin-top:8px;" onclick="window.open(this.src)" />
       </div>
-    </div>
-  `;
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
+    ` : '';
+    
+    const modalHtml = `
+      <div id="reportModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;">
+        <div style="background:white;border-radius:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
+          <h3 style="margin-bottom:16px;color:var(--red-500);">⚠️ User Report</h3>
+          <div style="margin-bottom:12px;">
+            <strong>Product:</strong> ${escapeHtml(report.product_name)}<br>
+            <strong>Brand:</strong> ${escapeHtml(report.brand)}<br>
+            <strong>Issue:</strong> ${escapeHtml(report.issue_type || 'Not specified')}<br>
+            <strong>Severity:</strong> <span style="color:${report.severity === 'high' ? 'red' : (report.severity === 'medium' ? 'orange' : 'green')}">${report.severity}</span><br>
+            <strong>Status:</strong> ${escapeHtml(report.status)}<br>
+            <strong>Reported by:</strong> ${escapeHtml(report.reporter_name || 'Anonymous')}
+          </div>
+          ${evidenceHtml}
+          <div style="margin-bottom:12px;padding:12px;background:#f7fafc;border-radius:8px;">
+            <strong>Description:</strong><br>
+            ${escapeHtml(report.description)}
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('reportModal')?.remove()">Close</button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
   
   let currentFilter = 'all', currentQuery = '';
   filterBtns.forEach(btn => {
@@ -244,45 +301,14 @@ function showReportDetails(report) {
     });
   }
   
-  // Fetch flagged reports from backend
   fetchFlaggedReports();
-  
-  // Update stats with report counts
-  async function updateStats() {
-    try {
-      const response = await fetch(`${API_URL}/flagged-products`);
-      const data = await response.json();
-      if (data.products) {
-        const totalReports = data.products.length;
-        const underReview = data.products.filter(p => p.status === 'Under Review').length;
-        const resolved = data.products.filter(p => p.status === 'Resolved').length;
-        
-        const statTotal = document.getElementById('stat-total');
-        const statFlagged = document.getElementById('stat-flagged');
-        
-        if (statTotal) statTotal.textContent = DASHBOARD_PRODUCTS.length + totalReports;
-        if (statFlagged) statFlagged.textContent = underReview;
-      }
-    } catch (error) {
-      console.error('Error updating stats:', error);
-    }
-  }
-  
-  updateStats();
-  
-  // Initial render with mock data only (reports will load async)
   renderProducts();
-  
-  const stats = DASHBOARD_PRODUCTS.reduce((acc, p) => { acc[p.status] = (acc[p.status] || 0) + 1; return acc; }, {});
-  document.getElementById('stat-safe') && (document.getElementById('stat-safe').textContent = stats.safe || 0);
-  document.getElementById('stat-adulterated') && (document.getElementById('stat-adulterated').textContent = stats.adulterated || 0);
 }
 
-// ==================== CHECK PRODUCT PAGE (Backend Integration) ====================
+// ==================== CHECK PRODUCT PAGE ====================
 function initCheckProduct() {
   if (!document.getElementById('check-page')) return;
   
-  // Tab switching
   const tabs = document.querySelectorAll('.tab-btn');
   const panels = document.querySelectorAll('.tab-panel');
   tabs.forEach(btn => {
@@ -294,7 +320,6 @@ function initCheckProduct() {
     });
   });
   
-  // Search
   const searchBtn = document.getElementById('search-btn');
   const searchInput = document.getElementById('product-search-input');
   const resultArea = document.getElementById('search-result');
@@ -337,12 +362,29 @@ function renderSearchResult(data, container) {
   const moSet = new Set((data.moderate_risk_ingredients || []).map(i => (i.original_text || i.ingredient || '').toLowerCase()));
   
   let ingredientTags = '';
-  const ingredientsList = data.all_ingredients || data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
+  let ingredientsList = [];
+  
+  if (data.all_ingredients && data.all_ingredients.length > 0) {
+    ingredientsList = data.all_ingredients;
+  } else {
+    const rawIngredients = data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
+    ingredientsList = rawIngredients;
+  }
+  
   ingredientsList.forEach(i => {
     const name = i.name || i;
     const isHigh = hiSet.has(name.toLowerCase());
     const isMod = moSet.has(name.toLowerCase());
-    ingredientTags += `<span class="ingredient-pill ${isHigh ? 'pill-danger' : (isMod ? 'pill-caution' : 'pill-safe')}">${escapeHtml(name)}</span>`;
+    const isInfo = i.risk_level === 'Info' || i.is_debunked === true;
+    
+    let tagClass = 'ingredient-tag';
+    if (isInfo) tagClass += ' tag-info';
+    else if (isHigh) tagClass += ' tag-high';
+    else if (isMod) tagClass += ' tag-moderate';
+    else tagClass += ' tag-safe';
+    
+    const title = i.explanation || i.category || '';
+    ingredientTags += `<span class="${tagClass}" title="${escapeHtml(title)}">${escapeHtml(name)}</span>`;
   });
   
   let highRiskHtml = '';
@@ -467,7 +509,6 @@ async function verifyInlineClaims() {
     });
     resultDiv.innerHTML = html;
     showToast('Claim verification complete!', 'success');
-    
   } catch (error) {
     resultDiv.innerHTML = '<p style="color: var(--red-500);">Verification failed</p>';
     showToast('Verification failed', 'error');
@@ -482,7 +523,7 @@ function initUploadTab() {
   const extractedArea = document.getElementById('extracted-ingredients');
   const analyzeBtn = document.getElementById('analyze-upload-btn');
   const textarea = document.getElementById('extracted-text');
-  const uploadResultDiv = document.getElementById('upload-result'); // Get the results div
+  const uploadResultDiv = document.getElementById('upload-result');
   
   if (!zone) return;
   
@@ -549,17 +590,11 @@ function initUploadTab() {
         });
         const data = await response.json();
         
-        // Create display data for the OCR results
         const displayData = {
-          product: {
-            product_name: 'OCR Extracted',
-            brand: 'Uploaded Label',
-            ingredients_text: text
-          },
+          product: { product_name: 'OCR Extracted', brand: 'Uploaded Label', ingredients_text: text },
           ...data
         };
         
-        // Render results in the upload-result div (inside Upload tab)
         renderOCRResult(displayData, uploadResultDiv);
         showToast('✅ Analysis complete!', 'success');
       } catch (error) { 
@@ -571,7 +606,7 @@ function initUploadTab() {
     });
   }
 }
-// Render OCR results in the upload tab
+
 function renderOCRResult(data, container) {
   const riskIcon = { High: '🔴', Moderate: '🟡', Low: '🟢' }[data.overall_risk] || '⚪';
   const riskColor = data.overall_risk === 'High' ? 'var(--red-500)' : (data.overall_risk === 'Moderate' ? 'var(--amber-500)' : 'var(--green-500)');
@@ -581,12 +616,28 @@ function renderOCRResult(data, container) {
   const moSet = new Set((data.moderate_risk_ingredients || []).map(i => (i.original_text || i.ingredient || '').toLowerCase()));
   
   let ingredientTags = '';
-  const ingredientsList = data.all_ingredients || data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
+  let ingredientsList = [];
+  
+  if (data.all_ingredients && data.all_ingredients.length > 0) {
+    ingredientsList = data.all_ingredients;
+  } else {
+    const rawIngredients = data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
+    ingredientsList = rawIngredients;
+  }
+  
   ingredientsList.forEach(i => {
     const name = i.name || i;
     const isHigh = hiSet.has(name.toLowerCase());
     const isMod = moSet.has(name.toLowerCase());
-    ingredientTags += `<span class="ingredient-pill ${isHigh ? 'pill-danger' : (isMod ? 'pill-caution' : 'pill-safe')}">${escapeHtml(name)}</span>`;
+    const isInfo = i.risk_level === 'Info' || i.is_debunked === true;
+    
+    let tagClass = 'ingredient-tag';
+    if (isInfo) tagClass += ' tag-info';
+    else if (isHigh) tagClass += ' tag-high';
+    else if (isMod) tagClass += ' tag-moderate';
+    
+    const title = i.explanation || i.category || '';
+    ingredientTags += `<span class="${tagClass}" title="${escapeHtml(title)}">${escapeHtml(name)}</span>`;
   });
   
   let highRiskHtml = '';
@@ -653,7 +704,6 @@ function renderOCRResult(data, container) {
   `;
 }
 
-// Separate claim verification for OCR results
 function showInlineClaimVerificationOCR() {
   const claimHtml = `
     <div id="inlineClaimBoxOCR" style="margin-top: 20px; padding: 20px; background: var(--stone-100); border-radius: var(--r-lg);">
@@ -671,9 +721,7 @@ function showInlineClaimVerificationOCR() {
   if (existingBox) existingBox.remove();
   
   const resultsContainer = document.getElementById('upload-result');
-  if (resultsContainer) {
-    resultsContainer.insertAdjacentHTML('beforeend', claimHtml);
-  }
+  if (resultsContainer) resultsContainer.insertAdjacentHTML('beforeend', claimHtml);
 }
 
 async function verifyInlineClaimsOCR() {
@@ -708,14 +756,13 @@ async function verifyInlineClaimsOCR() {
     });
     resultDiv.innerHTML = html;
     showToast('Claim verification complete!', 'success');
-    
   } catch (error) {
     resultDiv.innerHTML = '<p style="color: var(--red-500);">Verification failed</p>';
     showToast('Verification failed', 'error');
   }
 }
 
-// ==================== CLAIMS TAB (Standalone) ====================
+// ==================== CLAIMS TAB ====================
 function initClaimsTab() {
   const claimsInput = document.getElementById('claims-input');
   const analyzeClaimsBtn = document.getElementById('analyze-claims-btn');
@@ -757,7 +804,7 @@ function initClaimsTab() {
   });
 }
 
-// ==================== ADD PRODUCT FUNCTION ====================
+// ==================== ADD PRODUCT ====================
 async function addNewProduct() {
   const name = document.getElementById('newProductName')?.value.trim();
   const brand = document.getElementById('newProductBrand')?.value.trim();
@@ -775,11 +822,7 @@ async function addNewProduct() {
     const response = await fetch(`${API_URL}/add-product`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        product_name: name, 
-        brand: brand, 
-        ingredients_text: ingredients 
-      })
+      body: JSON.stringify({ product_name: name, brand: brand, ingredients_text: ingredients })
     });
     
     const data = await response.json();
@@ -800,7 +843,6 @@ async function addNewProduct() {
       document.getElementById('newProductName').value = '';
       document.getElementById('newProductBrand').value = '';
       document.getElementById('newProductIngredients').value = '';
-      
     } else {
       showToast(data.error || 'Failed to add product', 'error');
       if (resultDiv) resultDiv.innerHTML = `<div class="card" style="margin-top:20px; background: var(--red-50);"><p style="color: var(--red-600);">❌ ${data.error || 'Failed to add product'}</p></div>`;
@@ -812,10 +854,8 @@ async function addNewProduct() {
   }
 }
 
-// Analyze Added Product
 async function analyzeAddedProduct(ingredients, productName, brand) {
   const resultArea = document.getElementById('search-result');
-  
   resultArea.innerHTML = '<div style="text-align:center;padding:40px;">⏳ Analyzing ingredients...</div>';
   
   try {
@@ -826,26 +866,20 @@ async function analyzeAddedProduct(ingredients, productName, brand) {
     });
     
     const data = await response.json();
-    
     const displayData = {
-      product: {
-        product_name: productName,
-        brand: brand,
-        ingredients_text: ingredients
-      },
+      product: { product_name: productName, brand: brand, ingredients_text: ingredients },
       ...data
     };
     
     renderSearchResult(displayData, resultArea);
     showToast(`✅ Analysis complete for "${productName}"!`, 'success');
-    
   } catch (error) {
     resultArea.innerHTML = `<div class="card" style="padding:32px;"><p style="color: var(--red-500);">❌ Analysis failed</p></div>`;
     showToast('Analysis failed', 'error');
   }
 }
 
-// ==================== REPORT PAGE ====================
+// ==================== OTHER PAGE INITIALIZATIONS ====================
 function initReport() {
   if (!document.getElementById('report-page')) return;
   const form = document.getElementById('report-form');
@@ -872,8 +906,6 @@ function initReport() {
   });
 }
 
-
-// ==================== AWARENESS PAGE ====================
 function initAwareness() {
   if (!document.getElementById('awareness-page')) return;
   document.querySelectorAll('.accordion-item').forEach(item => {
@@ -896,7 +928,6 @@ function initAwareness() {
   });
 }
 
-// ==================== STAY SAFE PAGE ====================
 const STAY_SAFE_DATA = {
   diabetes: { label: 'Diabetes', icon: '🩸', color: 'var(--amber-500)', tip: 'Focus on low-GI foods (GI < 55). Fiber slows glucose absorption.', watch: ['High Fructose Corn Syrup', 'White Sugar', 'Maltodextrin', 'Dextrose'], risky: ['Packaged juices', 'White bread', 'Breakfast cereals'], safer: ['Steel-cut oats', 'Whole grain bread', 'Unsweetened Greek yogurt'] },
   hypertension: { label: 'Hypertension', icon: '❤️', color: 'var(--red-500)', tip: 'Aim for under 2,300mg sodium/day.', watch: ['Sodium (>200mg/serving)', 'MSG', 'Sodium Nitrate'], risky: ['Canned soups', 'Processed meats', 'Instant noodles'], safer: ['Fresh vegetables', 'Bananas', 'Unsalted nuts'] },
@@ -946,6 +977,18 @@ function initStaySafe() {
   });
 }
 
+// Add CSS for info tags
+const style = document.createElement('style');
+style.textContent = `
+  .tag-info {
+    background: #ebf8ff !important;
+    color: #2b6cb0 !important;
+    border-color: #bee3f8 !important;
+    font-style: italic;
+  }
+`;
+document.head.appendChild(style);
+
 // ==================== INITIALIZE ====================
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
@@ -954,8 +997,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initReport();
   initAwareness();
   initStaySafe();
+  checkAuthState();
   
-  // Add Product button listener
   const addProductBtn = document.getElementById('add-product-btn');
   if (addProductBtn) {
     addProductBtn.addEventListener('click', addNewProduct);

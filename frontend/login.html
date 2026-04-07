@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Sign In — SafePlate</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Auth Page Specific Styles */
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--cream) 0%, #f0f5ec 100%);
+      padding: 40px var(--page-px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Animated background blobs */
+    .auth-page::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--green-100), transparent 70%);
+      border-radius: 50%;
+      top: -200px;
+      right: -100px;
+      opacity: 0.4;
+      animation: floatBlob 8s ease-in-out infinite;
+    }
+    
+    .auth-page::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--amber-200), transparent 70%);
+      border-radius: 50%;
+      bottom: -100px;
+      left: -80px;
+      opacity: 0.3;
+      animation: floatBlob 6s ease-in-out infinite reverse;
+    }
+    
+    @keyframes floatBlob {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -20px) scale(1.05); }
+    }
+    
+    .auth-card {
+      max-width: 450px;
+      width: 100%;
+      background: var(--white);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      animation: fadeUp 0.5s ease both;
+    }
+    
+    .auth-card-header {
+      padding: 32px 32px 24px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .auth-logo {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-400));
+      border-radius: var(--r-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .auth-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    
+    .auth-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    .auth-card-body {
+      padding: 32px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--cream);
+      border: 1.5px solid var(--stone-200);
+      border-radius: var(--r-md);
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--green-400);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(30,158,94,0.1);
+    }
+    
+    /* Messages */
+    .message {
+      padding: 12px 16px;
+      border-radius: var(--r-md);
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .message-error {
+      background: var(--red-50);
+      color: var(--red-600);
+      border-left: 3px solid var(--red-500);
+    }
+    .message-success {
+      background: #dcfce7;
+      color: var(--green-700);
+      border-left: 3px solid var(--green-500);
+    }
+    
+    /* Button */
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--green-500);
+      color: white;
+      border: none;
+      border-radius: var(--r-lg);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-body);
+    }
+    
+    .auth-btn:hover {
+      background: var(--green-600);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .auth-link {
+      color: var(--green-600);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+    
+    /* Forgot password link */
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 0.75rem;
+      margin-top: -12px;
+      margin-bottom: 20px;
+    }
+    
+    .forgot-link a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    
+    .forgot-link a:hover {
+      color: var(--green-600);
+    }
+    
+    @media (max-width: 560px) {
+      .auth-card-body { padding: 24px; }
+      .auth-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-logo">🛡️</div>
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Sign in to your account</p>
+      </div>
+      
+      <div class="auth-card-body">
+        <div id="messageContainer"></div>
+        
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label">Email address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+          </div>
+          
+          <div class="forgot-link">
+            <a href="forgot-password.html">Forgot password?</a>
+          </div>
+          
+          <button type="submit" class="auth-btn" id="loginBtn">
+            <span>🔐</span> Sign in
+          </button>
+        </form>
+        
+        <div class="auth-footer">
+          Don't have an account? <a href="signup.html" class="auth-link">Create account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const API_URL = 'http://127.0.0.1:5000';
+    
+    async function loginUser(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const messageContainer = document.getElementById('messageContainer');
+      const loginBtn = document.getElementById('loginBtn');
+      
+      // Clear previous messages
+      messageContainer.innerHTML = '';
+      
+      if (!email || !password) {
+        messageContainer.innerHTML = '<div class="message message-error">❌ Please enter email and password</div>';
+        return;
+      }
+      
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        messageContainer.innerHTML = '<div class="message message-error">❌ Please enter a valid email address</div>';
+        return;
+      }
+      
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span>⏳</span> Signing in...';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          messageContainer.innerHTML = '<div class="message message-success">✅ Login successful! Redirecting...</div>';
+          
+          // Store user info in localStorage
+          localStorage.setItem('user', JSON.stringify(data.user));
+          
+          // Redirect to dashboard after 1.5 seconds
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        } else {
+          messageContainer.innerHTML = `<div class="message message-error">❌ ${data.error}</div>`;
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = '<span>🔐</span> Sign in';
+        }
+        
+      } catch (error) {
+        console.error('Error:', error);
+        messageContainer.innerHTML = '<div class="message message-error">❌ Cannot connect to server. Make sure Flask is running on port 5000.</div>';
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<span>🔐</span> Sign in';
+      }
+    }
+    
+    // Add enter key support
+    document.getElementById('loginForm').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        loginUser(e);
+      }
+    });
+    
+    document.getElementById('loginForm').addEventListener('submit', loginUser);
+  </script>
+</body>
+</html>

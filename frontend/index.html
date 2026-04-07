@@ -203,6 +203,41 @@
     }
     .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); }
 
+    /* User/Auth Styles */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-right: 16px;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--green-500);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .nav-action {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .admin-badge {
+      background: var(--red-500);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      margin-left: 6px;
+    }
+
     @media (max-width: 900px) {
       .hero-inner { grid-template-columns: 1fr; }
       .hero-visual { flex-direction: row; flex-wrap: wrap; }
@@ -213,6 +248,8 @@
       .filter-bar-inner { flex-direction: column; align-items: flex-start; }
       .search-wrap { flex: 1; width: 100%; }
       #product-grid { grid-template-columns: 1fr; }
+      .nav-action { gap: 8px; }
+      .btn-sm { padding: 4px 10px; font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -235,9 +272,33 @@
         <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
         <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
       </ul>
+      
+      <!-- Unified Navigation Action -->
       <div class="nav-action">
-        <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
+        <!-- Admin Info (shown when admin logged in) -->
+        <div id="adminInfo" style="display: none;" class="user-info">
+          <div class="user-avatar">👑</div>
+          <span id="adminName">Admin</span>
+          <span class="admin-badge">Admin</span>
+          <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+        </div>
+        
+        <!-- User Info (shown when regular user logged in) -->
+        <div id="userInfo" style="display: none;" class="user-info">
+          <div class="user-avatar" id="userAvatar"></div>
+          <span id="userName"></span>
+          <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+        </div>
+        
+        <!-- Auth Buttons (shown when no one logged in) -->
+        <div id="authButtons">
+          <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+        </div>
+        
+   
       </div>
+      
       <button class="nav-burger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -247,7 +308,12 @@
       <a href="check-product.html" class="nav-link">Check Product</a>
       <a href="awareness.html" class="nav-link">Awareness</a>
       <a href="stay-safe.html" class="nav-link">Stay Safe</a>
-      <a href="report.html" class="nav-report-btn">Report Product</a>
+      <a href="report.html" class="nav-report-btn">Report</a>
+      <hr style="margin: 10px 0; border-color: var(--border);">
+      <div id="mobileAuthLinks">
+        <a href="login.html" class="nav-link">Login</a>
+        <a href="signup.html" class="nav-link">Sign Up</a>
+      </div>
     </div>
   </nav>
 
@@ -296,13 +362,9 @@
               <div class="hero-stat-lbl">Products Tracked</div>
             </div>
           </div>
-          <div class="hero-stat-pill">
-            <span class="hero-stat-icon" style="color:var(--green-500)">✓</span>
-            <div>
-              <div class="hero-stat-val" id="stat-safe">—</div>
-              <div class="hero-stat-lbl">Safe Products</div>
-            </div>
-          </div>
+    
+            
+         
           <div class="hero-stat-pill">
             <span class="hero-stat-icon">⚠️</span>
             <div>
@@ -360,7 +422,7 @@
       <div class="filter-bar-inner">
         <div class="filter-pills">
           <button class="filter-btn active" data-filter="all">All Products</button>
-          <button class="filter-btn" data-filter="safe">✓ Safe</button>
+        
           <button class="filter-btn" data-filter="flagged">⚠ Flagged</button>
           <button class="filter-btn" data-filter="adulterated">✕ Adulterated</button>
         </div>
@@ -414,5 +476,86 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  const API_URL = 'http://127.0.0.1:5000';
+  
+  // Check authentication status from backend session
+  async function checkAuthState() {
+    try {
+      const response = await fetch(`${API_URL}/api/me`, {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      
+      const adminInfo = document.getElementById('adminInfo');
+      const userInfo = document.getElementById('userInfo');
+      const authButtons = document.getElementById('authButtons');
+      const mobileAuthLinks = document.getElementById('mobileAuthLinks');
+      
+      if (data.authenticated) {
+        const user = data.user;
+        
+        if (user.role === 'admin') {
+          // Show admin UI
+          if (adminInfo) adminInfo.style.display = 'flex';
+          if (userInfo) userInfo.style.display = 'none';
+          if (authButtons) authButtons.style.display = 'none';
+          if (mobileAuthLinks) {
+            mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Logout</a>';
+          }
+          if (document.getElementById('adminName')) {
+            document.getElementById('adminName').textContent = user.username;
+          }
+        } else {
+          // Show regular user UI
+          if (adminInfo) adminInfo.style.display = 'none';
+          if (userInfo) userInfo.style.display = 'flex';
+          if (authButtons) authButtons.style.display = 'none';
+          if (mobileAuthLinks) {
+            mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
+          }
+          if (document.getElementById('userName')) {
+            document.getElementById('userName').textContent = user.username;
+          }
+          if (document.getElementById('userAvatar')) {
+            document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
+          }
+        }
+      } else {
+        // Show login buttons
+        if (adminInfo) adminInfo.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'none';
+        if (authButtons) authButtons.style.display = 'flex';
+        if (mobileAuthLinks) {
+          mobileAuthLinks.innerHTML = '<a href="login.html" class="nav-link">Login</a><a href="signup.html" class="nav-link">Sign Up</a>';
+        }
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      // Show login buttons on error
+      const authButtons = document.getElementById('authButtons');
+      if (authButtons) authButtons.style.display = 'flex';
+    }
+  }
+  
+  // Logout function
+  async function logout() {
+    try {
+      await fetch(`${API_URL}/api/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    // Clear any local state and reload
+    window.location.href = 'index.html';
+  }
+  
+  // Initialize auth state on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    checkAuthState();
+  });
+</script>
 </body>
 </html>

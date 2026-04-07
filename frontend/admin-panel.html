@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Admin Panel — SafePlate</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 40px var(--page-px);
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .admin-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--text-primary);
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .admin-stat-card {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--red-500);
+    }
+    .admin-stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .admin-stat-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+    .admin-section {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-section-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th {
+      background: var(--stone-100);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .status-pending {
+      background: var(--amber-50);
+      color: var(--amber-600);
+    }
+    .status-resolved {
+      background: var(--green-50);
+      color: var(--green-600);
+    }
+    .action-btn {
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.7rem;
+      margin-right: 6px;
+    }
+    .action-btn-resolve {
+      background: var(--green-500);
+      color: white;
+    }
+    .action-btn-delete {
+      background: var(--red-500);
+      color: white;
+    }
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .login-box {
+      background: var(--white);
+      padding: 40px;
+      border-radius: var(--r-xl);
+      max-width: 400px;
+      width: 90%;
+    }
+  </style>
+</head>
+<body>
+  <div id="adminContent" style="display: none;">
+    <div class="admin-container">
+      <div class="admin-header">
+        <div>
+          <h1 class="admin-title">👑 Admin Panel</h1>
+          <p style="color: var(--text-muted);">Manage flagged products and user reports</p>
+        </div>
+        <button onclick="adminLogout()" class="btn btn-outline">Logout</button>
+      </div>
+      
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+          <div class="admin-stat-value" id="totalReports">0</div>
+          <div class="admin-stat-label">Total Reports</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-value" id="pendingReports">0</div>
+          <div class="admin-stat-label">Pending Review</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-value" id="resolvedReports">0</div>
+          <div class="admin-stat-label">Resolved</div>
+        </div>
+      </div>
+      
+      <div class="admin-section">
+        <h2 class="admin-section-title">Flagged Products & Reports</h2>
+        <div style="overflow-x: auto;">
+          <table class="data-table" id="reportsTable">
+            <thead>
+              <tr><th>ID</th><th>Product</th><th>Brand</th><th>Issue</th><th>Severity</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="reportsTableBody">
+              <tr><td colspan="7">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-box">
+      <h2 style="margin-bottom: 20px;">Admin Access</h2>
+      <div id="loginMessage" style="margin-bottom: 15px;"></div>
+      <input type="email" id="adminEmail" class="form-input" placeholder="admin@foodsafe.com" style="margin-bottom: 15px;">
+      <input type="password" id="adminPassword" class="form-input" placeholder="Password" style="margin-bottom: 20px;">
+      <button onclick="adminLogin()" class="auth-btn" style="width: 100%;">Login</button>
+    </div>
+  </div>
+  
+  <script>
+    const API_URL = 'http://127.0.0.1:5000';
+    const ADMIN_CREDENTIALS = {
+      'admin@foodsafe.com': 'admin123'
+    };
+    
+    function adminLogin() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const messageDiv = document.getElementById('loginMessage');
+      
+      if (ADMIN_CREDENTIALS[email] && ADMIN_CREDENTIALS[email] === password) {
+        localStorage.setItem('adminAuthenticated', 'true');
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        loadReports();
+        loadStats();
+      } else {
+        messageDiv.innerHTML = '<div class="message message-error">❌ Invalid credentials</div>';
+      }
+    }
+    
+    function adminLogout() {
+      localStorage.removeItem('adminAuthenticated');
+      window.location.reload();
+    }
+    
+    async function loadStats() {
+      try {
+        const response = await fetch(`${API_URL}/flagged-products`);
+        const data = await response.json();
+        if (data.products) {
+          const total = data.products.length;
+          const pending = data.products.filter(p => p.status !== 'Resolved').length;
+          const resolved = data.products.filter(p => p.status === 'Resolved').length;
+          document.getElementById('totalReports').textContent = total;
+          document.getElementById('pendingReports').textContent = pending;
+          document.getElementById('resolvedReports').textContent = resolved;
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+    
+    async function loadReports() {
+      try {
+        const response = await fetch(`${API_URL}/flagged-products`);
+        const data = await response.json();
+        if (data.products) {
+          const tbody = document.getElementById('reportsTableBody');
+          tbody.innerHTML = data.products.map(report => `
+            <tr>
+              <td>${report.id}</td>
+              <td>${escapeHtml(report.product_name)}</td>
+              <td>${escapeHtml(report.brand)}</td>
+              <td>${escapeHtml(report.issue_type || 'General')}</td>
+              <td><span class="status-badge status-${report.severity === 'high' ? 'pending' : 'resolved'}" style="background:${report.severity === 'high' ? '#fed7d7' : '#feebc8'}">${report.severity || 'Medium'}</span></td>
+              <td><span class="status-badge ${report.status === 'Resolved' ? 'status-resolved' : 'status-pending'}">${report.status || 'Pending'}</span></td>
+              <td>
+                ${report.status !== 'Resolved' ? `<button class="action-btn action-btn-resolve" onclick="resolveReport(${report.id})">Resolve</button>` : ''}
+                <button class="action-btn action-btn-delete" onclick="deleteReport(${report.id})">Delete</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading reports:', error);
+      }
+    }
+    
+    async function resolveReport(id) {
+      if (confirm('Mark this report as resolved?')) {
+        await fetch(`${API_URL}/api/flagged-products/${id}/resolve`, { method: 'PUT' });
+        loadReports();
+        loadStats();
+      }
+    }
+    
+    async function deleteReport(id) {
+      if (confirm('Delete this report permanently?')) {
+        await fetch(`${API_URL}/api/flagged-products/${id}`, { method: 'DELETE' });
+        loadReports();
+        loadStats();
+      }
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // Check if already authenticated
+    if (localStorage.getItem('adminAuthenticated') === 'true') {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('adminContent').style.display = 'block';
+      loadReports();
+      loadStats();
+    }
+  </script>
+</body>
+</html>
