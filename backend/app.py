@@ -365,7 +365,29 @@ def add_product():
         'message': f'✅ Product "{product_name}" added successfully',
         'analysis': analysis
     })
-
+@app.route('/api/products/search', methods=['GET'])
+def search_products():
+    query = request.args.get('q', '')
+    # Search your products table
+    products = products.query.filter(
+        (products.name.ilike(f'%{query}%')) | 
+        (products.brand.ilike(f'%{query}%'))
+    ).limit(20).all()
+    
+    return jsonify([{
+        'id': p.id,
+        'name': p.name,
+        'brand': p.brand,
+        'nutrition': {
+            'calories_per_serve': p.calories,
+            'total_fat': p.total_fat,
+            'saturated_fat': p.saturated_fat,
+            'sodium': p.sodium,
+            'protein': p.protein,
+            'iron_percent': p.iron_percent,
+            # ... other fields
+        } if p.has_nutrition else None
+    } for p in products])
 # ==================== CLAIM & OCR ROUTES ====================
 
 @app.route('/verify-claims', methods=['POST'])
@@ -385,15 +407,45 @@ def ocr_extract():
     
     return jsonify({'extracted_text': extracted_text, 'raw_text': extracted_text, 'success': True})
 
-@app.route('/ocr-nutrition', methods=['POST'])
+# Add these routes to your Flask app
+
+@app.route('/api/ocr/nutrition', methods=['POST'])
 def ocr_nutrition():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image uploaded'}), 400
+    """Extract text from nutrition label image"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
     
-    text, error = process_ocr_image(request.files['image'])
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    
+    # Use your existing OCR function
+    extracted_text, error = process_ocr_nutrition(file)
+    
     if error:
-        return jsonify({"error": error}), 500
-    return jsonify({"extracted_text": text})
+        return jsonify({'error': error}), 500
+    
+    return jsonify({
+        'text': extracted_text,
+        'success': True
+    })
+
+@app.route('/api/ocr/generic', methods=['POST'])
+def ocr_generic():
+    """Generic OCR for any image"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+    
+    file = request.files['file']
+    extracted_text, error = process_ocr_image(file)
+    
+    if error:
+        return jsonify({'error': error}), 500
+    
+    return jsonify({
+        'text': extracted_text,
+        'success': True
+    })
 
 # ==================== REPORT ROUTES ====================
 
