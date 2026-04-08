@@ -340,5 +340,18 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  // Auth check — script.js already defines API_URL and checkAuthState()
+  // but those don't redirect on failure. This enforces redirect for protected pages.
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/me', { credentials: 'include' });
+      const data = await response.json();
+      if (!data.authenticated) window.location.href = 'login.html';
+    } catch (e) {
+      window.location.href = 'login.html';
+    }
+  });
+</script>
 </body>
 </html>

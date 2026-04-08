@@ -505,7 +505,7 @@
         
         if (data.success) {
           messageContainer.innerHTML = '<div class="message message-success">✅ Account created! Redirecting to login...</div>';
-          
+          window.location.href = 'index.html'; 
           // Store health conditions in localStorage for personalized experience
           if (selectedConditions.length > 0) {
             localStorage.setItem('user_health_conditions', JSON.stringify(selectedConditions));

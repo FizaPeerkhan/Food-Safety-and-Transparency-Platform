@@ -304,9 +304,11 @@
         const data = await response.json();
         
         if (data.success) {
-          messageContainer.innerHTML = '<div class="message message-success">✅ Login successful! Redirecting...</div>';
           
-          // Store user info in localStorage
+          messageContainer.innerHTML = '<div class="message message-success">✅ Login successful! Redirecting...</div>';
+          window.location.href = 'index.html';  // Redirect to dashboard
+     
+      // Store user info in localStorage
           localStorage.setItem('user', JSON.stringify(data.user));
           
           // Redirect to dashboard after 1.5 seconds

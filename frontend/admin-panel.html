@@ -286,6 +286,27 @@
       loadReports();
       loadStats();
     }
+    // Add to the top of each protected page
+async function checkAuth() {
+  try {
+    const response = await fetch(`${API_URL}/api/me`, {
+      credentials: 'include'
+    });
+    const data = await response.json();
+    
+    if (!data.authenticated) {
+      window.location.href = 'login.html';
+    }
+    return data.user;
+  } catch (error) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Call on page load
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+});
   </script>
 </body>
 </html>

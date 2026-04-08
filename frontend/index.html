@@ -6,7 +6,42 @@
   <title>Dashboard — Food Safety & Transparency Platform</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Dashboard specific styles */
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--stone-200);
+      border-top-color: var(--green-500);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loading-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Hide content initially */
+    #dashboard-content {
+      display: none;
+    }
+    
     .hero {
       position: relative;
       padding: clamp(56px,8vw,100px) var(--page-px) clamp(48px,6vw,80px);
@@ -203,7 +238,6 @@
     }
     .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); }
 
-    /* User/Auth Styles */
     .user-info {
       display: flex;
       align-items: center;
@@ -254,309 +288,324 @@
   </style>
 </head>
 <body>
-<div id="dashboard-page">
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a class="nav-logo" href="index.html">
-        <div class="nav-logo-icon">🛡️</div>
-        <div class="nav-logo-label">
-          <span class="nav-logo-name">SafePlate</span>
-          <span class="nav-logo-tagline">Food Safety Platform</span>
-        </div>
-      </a>
-      <ul class="nav-links">
-  <li><a href="index.html" class="nav-link active"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
-  <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
-  <li><a href="nutrition.html" class="nav-link"><span class="nav-link-icon">🥗</span> Nutrition Facts</a></li>  <!-- NEW -->
-  <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
-  <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
-</ul>
-      
-      <!-- Unified Navigation Action -->
-      <div class="nav-action">
-        <!-- Admin Info (shown when admin logged in) -->
-        <div id="adminInfo" style="display: none;" class="user-info">
-          <div class="user-avatar">👑</div>
-          <span id="adminName">Admin</span>
-          <span class="admin-badge">Admin</span>
-          <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
-        </div>
-        
-        <!-- User Info (shown when regular user logged in) -->
-        <div id="userInfo" style="display: none;" class="user-info">
-          <div class="user-avatar" id="userAvatar"></div>
-          <span id="userName"></span>
-          <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
-        </div>
-        
-        <!-- Auth Buttons (shown when no one logged in) -->
-        <div id="authButtons">
-          <a href="login.html" class="btn btn-outline btn-sm">Login</a>
-          <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
-        </div>
-        
-   
-      </div>
-      
-      <button class="nav-burger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-mobile">
-      <a href="index.html" class="nav-link">Dashboard</a>
-      <a href="check-product.html" class="nav-link">Check Product</a>
-      <a href="awareness.html" class="nav-link">Awareness</a>
-      <a href="stay-safe.html" class="nav-link">Stay Safe</a>
-      <a href="report.html" class="nav-report-btn">Report</a>
-      <hr style="margin: 10px 0; border-color: var(--border);">
-      <div id="mobileAuthLinks">
-        <a href="login.html" class="nav-link">Login</a>
-        <a href="signup.html" class="nav-link">Sign Up</a>
-      </div>
-    </div>
-  </nav>
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Verifying authentication...</div>
+</div>
 
-  <div class="page-wrap">
+<div id="dashboard-content">
+  <div id="dashboard-page">
 
-    <!-- Marquee -->
-    <div class="marquee-wrap">
-      <div class="marquee-track">
-        <span class="marquee-item"><span class="marquee-dot"></span> Know What You Eat</span>
-        <span class="marquee-item"><span class="marquee-dot"></span> Adulteration Alerts</span>
-        <span class="marquee-item"><span class="marquee-dot"></span> Ingredient Transparency</span>
-        <span class="marquee-item"><span class="marquee-dot"></span> FSSAI Compliance</span>
-        <span class="marquee-item"><span class="marquee-dot"></span> Decode Food Labels</span>
-        <span class="marquee-item"><span class="marquee-dot"></span> Protect Your Family</span>
-      </div>
-    </div>
-
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-blob hero-blob-1"></div>
-      <div class="hero-blob hero-blob-2"></div>
-      <div class="hero-inner">
-        <div class="hero-content anim-fade-up">
-          <div class="hero-eyebrow">
-            <div class="hero-eyebrow-dot"></div>
-            <span>Live Product Intelligence</span>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <a class="nav-logo" href="index.html">
+          <div class="nav-logo-icon">🛡️</div>
+          <div class="nav-logo-label">
+            <span class="nav-logo-name">SafePlate</span>
+            <span class="nav-logo-tagline">Food Safety Platform</span>
           </div>
-          <h1 class="hero-title">
-            Food you trust,<br>
-            <em>transparency</em> you deserve.
-          </h1>
-          <p class="hero-sub">
-            Scan, search, and decode every ingredient in the products your family consumes.
-            Real-time adulteration alerts, label analysis, and personalized safety guidance.
-          </p>
-          <div class="hero-actions">
-            <a href="check-product.html" class="btn btn-primary btn-lg">🔬 Check a Product</a>
-            <a href="awareness.html" class="btn btn-outline btn-lg">📖 Learn More</a>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link active"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
+          <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
+          <li><a href="nutrition.html" class="nav-link"><span class="nav-link-icon">🥗</span> Nutrition Facts</a></li>
+          <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+          <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+        </ul>
+        
+        <!-- Unified Navigation Action -->
+        <div class="nav-action">
+          <!-- Admin Info (shown when admin logged in) -->
+          <div id="adminInfo" style="display: none;" class="user-info">
+            <div class="user-avatar">👑</div>
+            <span id="adminName">Admin</span>
+            <span class="admin-badge">Admin</span>
+            <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+          </div>
+          
+          <!-- User Info (shown when regular user logged in) -->
+          <div id="userInfo" style="display: none;" class="user-info">
+            <div class="user-avatar" id="userAvatar"></div>
+            <span id="userName"></span>
+            <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+          </div>
+          
+          <!-- Auth Buttons (shown when no one logged in - but this shouldn't be visible on dashboard) -->
+          <div id="authButtons" style="display: none;">
+            <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+            <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
           </div>
         </div>
-        <div class="hero-visual anim-fade-up anim-delay-2">
-          <div class="hero-stat-pill">
-            <span class="hero-stat-icon">🛡️</span>
-            <div>
-              <div class="hero-stat-val" id="stat-total">191</div>
-              <div class="hero-stat-lbl">Products Tracked</div>
+        
+        <button class="nav-burger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="nav-mobile">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="check-product.html" class="nav-link">Check Product</a>
+        <a href="nutrition.html" class="nav-link">Nutrition Facts</a>
+        <a href="awareness.html" class="nav-link">Awareness</a>
+        <a href="stay-safe.html" class="nav-link">Stay Safe</a>
+        <a href="report.html" class="nav-report-btn">Report</a>
+        <hr style="margin: 10px 0; border-color: var(--border);">
+        <div id="mobileAuthLinks"></div>
+      </div>
+    </nav>
+
+    <div class="page-wrap">
+
+      <!-- Marquee -->
+      <div class="marquee-wrap">
+        <div class="marquee-track">
+          <span class="marquee-item"><span class="marquee-dot"></span> Know What You Eat</span>
+          <span class="marquee-item"><span class="marquee-dot"></span> Adulteration Alerts</span>
+          <span class="marquee-item"><span class="marquee-dot"></span> Ingredient Transparency</span>
+          <span class="marquee-item"><span class="marquee-dot"></span> FSSAI Compliance</span>
+          <span class="marquee-item"><span class="marquee-dot"></span> Decode Food Labels</span>
+          <span class="marquee-item"><span class="marquee-dot"></span> Protect Your Family</span>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        <div class="hero-inner">
+          <div class="hero-content anim-fade-up">
+            <div class="hero-eyebrow">
+              <div class="hero-eyebrow-dot"></div>
+              <span>Live Product Intelligence</span>
+            </div>
+            <h1 class="hero-title">
+              Food you trust,<br>
+              <em>transparency</em> you deserve.
+            </h1>
+            <p class="hero-sub">
+              Scan, search, and decode every ingredient in the products your family consumes.
+              Real-time adulteration alerts, label analysis, and personalized safety guidance.
+            </p>
+            <div class="hero-actions">
+              <a href="check-product.html" class="btn btn-primary btn-lg">🔬 Check a Product</a>
+              <a href="nutrition.html" class="btn btn-outline btn-lg">🥗 Nutrition Facts</a>
             </div>
           </div>
-    
-            
-         
-          <div class="hero-stat-pill">
-            <span class="hero-stat-icon">⚠️</span>
-            <div>
-              <div class="hero-stat-val" id="stat-flagged">—</div>
-              <div class="hero-stat-lbl">Flagged</div>
+          <div class="hero-visual anim-fade-up anim-delay-2">
+            <div class="hero-stat-pill">
+              <span class="hero-stat-icon">🛡️</span>
+              <div>
+                <div class="hero-stat-val" id="stat-total">191</div>
+                <div class="hero-stat-lbl">Products Tracked</div>
+              </div>
+            </div>
+            <div class="hero-stat-pill">
+              <span class="hero-stat-icon">⚠️</span>
+              <div>
+                <div class="hero-stat-val" id="stat-flagged">—</div>
+                <div class="hero-stat-lbl">Flagged</div>
+              </div>
+            </div>
+            <div class="hero-stat-pill">
+              <span class="hero-stat-icon">🚨</span>
+              <div>
+                <div class="hero-stat-val" id="stat-adulterated">—</div>
+                <div class="hero-stat-lbl">Adulterated</div>
+              </div>
             </div>
           </div>
-          <div class="hero-stat-pill">
-            <span class="hero-stat-icon">🚨</span>
+        </div>
+      </section>
+
+      <!-- Stats Bar -->
+      <section class="stats-bar">
+        <div class="stats-bar-inner">
+          <div class="stat-card anim-fade-up anim-delay-1" data-reveal>
+            <div class="stat-card-icon" style="background:var(--green-50);">🧪</div>
             <div>
-              <div class="hero-stat-val" id="stat-adulterated">—</div>
-              <div class="hero-stat-lbl">Adulterated</div>
+              <div class="stat-card-num" style="color:var(--green-600);">2,400+</div>
+              <div class="stat-card-lbl">Ingredients in DB</div>
+            </div>
+          </div>
+          <div class="stat-card anim-fade-up anim-delay-2" data-reveal>
+            <div class="stat-card-icon" style="background:var(--amber-50);">📋</div>
+            <div>
+              <div class="stat-card-num" style="color:var(--amber-600);">180+</div>
+              <div class="stat-card-lbl">Adulteration Tests</div>
+            </div>
+          </div>
+          <div class="stat-card anim-fade-up anim-delay-3" data-reveal>
+            <div class="stat-card-icon" style="background:var(--red-50);">🚨</div>
+            <div>
+              <div class="stat-card-num" style="color:var(--red-500);">340+</div>
+              <div class="stat-card-lbl">Reports Filed</div>
+            </div>
+          </div>
+          <div class="stat-card anim-fade-up anim-delay-4" data-reveal>
+            <div class="stat-card-icon" style="background:#eff6ff;">🏥</div>
+            <div>
+              <div class="stat-card-num" style="color:#1d4ed8;">6</div>
+              <div class="stat-card-lbl">Health Profiles</div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Stats Bar -->
-    <section class="stats-bar">
-      <div class="stats-bar-inner">
-        <div class="stat-card anim-fade-up anim-delay-1" data-reveal>
-          <div class="stat-card-icon" style="background:var(--green-50);">🧪</div>
+      <!-- Filter + Products -->
+      <section class="filter-bar" data-reveal>
+        <div class="filter-bar-inner">
+          <div class="filter-pills">
+            <button class="filter-btn active" data-filter="all">All Products</button>
+            <button class="filter-btn" data-filter="flagged">⚠ Flagged</button>
+            <button class="filter-btn" data-filter="adulterated">✕ Adulterated</button>
+          </div>
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input id="dash-search" type="text" placeholder="Search products…" />
+          </div>
+        </div>
+      </section>
+
+      <section class="product-section">
+        <div class="product-section-inner">
+          <div id="product-grid"></div>
+        </div>
+      </section>
+
+      <!-- CTA Banner -->
+      <section style="padding:0 var(--page-px) 0; margin-bottom:0;" data-reveal>
+        <div style="max-width:var(--max-w);margin:0 auto;">
+          <div style="border-radius:var(--r-xl); background:linear-gradient(135deg, var(--green-800), var(--green-700)); padding:clamp(36px,5vw,60px) clamp(28px,5vw,64px); display:flex; align-items:center; justify-content:space-between; gap:28px; flex-wrap:wrap; position:relative; overflow:hidden;">
+            <div style="position:relative;z-index:1;">
+              <p style="font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);color:#fff;font-weight:400;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px;">Found something suspicious?</p>
+              <p style="color:var(--green-200);font-size:.95rem;line-height:1.6;max-width:460px;">Help protect your community by reporting adulterated or mislabelled products.</p>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;">
+              <a href="report.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">⚑ File a Report</a>
+              <a href="check-product.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">🔬 Check Product</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-inner">
           <div>
-            <div class="stat-card-num" style="color:var(--green-600);">2,400+</div>
-            <div class="stat-card-lbl">Ingredients in DB</div>
+            <div class="footer-brand">SafePlate</div>
+            <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
           </div>
+          <nav class="footer-links">
+            <a href="index.html">Dashboard</a>
+            <a href="check-product.html">Check Product</a>
+            <a href="nutrition.html">Nutrition Facts</a>
+            <a href="report.html">Report</a>
+            <a href="awareness.html">Awareness</a>
+            <a href="stay-safe.html">Stay Safe</a>
+          </nav>
         </div>
-        <div class="stat-card anim-fade-up anim-delay-2" data-reveal>
-          <div class="stat-card-icon" style="background:var(--amber-50);">📋</div>
-          <div>
-            <div class="stat-card-num" style="color:var(--amber-600);">180+</div>
-            <div class="stat-card-lbl">Adulteration Tests</div>
-          </div>
-        </div>
-        <div class="stat-card anim-fade-up anim-delay-3" data-reveal>
-          <div class="stat-card-icon" style="background:var(--red-50);">🚨</div>
-          <div>
-            <div class="stat-card-num" style="color:var(--red-500);">340+</div>
-            <div class="stat-card-lbl">Reports Filed</div>
-          </div>
-        </div>
-        <div class="stat-card anim-fade-up anim-delay-4" data-reveal>
-          <div class="stat-card-icon" style="background:#eff6ff;">🏥</div>
-          <div>
-            <div class="stat-card-num" style="color:#1d4ed8;">6</div>
-            <div class="stat-card-lbl">Health Profiles</div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </footer>
 
-    <!-- Filter + Products -->
-    <section class="filter-bar" data-reveal>
-      <div class="filter-bar-inner">
-        <div class="filter-pills">
-          <button class="filter-btn active" data-filter="all">All Products</button>
-        
-          <button class="filter-btn" data-filter="flagged">⚠ Flagged</button>
-          <button class="filter-btn" data-filter="adulterated">✕ Adulterated</button>
-        </div>
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input id="dash-search" type="text" placeholder="Search products…" />
-        </div>
-      </div>
-    </section>
-
-    <section class="product-section">
-      <div class="product-section-inner">
-        <div id="product-grid"></div>
-      </div>
-    </section>
-
-    <!-- CTA Banner -->
-    <section style="padding:0 var(--page-px) 0; margin-bottom:0;" data-reveal>
-      <div style="max-width:var(--max-w);margin:0 auto;">
-        <div style="border-radius:var(--r-xl); background:linear-gradient(135deg, var(--green-800), var(--green-700)); padding:clamp(36px,5vw,60px) clamp(28px,5vw,64px); display:flex; align-items:center; justify-content:space-between; gap:28px; flex-wrap:wrap; position:relative; overflow:hidden;">
-          <div style="position:relative;z-index:1;">
-            <p style="font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);color:#fff;font-weight:400;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px;">Found something suspicious?</p>
-            <p style="color:var(--green-200);font-size:.95rem;line-height:1.6;max-width:460px;">Help protect your community by reporting adulterated or mislabelled products.</p>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;">
-            <a href="report.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">⚑ File a Report</a>
-            <a href="check-product.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">🔬 Check Product</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-inner">
-        <div>
-          <div class="footer-brand">SafePlate</div>
-          <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
-        </div>
-        <nav class="footer-links">
-          <a href="index.html">Dashboard</a>
-          <a href="check-product.html">Check Product</a>
-          <a href="report.html">Report</a>
-          <a href="awareness.html">Awareness</a>
-          <a href="stay-safe.html">Stay Safe</a>
-        </nav>
-      </div>
-    </footer>
-
+    </div>
   </div>
 </div>
 
 <script src="script.js"></script>
 <script>
-  const API_URL = 'http://127.0.0.1:5000';
-  
-  // Check authentication status from backend session
-  async function checkAuthState() {
+  // API_URL already declared in script.js
+
+  // Check authentication - redirect to login if not authenticated
+  async function checkAuthAndLoad() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const dashboardContent = document.getElementById('dashboard-content');
+    
     try {
       const response = await fetch(`${API_URL}/api/me`, {
         credentials: 'include'
       });
+      
       const data = await response.json();
       
+      if (!data.authenticated) {
+        // Not logged in - redirect to login page
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // User is authenticated, show dashboard
+      loadingOverlay.style.display = 'none';
+      dashboardContent.style.display = 'block';
+      
+      // Update UI based on user role
+      const user = data.user;
       const adminInfo = document.getElementById('adminInfo');
       const userInfo = document.getElementById('userInfo');
-      const authButtons = document.getElementById('authButtons');
       const mobileAuthLinks = document.getElementById('mobileAuthLinks');
       
-      if (data.authenticated) {
-        const user = data.user;
-        
-        if (user.role === 'admin') {
-          // Show admin UI
-          if (adminInfo) adminInfo.style.display = 'flex';
-          if (userInfo) userInfo.style.display = 'none';
-          if (authButtons) authButtons.style.display = 'none';
-          if (mobileAuthLinks) {
-            mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Logout</a>';
-          }
-          if (document.getElementById('adminName')) {
-            document.getElementById('adminName').textContent = user.username;
-          }
-        } else {
-          // Show regular user UI
-          if (adminInfo) adminInfo.style.display = 'none';
-          if (userInfo) userInfo.style.display = 'flex';
-          if (authButtons) authButtons.style.display = 'none';
-          if (mobileAuthLinks) {
-            mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
-          }
-          if (document.getElementById('userName')) {
-            document.getElementById('userName').textContent = user.username;
-          }
-          if (document.getElementById('userAvatar')) {
-            document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
-          }
+      if (user.role === 'admin') {
+        if (adminInfo) adminInfo.style.display = 'flex';
+        if (userInfo) userInfo.style.display = 'none';
+        if (document.getElementById('adminName')) {
+          document.getElementById('adminName').textContent = user.username;
+        }
+        if (mobileAuthLinks) {
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Admin Logout</a>';
         }
       } else {
-        // Show login buttons
         if (adminInfo) adminInfo.style.display = 'none';
-        if (userInfo) userInfo.style.display = 'none';
-        if (authButtons) authButtons.style.display = 'flex';
+        if (userInfo) userInfo.style.display = 'flex';
+        if (document.getElementById('userName')) {
+          document.getElementById('userName').textContent = user.username;
+        }
+        if (document.getElementById('userAvatar')) {
+          document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
+        }
         if (mobileAuthLinks) {
-          mobileAuthLinks.innerHTML = '<a href="login.html" class="nav-link">Login</a><a href="signup.html" class="nav-link">Sign Up</a>';
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
         }
       }
+      
+      // Load stats from /flagged-products which already exists
+      loadStats();
+      
     } catch (error) {
       console.error('Auth check failed:', error);
-      // Show login buttons on error
-      const authButtons = document.getElementById('authButtons');
-      if (authButtons) authButtons.style.display = 'flex';
+      window.location.href = 'login.html';
     }
   }
   
-  // Logout function
+  // Logout function — also defined in script.js but needs to be here too
+  // since script.js logout redirects to index.html, not login.html
   async function logout() {
     try {
-      await fetch(`${API_URL}/api/logout`, {
-        method: 'POST',
-        credentials: 'include'
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
+      await fetch(`${API_URL}/api/logout`, { method: 'POST', credentials: 'include' });
+    } catch (e) {}
+    window.location.href = 'login.html';
+  }
+
+  // Load stats using the existing /flagged-products endpoint
+  async function loadStats() {
+    try {
+      const response = await fetch(`${API_URL}/flagged-products`);
+      const data = await response.json();
+      const products = data.products || [];
+      const flagged = products.filter(p => p.status === 'Under Review').length;
+      const adulterated = products.filter(p => p.severity === 'high').length;
+      document.getElementById('stat-flagged').textContent = flagged;
+      document.getElementById('stat-adulterated').textContent = adulterated;
+    } catch (e) {
+      // Keep the default '—' values if fetch fails
     }
-    // Clear any local state and reload
-    window.location.href = 'index.html';
   }
   
-  // Initialize auth state on page load
+  // initDashboard() from script.js handles: mock data + flagged reports + filters + search + card clicks
   document.addEventListener('DOMContentLoaded', () => {
-    checkAuthState();
+    checkAuthAndLoad();
+    // Note: script.js DOMContentLoaded also fires and calls initDashboard() automatically
   });
 </script>
+
 </body>
 </html>

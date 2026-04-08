@@ -365,29 +365,13 @@ def add_product():
         'message': f'✅ Product "{product_name}" added successfully',
         'analysis': analysis
     })
-@app.route('/api/products/search', methods=['GET'])
-def search_products():
-    query = request.args.get('q', '')
-    # Search your products table
-    products = products.query.filter(
-        (products.name.ilike(f'%{query}%')) | 
-        (products.brand.ilike(f'%{query}%'))
-    ).limit(20).all()
-    
-    return jsonify([{
-        'id': p.id,
-        'name': p.name,
-        'brand': p.brand,
-        'nutrition': {
-            'calories_per_serve': p.calories,
-            'total_fat': p.total_fat,
-            'saturated_fat': p.saturated_fat,
-            'sodium': p.sodium,
-            'protein': p.protein,
-            'iron_percent': p.iron_percent,
-            # ... other fields
-        } if p.has_nutrition else None
-    } for p in products])
+
+
+
+       
+
+
+
 # ==================== CLAIM & OCR ROUTES ====================
 
 @app.route('/verify-claims', methods=['POST'])
