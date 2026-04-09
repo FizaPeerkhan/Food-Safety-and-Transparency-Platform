@@ -42,6 +42,105 @@
       display: none;
     }
     
+    /* Profile Menu Styles */
+    .profile-icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+    }
+    .profile-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-600));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      font-family: monospace;
+      box-shadow: 0 2px 8px rgba(30, 158, 94, 0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .profile-icon:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(30, 158, 94, 0.35);
+    }
+    .profile-menu {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: var(--white);
+      border: 1px solid var(--stone-200);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      min-width: 240px;
+      z-index: 1000;
+      overflow: hidden;
+      animation: fadeIn 0.2s ease;
+    }
+    .profile-menu-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+    }
+    .profile-menu-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-600));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      font-family: monospace;
+      flex-shrink: 0;
+    }
+    .profile-menu-info {
+      flex: 1;
+    }
+    .profile-menu-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+    .profile-menu-email {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .profile-menu-divider {
+      height: 1px;
+      background: var(--stone-200);
+    }
+    .profile-menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .profile-menu a:hover {
+      background: var(--stone-50);
+    }
+    .profile-menu a:last-child {
+      color: var(--red-500);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
     .hero {
       position: relative;
       padding: clamp(56px,8vw,100px) var(--page-px) clamp(48px,6vw,80px);
@@ -271,6 +370,14 @@
       font-size: 10px;
       margin-left: 6px;
     }
+    
+    /* Badge styles */
+    .badge-safe { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .badge-caution { background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .badge-danger { background: #fee2e2; color: #b91c1c; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    
+    .risk-meter-bar { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+    .risk-meter-fill { height: 100%; border-radius: 10px; transition: width 0.3s; }
 
     @media (max-width: 900px) {
       .hero-inner { grid-template-columns: 1fr; }
@@ -318,26 +425,27 @@
         
         <!-- Unified Navigation Action -->
         <div class="nav-action">
-          <!-- Admin Info (shown when admin logged in) -->
-          <div id="adminInfo" style="display: none;" class="user-info">
-            <div class="user-avatar">👑</div>
-            <span id="adminName">Admin</span>
-            <span class="admin-badge">Admin</span>
-            <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+          <!-- Admin Info -->
+          <div id="adminInfo" style="display: none;">
+            <button class="profile-icon-btn" onclick="toggleProfileMenu()">
+              <div class="profile-icon" id="adminAvatarIcon">👑</div>
+            </button>
           </div>
           
-          <!-- User Info (shown when regular user logged in) -->
-          <div id="userInfo" style="display: none;" class="user-info">
-            <div class="user-avatar" id="userAvatar"></div>
-            <span id="userName"></span>
-            <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+          <!-- User Info -->
+          <div id="userInfo" style="display: none;">
+            <button class="profile-icon-btn" onclick="toggleProfileMenu()">
+              <div class="profile-icon" id="userAvatarIcon"></div>
+            </button>
           </div>
           
-          <!-- Auth Buttons (shown when no one logged in - but this shouldn't be visible on dashboard) -->
-          <div id="authButtons" style="display: none;">
+          <!-- Auth Buttons -->
+          <div id="authButtons" style="display: flex;">
             <a href="login.html" class="btn btn-outline btn-sm">Login</a>
             <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
           </div>
+          
+          <a href="report.html" class="nav-report-btn">⚑ Report</a>
         </div>
         
         <button class="nav-burger" aria-label="Menu">
@@ -355,6 +463,19 @@
         <div id="mobileAuthLinks"></div>
       </div>
     </nav>
+
+    <!-- Profile Menu Popup -->
+    <div id="profileMenu" class="profile-menu" style="display: none;">
+      <div class="profile-menu-header">
+        <div class="profile-menu-avatar" id="profileMenuAvatar"></div>
+        <div class="profile-menu-info">
+          <div class="profile-menu-name" id="profileMenuName"></div>
+          <div class="profile-menu-email" id="profileMenuEmail"></div>
+        </div>
+      </div>
+      <div class="profile-menu-divider"></div>
+      <a href="#" onclick="logout()">🚪 Logout</a>
+    </div>
 
     <div class="page-wrap">
 
@@ -397,21 +518,21 @@
             <div class="hero-stat-pill">
               <span class="hero-stat-icon">🛡️</span>
               <div>
-                <div class="hero-stat-val" id="stat-total">191</div>
+                <div class="hero-stat-val" id="stat-total">0</div>
                 <div class="hero-stat-lbl">Products Tracked</div>
               </div>
             </div>
             <div class="hero-stat-pill">
               <span class="hero-stat-icon">⚠️</span>
               <div>
-                <div class="hero-stat-val" id="stat-flagged">—</div>
+                <div class="hero-stat-val" id="stat-flagged">0</div>
                 <div class="hero-stat-lbl">Flagged</div>
               </div>
             </div>
             <div class="hero-stat-pill">
               <span class="hero-stat-icon">🚨</span>
               <div>
-                <div class="hero-stat-val" id="stat-adulterated">—</div>
+                <div class="hero-stat-val" id="stat-adulterated">0</div>
                 <div class="hero-stat-lbl">Adulterated</div>
               </div>
             </div>
@@ -475,7 +596,7 @@
       </section>
 
       <!-- CTA Banner -->
-      <section style="padding:0 var(--page-px) 0; margin-bottom:0;" data-reveal>
+      <section style="padding:0 var(--page-px) 0; margin-bottom:0;">
         <div style="max-width:var(--max-w);margin:0 auto;">
           <div style="border-radius:var(--r-xl); background:linear-gradient(135deg, var(--green-800), var(--green-700)); padding:clamp(36px,5vw,60px) clamp(28px,5vw,64px); display:flex; align-items:center; justify-content:space-between; gap:28px; flex-wrap:wrap; position:relative; overflow:hidden;">
             <div style="position:relative;z-index:1;">
@@ -512,63 +633,284 @@
   </div>
 </div>
 
-<script src="script.js"></script>
 <script>
-  // API_URL already declared in script.js
-
-  // Check authentication - redirect to login if not authenticated
+  const API_URL = 'http://127.0.0.1:5000';
+  
+  // Mock products data
+  const MOCK_PRODUCTS = [
+    { id: 'p1', name: 'Classic Milk', brand: 'DairyPure', category: 'Dairy', riskLevel: 'low', riskScore: 12, status: 'safe', image: '🥛', ingredients: ['Whole Milk', 'Vitamin D3'] },
+    { id: 'p2', name: 'Refined Honey', brand: 'GoldenHive', category: 'Sweetener', riskLevel: 'medium', riskScore: 54, status: 'flagged', image: '🍯', ingredients: ['Honey', 'High Fructose Corn Syrup'] },
+    { id: 'p3', name: 'Extra Virgin Olive Oil', brand: 'MediterraOil', category: 'Oils', riskLevel: 'low', riskScore: 8, status: 'safe', image: '🫒', ingredients: ['Cold-Pressed Olive Oil'] },
+    { id: 'p4', name: 'Instant Noodles', brand: 'QuickBite', category: 'Processed', riskLevel: 'high', riskScore: 81, status: 'adulterated', image: '🍜', ingredients: ['Wheat Flour', 'Palm Oil', 'MSG', 'TBHQ'] },
+    { id: 'p5', name: 'Organic Turmeric', brand: 'SpiceRoot', category: 'Spices', riskLevel: 'medium', riskScore: 47, status: 'flagged', image: '🌿', ingredients: ['Turmeric', 'Metanil Yellow (trace)'] }
+  ];
+  
+  let flaggedReports = [];
+  let currentFilter = 'all';
+  let currentQuery = '';
+  
+  function getRiskColor(level) {
+    return { low: '#10b981', medium: '#f59e0b', high: '#ef4444' }[level];
+  }
+  
+  function getStatusBadge(status) {
+    const map = { 
+      safe: { cls: 'badge-safe', label: 'Safe' }, 
+      flagged: { cls: 'badge-caution', label: 'Flagged' }, 
+      adulterated: { cls: 'badge-danger', label: 'Adulterated' },
+      'Under Review': { cls: 'badge-caution', label: 'Under Review' },
+      'Resolved': { cls: 'badge-safe', label: 'Resolved' }
+    };
+    return map[status] || { cls: 'badge-info', label: status || 'Unknown' };
+  }
+  
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+  
+  function renderProducts() {
+    const grid = document.getElementById('product-grid');
+    if (!grid) return;
+    
+    let displayProducts = [...MOCK_PRODUCTS];
+    
+    // Add flagged reports to display
+    flaggedReports.forEach(report => {
+      displayProducts.push({
+        id: `report_${report.id}`,
+        name: report.product_name,
+        brand: report.brand,
+        category: report.category || 'Reported',
+        riskLevel: report.severity === 'high' ? 'high' : (report.severity === 'medium' ? 'medium' : 'low'),
+        riskScore: report.severity === 'high' ? 85 : (report.severity === 'medium' ? 55 : 30),
+        status: report.status === 'Under Review' ? 'flagged' : (report.status === 'Resolved' ? 'safe' : 'adulterated'),
+        image: '⚠️',
+        ingredients: [report.issue_type || 'Reported Issue'],
+        isReport: true,
+        reportId: report.id,
+        description: report.description
+      });
+    });
+    
+    // Apply filters
+    if (currentFilter !== 'all') {
+      displayProducts = displayProducts.filter(p => p.status === currentFilter || p.riskLevel === currentFilter);
+    }
+    if (currentQuery) {
+      displayProducts = displayProducts.filter(p => 
+        p.name.toLowerCase().includes(currentQuery) || 
+        p.brand.toLowerCase().includes(currentQuery)
+      );
+    }
+    
+    // Update stats
+    document.getElementById('stat-total').textContent = displayProducts.length;
+    document.getElementById('stat-flagged').textContent = displayProducts.filter(p => p.status === 'flagged').length;
+    document.getElementById('stat-adulterated').textContent = displayProducts.filter(p => p.status === 'adulterated').length;
+    
+    grid.innerHTML = displayProducts.map(p => {
+      const badge = getStatusBadge(p.status);
+      const color = getRiskColor(p.riskLevel);
+      const isReport = p.isReport ? true : false;
+      
+      return `<div class="prod-card card" data-id="${p.id}" data-is-report="${isReport}" data-report-id="${p.reportId || ''}" style="cursor: pointer;">
+        <div class="prod-card-accent" style="background: linear-gradient(135deg, ${color}22, ${color}08);"></div>
+        <div class="prod-card-body">
+          <div class="prod-card-top">
+            <span class="prod-card-emoji">${p.image}</span>
+            <span class="${badge.cls}">${badge.label}</span>
+          </div>
+          <div>
+            <h3 class="prod-card-name">${escapeHtml(p.name)}</h3>
+            <p class="prod-card-brand">${escapeHtml(p.brand)} · ${p.category}</p>
+          </div>
+          <div class="prod-card-meter">
+            <div class="risk-meter">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:.75rem;">Risk Score</span>
+                <span style="font-family:monospace;">${p.riskScore}/100</span>
+              </div>
+              <div class="risk-meter-bar">
+                <div class="risk-meter-fill" style="width:${p.riskScore}%;background:${color};"></div>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card-pills">
+            ${p.ingredients.slice(0,2).map(i => `<span style="padding:4px 8px; background:var(--stone-100); border-radius:20px; font-size:0.7rem;">${escapeHtml(i)}</span>`).join('')}
+          </div>
+          ${isReport ? `<div style="margin-top:8px; font-size:0.7rem; color:var(--red-500);">⚠️ User Reported</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    
+    // Add click handlers
+    document.querySelectorAll('.prod-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isReport = card.dataset.isReport === 'true';
+        if (isReport) {
+          const reportId = card.dataset.reportId;
+          const report = flaggedReports.find(r => r.id == reportId);
+          if (report) showReportDetails(report);
+        } else {
+          window.location.href = `check-product.html?id=${card.dataset.id}`;
+        }
+      });
+    });
+  }
+  
+  function showReportDetails(report) {
+    const evidenceHtml = report.evidence_path ? `
+      <div style="margin-top:12px;">
+        <strong>Evidence Image:</strong><br>
+        <img src="${API_URL}/${report.evidence_path}" style="max-width:100%; border-radius:8px; margin-top:8px;" onclick="window.open(this.src)" />
+      </div>
+    ` : '';
+    
+    const modalHtml = `
+      <div id="reportModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;">
+        <div style="background:white;border-radius:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;padding:24px;">
+          <h3 style="margin-bottom:16px;color:var(--red-500);">⚠️ User Report</h3>
+          <div style="margin-bottom:12px;">
+            <strong>Product:</strong> ${escapeHtml(report.product_name)}<br>
+            <strong>Brand:</strong> ${escapeHtml(report.brand)}<br>
+            <strong>Issue:</strong> ${escapeHtml(report.issue_type || 'Not specified')}<br>
+            <strong>Severity:</strong> <span style="color:${report.severity === 'high' ? 'red' : (report.severity === 'medium' ? 'orange' : 'green')}">${report.severity}</span><br>
+            <strong>Status:</strong> ${escapeHtml(report.status)}<br>
+            <strong>Reported by:</strong> ${escapeHtml(report.reporter_name || 'Anonymous')}
+          </div>
+          ${evidenceHtml}
+          <div style="margin-bottom:12px;padding:12px;background:#f7fafc;border-radius:8px;">
+            <strong>Description:</strong><br>
+            ${escapeHtml(report.description)}
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('reportModal')?.remove()">Close</button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
+  
+  async function fetchFlaggedReports() {
+    try {
+      const response = await fetch(`${API_URL}/flagged-products`);
+      const data = await response.json();
+      if (data.products) {
+        flaggedReports = data.products;
+        renderProducts();
+      } else {
+        renderProducts();
+      }
+    } catch (error) {
+      console.error('Error fetching flagged reports:', error);
+      renderProducts();
+    }
+  }
+  
+  // Profile menu functions
+  function getUserInitials(username) {
+    if (!username) return 'U';
+    const parts = username.trim().split(' ');
+    if (parts.length === 1) {
+      return parts[0].substring(0, 2).toUpperCase();
+    } else {
+      return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+  }
+  
+  function toggleProfileMenu() {
+    const menu = document.getElementById('profileMenu');
+    if (!menu) return;
+    if (menu.style.display === 'none' || !menu.style.display) {
+      menu.style.display = 'block';
+      setTimeout(() => {
+        document.addEventListener('click', function closeMenu(e) {
+          if (!menu.contains(e.target) && !e.target.closest('.profile-icon-btn')) {
+            menu.style.display = 'none';
+            document.removeEventListener('click', closeMenu);
+          }
+        });
+      }, 10);
+    } else {
+      menu.style.display = 'none';
+    }
+  }
+  
+  function updateProfileMenu(user) {
+    const profileAvatar = document.getElementById('profileMenuAvatar');
+    const profileName = document.getElementById('profileMenuName');
+    const profileEmail = document.getElementById('profileMenuEmail');
+    const userAvatarIcon = document.getElementById('userAvatarIcon');
+    
+    const initials = getUserInitials(user.username);
+    if (profileAvatar) profileAvatar.textContent = initials;
+    if (profileName) profileName.textContent = user.username;
+    if (profileEmail) profileEmail.textContent = user.email;
+    if (userAvatarIcon) userAvatarIcon.textContent = initials;
+  }
+  
   async function checkAuthAndLoad() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const dashboardContent = document.getElementById('dashboard-content');
     
     try {
-      const response = await fetch(`${API_URL}/api/me`, {
-        credentials: 'include'
-      });
-      
+      const response = await fetch(`${API_URL}/api/me`, { credentials: 'include' });
       const data = await response.json();
       
       if (!data.authenticated) {
-        // Not logged in - redirect to login page
         window.location.href = 'login.html';
         return;
       }
       
-      // User is authenticated, show dashboard
       loadingOverlay.style.display = 'none';
       dashboardContent.style.display = 'block';
       
-      // Update UI based on user role
       const user = data.user;
       const adminInfo = document.getElementById('adminInfo');
       const userInfo = document.getElementById('userInfo');
+      const authButtons = document.getElementById('authButtons');
       const mobileAuthLinks = document.getElementById('mobileAuthLinks');
       
       if (user.role === 'admin') {
-        if (adminInfo) adminInfo.style.display = 'flex';
+        if (adminInfo) adminInfo.style.display = 'block';
         if (userInfo) userInfo.style.display = 'none';
-        if (document.getElementById('adminName')) {
-          document.getElementById('adminName').textContent = user.username;
-        }
-        if (mobileAuthLinks) {
-          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Admin Logout</a>';
-        }
+        if (authButtons) authButtons.style.display = 'none';
+        if (mobileAuthLinks) mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Admin Logout</a>';
       } else {
         if (adminInfo) adminInfo.style.display = 'none';
-        if (userInfo) userInfo.style.display = 'flex';
-        if (document.getElementById('userName')) {
-          document.getElementById('userName').textContent = user.username;
-        }
-        if (document.getElementById('userAvatar')) {
-          document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
-        }
-        if (mobileAuthLinks) {
-          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
-        }
+        if (userInfo) userInfo.style.display = 'block';
+        if (authButtons) authButtons.style.display = 'none';
+        if (mobileAuthLinks) mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
+        updateProfileMenu(user);
       }
       
-      // Load stats from /flagged-products which already exists
-      loadStats();
+      // Fetch and display products with flagged reports
+      fetchFlaggedReports();
+      
+      // Setup filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          renderProducts();
+        });
+      });
+      
+      // Setup search
+      const searchInput = document.getElementById('dash-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          currentQuery = e.target.value.toLowerCase().trim();
+          renderProducts();
+        });
+      }
       
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -576,34 +918,15 @@
     }
   }
   
-  // Logout function — also defined in script.js but needs to be here too
-  // since script.js logout redirects to index.html, not login.html
   async function logout() {
     try {
       await fetch(`${API_URL}/api/logout`, { method: 'POST', credentials: 'include' });
     } catch (e) {}
     window.location.href = 'login.html';
   }
-
-  // Load stats using the existing /flagged-products endpoint
-  async function loadStats() {
-    try {
-      const response = await fetch(`${API_URL}/flagged-products`);
-      const data = await response.json();
-      const products = data.products || [];
-      const flagged = products.filter(p => p.status === 'Under Review').length;
-      const adulterated = products.filter(p => p.severity === 'high').length;
-      document.getElementById('stat-flagged').textContent = flagged;
-      document.getElementById('stat-adulterated').textContent = adulterated;
-    } catch (e) {
-      // Keep the default '—' values if fetch fails
-    }
-  }
   
-  // initDashboard() from script.js handles: mock data + flagged reports + filters + search + card clicks
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', function() {
     checkAuthAndLoad();
-    // Note: script.js DOMContentLoaded also fires and calls initDashboard() automatically
   });
 </script>
 

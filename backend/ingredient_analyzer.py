@@ -60,28 +60,96 @@ DEBUNKED_INGREDIENTS = {
     }
 }
 
+import re
+
 def parse_ingredients(text):
     """
-    Parse ingredients from CSV format.
-    - Preserves INS/E-numbers for risk analysis
-    - Removes percentages
-    - Keeps bracket content that contains INS numbers
-    - Commas are primary separators
+    Parse ingredients from CSV format with proper handling of:
+    - " and " as separator
+    - " & " as separator
+    - Dots '.' as separators (but not decimal points)
+    - Brackets (), {}, [] 
+    - INS/E-numbers preservation
+    - Percentage removal
     """
     if not text:
         return []
 
     text = str(text)
     
-    # First, extract and preserve INS numbers with their context
-    # We'll keep bracketed content that contains INS/E numbers
+    # Step 1: Mark bracket regions to preserve them during replacement
+    bracket_regions = []
+    depth = 0
+    bracket_start = -1
     
-    # Step 1: Split by commas respecting brackets
+    for i, char in enumerate(text):
+        if char in '([{':
+            if depth == 0:
+                bracket_start = i
+            depth += 1
+        elif char in ')]}':
+            depth -= 1
+            if depth == 0 and bracket_start != -1:
+                bracket_regions.append((bracket_start, i))
+                bracket_start = -1
+    
+    # Create a list of characters for manipulation
+    chars = list(text)
+    
+    # Mark which positions are inside brackets
+    inside_bracket = [False] * len(text)
+    for start, end in bracket_regions:
+        for j in range(start, end + 1):
+            if j < len(inside_bracket):
+                inside_bracket[j] = True
+    
+    # Step 2: Replace separators outside brackets
+    i = 0
+    while i < len(chars):
+        if not inside_bracket[i]:
+            # Check for " and " (with spaces)
+            if i + 5 <= len(chars) and ''.join(chars[i:i+5]).lower() == ' and ':
+                chars[i] = ','
+                for j in range(i+1, i+5):
+                    chars[j] = ''
+                i += 5
+                continue
+            
+            # Check for " & " (with spaces)
+            elif i + 3 <= len(chars) and ''.join(chars[i:i+3]).lower() == ' & ':
+                chars[i] = ','
+                for j in range(i+1, i+3):
+                    chars[j] = ''
+                i += 3
+                continue
+            
+            # Check for dot '.' as separator (not decimal point)
+            # A dot is a separator if:
+            # 1. It's not part of a number (e.g., 2.5)
+            # 2. It has spaces around or is followed by space
+            elif chars[i] == '.':
+                # Check if it's a decimal point (number.number)
+                is_decimal = False
+                if i > 0 and i + 1 < len(chars):
+                    left_is_digit = chars[i-1].isdigit()
+                    right_is_digit = chars[i+1].isdigit()
+                    if left_is_digit and right_is_digit:
+                        is_decimal = True
+                
+                if not is_decimal:
+                    # Check if dot has space before/after or is at sentence end
+                    if (i > 0 and chars[i-1] == ' ') or (i + 1 < len(chars) and chars[i+1] == ' '):
+                        chars[i] = ','
+        i += 1
+    
+    modified_text = ''.join(chars)
+    
+    # Step 3: Split by commas, respecting brackets
     parts = []
     current = []
     depth = 0
     
-    for char in text:
+    for char in modified_text:
         if char in '([{':
             depth += 1
             current.append(char)
@@ -90,15 +158,19 @@ def parse_ingredients(text):
             current.append(char)
         elif char == ',' and depth == 0:
             if current:
-                parts.append(''.join(current).strip())
+                part = ''.join(current).strip()
+                if part:
+                    parts.append(part)
                 current = []
         else:
             current.append(char)
     
     if current:
-        parts.append(''.join(current).strip())
+        part = ''.join(current).strip()
+        if part:
+            parts.append(part)
     
-    # Step 2: Process each part
+    # Step 4: Process each part
     seen = set()
     result = []
     
@@ -106,8 +178,9 @@ def parse_ingredients(text):
         if not part:
             continue
         
-        # Remove trailing "and"
+        # Remove trailing "and" (without spaces)
         part = re.sub(r'\s+and\s*$', '', part)
+        part = re.sub(r'&$', '', part)
         
         # Check if this part contains INS/E numbers
         has_ins = bool(re.search(r'(?:INS|E)\s*\d+', part, re.IGNORECASE))
@@ -117,6 +190,8 @@ def parse_ingredients(text):
             # Example: "Thickeners (508 & 412)" → keep as is
             # But remove "23.6%" if standalone
             clean = re.sub(r'\s*\(\s*\d+(?:\.\d+)?\s*%\s*\)', '', part)
+            clean = re.sub(r'\s*\{\s*\d+(?:\.\d+)?\s*%\s*\}', '', clean)
+            clean = re.sub(r'\s*\[\s*\d+(?:\.\d+)?\s*%\s*\]', '', clean)
             clean = re.sub(r'\s*\d+(?:\.\d+)?\s*%', '', clean)
         else:
             # Remove all bracket content for non-INS ingredients
@@ -128,17 +203,22 @@ def parse_ingredients(text):
         clean = re.sub(r'\s+', ' ', clean).strip()
         
         # Remove leading/trailing punctuation
-        clean = clean.strip(' ,;:.-')
+        clean = clean.strip(' ,;:.-_')
         
-        # Remove trailing "and" again
+        # Remove trailing "and" and "&" again
         clean = re.sub(r'\s+and\s*$', '', clean)
+        clean = re.sub(r'\s*&\s*$', '', clean)
         
         # Skip empty or too short
         if not clean or len(clean) < 2:
             continue
         
         # Skip if it's just a number
-        if re.match(r'^\d+$', clean):
+        if re.match(r'^\d+(?:\.\d+)?$', clean):
+            continue
+        
+        # Skip if it's just a percentage
+        if re.match(r'^\d+(?:\.\d+)?\s*%$', clean):
             continue
         
         # Deduplicate (case-insensitive)
@@ -148,7 +228,6 @@ def parse_ingredients(text):
             result.append(clean)
     
     return result
-
 def extract_ins_numbers(text):
     """Extract INS/E numbers from ingredients text"""
     if not text:

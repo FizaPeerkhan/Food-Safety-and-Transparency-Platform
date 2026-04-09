@@ -6,6 +6,7 @@
   <title>Complete Nutrition Analyzer — SafePlate</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* Copy all the styles from your existing file - they are fine */
     .page-hero {
       padding: clamp(44px,7vw,80px) var(--page-px) clamp(36px,5vw,56px);
       position: relative; overflow: hidden;
@@ -71,7 +72,6 @@
       padding: 32px;
     }
     
-    /* Product Info Section */
     .product-info-section {
       background: var(--stone-50);
       border-radius: var(--r-lg);
@@ -111,7 +111,6 @@
       box-shadow: 0 0 0 3px rgba(30,158,94,.1);
     }
     
-    /* OCR Section */
     .ocr-section {
       background: var(--stone-50);
       border-radius: var(--r-lg);
@@ -143,7 +142,6 @@
     .ocr-btn { padding: 8px 16px; background: var(--green-500); color: white; border: none; border-radius: var(--r-md); cursor: pointer; }
     .ocr-btn-secondary { background: var(--stone-400); }
     
-    /* Main Tabs */
     .main-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--stone-200); margin-bottom: 24px; flex-wrap: wrap; }
     .main-tab-btn { padding: 12px 28px; background: none; border: none; font-size: 1rem; font-weight: 600; color: var(--text-muted); cursor: pointer; position: relative; }
     .main-tab-btn:hover { color: var(--green-600); background: var(--green-50); }
@@ -152,32 +150,28 @@
     .main-tab-panel { display: none; }
     .main-tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
     
-    /* Nutrition Inner Tabs */
     .nutrition-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--stone-200); margin-bottom: 24px; flex-wrap: wrap; }
-    .nutrition-tab { padding: 10px 20px; background: none; border: none; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-radius: var(--r-md) var(--r-md) 0 0; }
+    .nutrition-tab { padding: 10px 20px; background: none; border: none; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-radius: var(--r-md) var(--r-md) 0 0; transition: all 0.2s; }
     .nutrition-tab:hover { color: var(--green-600); background: var(--green-50); }
     .nutrition-tab.active { color: var(--green-700); background: var(--green-50); border-bottom: 2px solid var(--green-500); }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
     
-    /* Form Grids */
     .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .form-field { display: flex; flex-direction: column; }
     .form-field label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
     .form-field input { padding: 8px 10px; border: 1.5px solid var(--stone-200); border-radius: var(--r-md); font-size: 0.85rem; background: var(--white); }
     .form-field input:focus { outline: none; border-color: var(--green-400); box-shadow: 0 0 0 3px rgba(30,158,94,.1); }
-    .form-field .unit { font-size: 0.65rem; color: var(--text-muted); margin-left: 4px; }
     
     .section-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin: 20px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--stone-200); }
     
     .btn-group { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
-    .analyze-btn { flex: 2; padding: 14px; background: var(--green-500); color: white; border: none; border-radius: var(--r-lg); font-weight: 600; font-size: 1rem; cursor: pointer; }
+    .analyze-btn { flex: 2; padding: 14px; background: var(--green-500); color: white; border: none; border-radius: var(--r-lg); font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
     .analyze-btn:hover { background: var(--green-600); transform: translateY(-2px); }
-    .save-btn { background: var(--blue-500); }
-    .save-btn:hover { background: var(--blue-600); }
+    .save-btn { background: #3b82f6; }
+    .save-btn:hover { background: #2563eb; }
     .reset-btn { flex: 1; background: var(--stone-300); color: var(--text-primary); }
     
-    /* Result Card */
     .result-card { border-radius: var(--r-lg); background: var(--green-50); padding: 24px; border-left: 4px solid var(--green-500); margin-top: 24px; animation: fadeIn 0.3s ease; }
     .product-header { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--stone-200); }
     .product-name-large { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
@@ -193,11 +187,9 @@
     .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .good-text { color: #15803d; }
     .warning-text { color: #b91c1c; }
-    .neutral-text { color: var(--text-secondary); }
     .nutri-badge { display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 600; background: var(--white); margin-right: 8px; }
     
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes spin { to { transform: rotate(360deg); } }
     
     @media (max-width: 600px) {
       .card-body { padding: 20px; }
@@ -207,7 +199,7 @@
     }
     
     .example-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .example-btn { padding: 6px 14px; background: var(--white); border: 1px solid var(--stone-200); border-radius: var(--r-full); font-size: 0.75rem; cursor: pointer; }
+    .example-btn { padding: 6px 14px; background: var(--white); border: 1px solid var(--stone-200); border-radius: var(--r-full); font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
     .example-btn:hover { background: var(--green-50); border-color: var(--green-300); }
     .info-note { margin-top: 16px; padding: 12px; background: var(--green-50); border-radius: var(--r-md); font-size: 0.75rem; text-align: center; }
   </style>
@@ -294,23 +286,26 @@
         <div class="nutrition-card">
           <div class="card-header"><h2>📊 Complete Nutrition Facts</h2><p>Enter values as they appear on the label</p></div>
           <div class="card-body">
-            <div class="main-tabs"><button class="main-tab-btn active" data-main-tab="manual">✍️ Manual Entry</button><button class="main-tab-btn" data-main-tab="ocr">📸 OCR Results</button></div>
+            <div class="main-tabs">
+              <button class="main-tab-btn active" data-main-tab="manual">✍️ Manual Entry</button>
+              <button class="main-tab-btn" data-main-tab="ocr">📸 OCR Results</button>
+            </div>
             
             <!-- Manual Entry Tab -->
             <div class="main-tab-panel active" id="main-tab-manual">
               <!-- Nutrition Tabs -->
               <div class="nutrition-tabs">
-                <button class="nutrition-tab active" data-tab="energy">🔥 Energy & Macros</button>
-                <button class="nutrition-tab" data-tab="fats">🥑 Fats</button>
-                <button class="nutrition-tab" data-tab="minerals">💎 Minerals</button>
-                <button class="nutrition-tab" data-tab="vitamins">💊 Vitamins</button>
-                <button class="nutrition-tab" data-tab="trace">🔬 Trace Minerals</button>
-                <button class="nutrition-tab" data-tab="additional">⚡ Additional</button>
-                <button class="nutrition-tab" data-tab="verification">📋 Verification</button>
+                <button class="nutrition-tab active" data-nutrition-tab="energy">🔥 Energy & Macros</button>
+                <button class="nutrition-tab" data-nutrition-tab="fats">🥑 Fats</button>
+                <button class="nutrition-tab" data-nutrition-tab="minerals">💎 Minerals</button>
+                <button class="nutrition-tab" data-nutrition-tab="vitamins">💊 Vitamins</button>
+                <button class="nutrition-tab" data-nutrition-tab="trace">🔬 Trace Minerals</button>
+                <button class="nutrition-tab" data-nutrition-tab="additional">⚡ Additional</button>
+                <button class="nutrition-tab" data-nutrition-tab="verification">📋 Verification</button>
               </div>
 
               <!-- Tab 1: Energy & Macros -->
-              <div class="tab-pane active" id="tab-energy">
+              <div class="tab-pane active" id="nutrition-tab-energy">
                 <div class="section-title">🔥 Energy</div>
                 <div class="form-grid">
                   <div class="form-field"><label>Calories (kcal)</label><input type="number" id="calories" placeholder="e.g., 288" step="any"></div>
@@ -339,7 +334,7 @@
               </div>
 
               <!-- Tab 2: Fats -->
-              <div class="tab-pane" id="tab-fats">
+              <div class="tab-pane" id="nutrition-tab-fats">
                 <div class="form-grid">
                   <div class="form-field"><label>Total Fat (g)</label><input type="number" id="totalFat" placeholder="e.g., 9.4" step="any"></div>
                   <div class="form-field"><label>Total Fat (% DV)</label><input type="number" id="totalFatPercent" placeholder="e.g., 13" step="any"></div>
@@ -357,7 +352,7 @@
               </div>
 
               <!-- Tab 3: Minerals -->
-              <div class="tab-pane" id="tab-minerals">
+              <div class="tab-pane" id="nutrition-tab-minerals">
                 <div class="form-grid">
                   <div class="form-field"><label>Sodium (mg)</label><input type="number" id="sodium" placeholder="e.g., 750" step="any"></div>
                   <div class="form-field"><label>Sodium (% DV)</label><input type="number" id="sodiumPercent" placeholder="e.g., 31" step="any"></div>
@@ -377,7 +372,7 @@
               </div>
 
               <!-- Tab 4: Vitamins -->
-              <div class="tab-pane" id="tab-vitamins">
+              <div class="tab-pane" id="nutrition-tab-vitamins">
                 <div class="form-grid">
                   <div class="form-field"><label>Vitamin A (mcg)</label><input type="number" id="vitaminAMcg" placeholder="e.g., 100" step="any"></div>
                   <div class="form-field"><label>Vitamin A (% DV)</label><input type="number" id="vitaminA" placeholder="e.g., 10" step="any"></div>
@@ -408,7 +403,7 @@
               </div>
 
               <!-- Tab 5: Trace Minerals -->
-              <div class="tab-pane" id="tab-trace">
+              <div class="tab-pane" id="nutrition-tab-trace">
                 <div class="form-grid">
                   <div class="form-field"><label>Copper (mcg)</label><input type="number" id="copper" placeholder="e.g., 200" step="any"></div>
                   <div class="form-field"><label>Copper (% DV)</label><input type="number" id="copperPercent" placeholder="e.g., 10" step="any"></div>
@@ -425,7 +420,7 @@
               </div>
 
               <!-- Tab 6: Additional -->
-              <div class="tab-pane" id="tab-additional">
+              <div class="tab-pane" id="nutrition-tab-additional">
                 <div class="form-grid">
                   <div class="form-field"><label>Caffeine (mg)</label><input type="number" id="caffeine" placeholder="e.g., 0" step="any"></div>
                   <div class="form-field"><label>Alcohol (g)</label><input type="number" id="alcohol" placeholder="e.g., 0" step="any"></div>
@@ -435,7 +430,7 @@
               </div>
 
               <!-- Tab 7: Verification -->
-              <div class="tab-pane" id="tab-verification">
+              <div class="tab-pane" id="nutrition-tab-verification">
                 <div class="form-grid">
                   <div class="form-field"><label>Data Source</label><select id="dataSource"><option value="manual">Manual Entry</option><option value="ocr">OCR Extracted</option><option value="verified">Verified Data</option></select></div>
                   <div class="form-field"><label>Notes</label><textarea id="notes" rows="3" placeholder="Additional notes about this product..." style="padding:8px; border-radius:8px; border:1px solid var(--stone-200);"></textarea></div>
@@ -676,7 +671,7 @@
     } catch(e) { alert('❌ Failed to save. Make sure backend is running.'); }
   }
   
-  // Tab switching
+  // Tab switching functions
   function switchMainTab(tabId) {
     document.querySelectorAll('.main-tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`main-tab-${tabId}`).classList.add('active');
@@ -685,15 +680,34 @@
   }
   
   function switchNutritionTab(tabId) {
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    document.querySelectorAll('.nutrition-tab').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`.nutrition-tab[data-tab="${tabId}"]`).classList.add('active');
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+    // Show selected pane
+    const activePane = document.getElementById(`nutrition-tab-${tabId}`);
+    if (activePane) activePane.classList.add('active');
+    // Update button states
+    document.querySelectorAll('.nutrition-tab').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-nutrition-tab') === tabId) {
+        btn.classList.add('active');
+      }
+    });
   }
   
-  document.querySelectorAll('.main-tab-btn').forEach(btn => btn.addEventListener('click', () => switchMainTab(btn.getAttribute('data-main-tab'))));
-  document.querySelectorAll('.nutrition-tab').forEach(btn => btn.addEventListener('click', () => switchNutritionTab(btn.getAttribute('data-tab'))));
-  document.querySelectorAll('.example-btn').forEach(btn => btn.addEventListener('click', () => loadExample(btn.getAttribute('data-example'))));
+  // Event listeners for main tabs
+  document.querySelectorAll('.main-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchMainTab(btn.getAttribute('data-main-tab')));
+  });
+  
+  // Event listeners for nutrition tabs
+  document.querySelectorAll('.nutrition-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchNutritionTab(btn.getAttribute('data-nutrition-tab')));
+  });
+  
+  // Example buttons
+  document.querySelectorAll('.example-btn').forEach(btn => {
+    btn.addEventListener('click', () => loadExample(btn.getAttribute('data-example')));
+  });
   
   analyzeBtn.addEventListener('click', analyzeNutrition);
   saveBtn.addEventListener('click', saveToDatabase);
@@ -709,34 +723,45 @@
   const processOcrBtn = document.getElementById('processOcrBtn');
   const clearOcrBtn = document.getElementById('clearOcrBtn');
   
-  uploadZone?.addEventListener('click', () => fileInput.click());
-  browseBtn?.addEventListener('click', () => fileInput.click());
-  fileInput?.addEventListener('change', (e) => { if (e.target.files[0]) handleImageUpload(e.target.files[0]); });
+  if (uploadZone) uploadZone.addEventListener('click', () => fileInput?.click());
+  if (browseBtn) browseBtn.addEventListener('click', () => fileInput?.click());
+  if (fileInput) fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImageUpload(e.target.files[0]); });
   
   function handleImageUpload(file) {
     const reader = new FileReader();
-    reader.onload = (e) => { previewImage.src = e.target.result; ocrPreview.classList.add('active'); };
+    reader.onload = (e) => { 
+      if (previewImage) previewImage.src = e.target.result; 
+      if (ocrPreview) ocrPreview.classList.add('active');
+    };
     reader.readAsDataURL(file);
-    extractedText.value = "Sample OCR text: Calories 250, Total Fat 12g, Sodium 400mg, Protein 8g, Iron 15%";
+    if (extractedText) extractedText.value = "Sample OCR text: Calories 250, Total Fat 12g, Sodium 400mg, Protein 8g, Iron 15%";
   }
   
-  processOcrBtn?.addEventListener('click', () => {
-    const text = extractedText.value;
-    if (text) {
-      const calorieMatch = text.match(/calories?\s*(\d+)/i);
-      const fatMatch = text.match(/fat\s*(\d+)/i);
-      const sodiumMatch = text.match(/sodium\s*(\d+)/i);
-      const proteinMatch = text.match(/protein\s*(\d+)/i);
-      if (calorieMatch) setNumberValue(calories, calorieMatch[1]);
-      if (fatMatch) setNumberValue(totalFat, fatMatch[1]);
-      if (sodiumMatch) setNumberValue(sodium, sodiumMatch[1]);
-      if (proteinMatch) setNumberValue(protein, proteinMatch[1]);
-      alert('Values extracted! Switch to Manual Entry tab to review.');
-      switchMainTab('manual');
-    }
-  });
+  if (processOcrBtn) {
+    processOcrBtn.addEventListener('click', () => {
+      const text = extractedText?.value;
+      if (text) {
+        const calorieMatch = text.match(/calories?\s*(\d+)/i);
+        const fatMatch = text.match(/fat\s*(\d+)/i);
+        const sodiumMatch = text.match(/sodium\s*(\d+)/i);
+        const proteinMatch = text.match(/protein\s*(\d+)/i);
+        if (calorieMatch) setNumberValue(calories, calorieMatch[1]);
+        if (fatMatch) setNumberValue(totalFat, fatMatch[1]);
+        if (sodiumMatch) setNumberValue(sodium, sodiumMatch[1]);
+        if (proteinMatch) setNumberValue(protein, proteinMatch[1]);
+        alert('Values extracted! Switch to Manual Entry tab to review.');
+        switchMainTab('manual');
+      }
+    });
+  }
   
-  clearOcrBtn?.addEventListener('click', () => { ocrPreview.classList.remove('active'); extractedText.value = ''; previewImage.src = ''; });
+  if (clearOcrBtn) {
+    clearOcrBtn.addEventListener('click', () => { 
+      if (ocrPreview) ocrPreview.classList.remove('active'); 
+      if (extractedText) extractedText.value = ''; 
+      if (previewImage) previewImage.src = ''; 
+    });
+  }
   
   // Auth check
   async function checkAuth() {

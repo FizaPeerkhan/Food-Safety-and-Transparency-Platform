@@ -988,6 +988,138 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+function toggleProfileMenu() {
+  const menu = document.getElementById('profileMenu');
+  if (menu.style.display === 'none' || !menu.style.display) {
+    menu.style.display = 'block';
+    // Close when clicking outside
+    document.addEventListener('click', function closeMenu(e) {
+      if (!menu.contains(e.target) && !e.target.closest('.profile-icon-btn')) {
+        menu.style.display = 'none';
+        document.removeEventListener('click', closeMenu);
+      }
+    });
+  } else {
+    menu.style.display = 'none';
+  }
+}
+
+// Update profile menu with user data
+function updateProfileMenu(username) {
+  const avatar = document.getElementById('profileMenuAvatar');
+  const nameSpan = document.getElementById('profileMenuName');
+  const userAvatarIcon = document.getElementById('userAvatarIcon');
+  if (avatar) avatar.textContent = username?.charAt(0).toUpperCase() || 'U';
+  if (nameSpan) nameSpan.textContent = username;
+  if (userAvatarIcon) userAvatarIcon.textContent = username?.charAt(0).toUpperCase() || 'U';
+}
+// Helper function to get initials from username
+function getUserInitials(username) {
+  if (!username) return '👤';
+  
+  // Split by space to get first and last name
+  const parts = username.trim().split(' ');
+  
+  if (parts.length === 1) {
+    // Single name - take first 2 letters
+    return parts[0].substring(0, 2).toUpperCase();
+  } else {
+    // First letter of first name + first letter of last name
+    const firstInitial = parts[0].charAt(0);
+    const lastInitial = parts[parts.length - 1].charAt(0);
+    return (firstInitial + lastInitial).toUpperCase();
+  }
+}
+
+// Toggle profile menu
+function toggleProfileMenu() {
+  const menu = document.getElementById('profileMenu');
+  if (!menu) return;
+  
+  if (menu.style.display === 'none' || !menu.style.display) {
+    menu.style.display = 'block';
+    // Close when clicking outside
+    setTimeout(() => {
+      document.addEventListener('click', function closeMenu(e) {
+        if (!menu.contains(e.target) && !e.target.closest('.profile-icon-btn')) {
+          menu.style.display = 'none';
+          document.removeEventListener('click', closeMenu);
+        }
+      });
+    }, 10);
+  } else {
+    menu.style.display = 'none';
+  }
+}
+
+// Update profile menu with user data
+function updateProfileMenu(user) {
+  const profileAvatar = document.getElementById('profileMenuAvatar');
+  const profileName = document.getElementById('profileMenuName');
+  const userAvatarIcon = document.getElementById('userAvatarIcon');
+  const adminAvatar = document.getElementById('adminAvatar');
+  
+  const initials = getUserInitials(user.username);
+  
+  if (profileAvatar) profileAvatar.textContent = initials;
+  if (profileName) profileName.textContent = user.username;
+  if (userAvatarIcon) userAvatarIcon.textContent = initials;
+  if (adminAvatar) adminAvatar.textContent = '👑';
+}
+
+// Update your checkAuth function to call updateProfileMenu
+async function checkAuth() {
+  try {
+    const response = await fetch(`${API_URL}/api/me`, {
+      credentials: 'include'
+    });
+    const data = await response.json();
+    
+    const adminInfo = document.getElementById('adminInfo');
+    const userInfo = document.getElementById('userInfo');
+    const authButtons = document.getElementById('authButtons');
+    const mobileAuthLinks = document.getElementById('mobileAuthLinks');
+    
+    if (data.authenticated) {
+      const user = data.user;
+      
+      if (user.role === 'admin') {
+        if (adminInfo) adminInfo.style.display = 'block';
+        if (userInfo) userInfo.style.display = 'none';
+        if (authButtons) authButtons.style.display = 'none';
+        if (mobileAuthLinks) {
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Admin Logout</a>';
+        }
+        updateProfileMenu(user);
+      } else {
+        if (adminInfo) adminInfo.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'block';
+        if (authButtons) authButtons.style.display = 'none';
+        if (mobileAuthLinks) {
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
+        }
+        updateProfileMenu(user);
+      }
+    } else {
+      if (adminInfo) adminInfo.style.display = 'none';
+      if (userInfo) userInfo.style.display = 'none';
+      if (authButtons) authButtons.style.display = 'flex';
+      if (mobileAuthLinks) {
+        mobileAuthLinks.innerHTML = '<a href="login.html" class="nav-link">Login</a><a href="signup.html" class="nav-link">Sign Up</a>';
+      }
+    }
+  } catch (error) {
+    console.error('Auth check failed:', error);
+  }
+}
+
+// Close profile menu when pressing Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const menu = document.getElementById('profileMenu');
+    if (menu) menu.style.display = 'none';
+  }
+});
 
 // ==================== INITIALIZE ====================
 document.addEventListener('DOMContentLoaded', () => {
