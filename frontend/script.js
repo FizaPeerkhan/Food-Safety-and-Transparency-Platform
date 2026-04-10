@@ -362,29 +362,12 @@ function renderSearchResult(data, container) {
   const moSet = new Set((data.moderate_risk_ingredients || []).map(i => (i.original_text || i.ingredient || '').toLowerCase()));
   
   let ingredientTags = '';
-  let ingredientsList = [];
-  
-  if (data.all_ingredients && data.all_ingredients.length > 0) {
-    ingredientsList = data.all_ingredients;
-  } else {
-    const rawIngredients = data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
-    ingredientsList = rawIngredients;
-  }
-  
+  const ingredientsList = data.all_ingredients || data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
   ingredientsList.forEach(i => {
     const name = i.name || i;
     const isHigh = hiSet.has(name.toLowerCase());
     const isMod = moSet.has(name.toLowerCase());
-    const isInfo = i.risk_level === 'Info' || i.is_debunked === true;
-    
-    let tagClass = 'ingredient-tag';
-    if (isInfo) tagClass += ' tag-info';
-    else if (isHigh) tagClass += ' tag-high';
-    else if (isMod) tagClass += ' tag-moderate';
-    else tagClass += ' tag-safe';
-    
-    const title = i.explanation || i.category || '';
-    ingredientTags += `<span class="${tagClass}" title="${escapeHtml(title)}">${escapeHtml(name)}</span>`;
+    ingredientTags += `<span class="ingredient-pill ${isHigh ? 'pill-danger' : (isMod ? 'pill-caution' : 'pill-safe')}">${escapeHtml(name)}</span>`;
   });
   
   let highRiskHtml = '';
@@ -407,10 +390,48 @@ function renderSearchResult(data, container) {
     warningsHtml = `<div style="margin-top:20px;"><p class="label-upper" style="color:var(--red-500);">🏥 Who Should Be Careful</p>${data.health_warnings.map(w => `<div style="padding:10px 12px;background:#fff7ed;border-radius:8px;margin-bottom:6px;">⚠️ ${escapeHtml(w)}</div>`).join('')}</div>`;
   }
   
-  let insHtml = '';
-  if (data.ins_numbers?.length) {
-    insHtml = `<div style="margin-top:20px;background:#ebf8ff;border-radius:8px;padding:12px;"><strong>🔬 INS / E-Numbers:</strong><br>${data.ins_numbers.map(i => `<span style="display:inline-block;background:#bee3f8;border-radius:20px;padding:3px 10px;margin:3px;">${escapeHtml(i.code)} — ${escapeHtml(i.name)}</span>`).join('')}</div>`;
-  }
+ let insHtml = '';
+if (data.ins_numbers?.length) {
+    insHtml = `
+        <div style="margin-top:24px;">
+            <p class="label-upper" style="color:var(--primary-600); margin-bottom:12px;">🔬 Detailed Additive Analysis (INS)</p>
+            ${data.ins_numbers.map(i => {
+                // Determine color based on risk level from dataset
+                const rColor = i.risk_level === 'High' ? '#e53e3e' : (i.risk_level === 'Moderate' ? '#dd6b20' : '#38a169');
+                const bgColor = i.risk_level === 'High' ? '#fff5f5' : (i.risk_level === 'Moderate' ? '#fffaf0' : '#f0fff4');
+
+                return `
+                <div style="padding:16px; background:${bgColor}; border-left:4px solid ${rColor}; border-radius:12px; margin-bottom:12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <strong style="font-size:1.05rem;">${escapeHtml(i.code)}: ${escapeHtml(i.name)}</strong>
+                        <span style="font-size:0.7rem; padding:2px 8px; border-radius:10px; background:white; border:1px solid ${rColor}; color:${rColor}; font-weight:bold; text-transform:uppercase;">
+                            ${escapeHtml(i.risk_level)} Risk
+                        </span>
+                    </div>
+                    
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px; font-weight:600;">
+                        Category: ${escapeHtml(i.category || 'Food Additive')}
+                    </div>
+
+                    <p style="font-size:0.9rem; line-height:1.5; color:#2d3748; margin-bottom:10px;">
+                        ${escapeHtml(i.explanation || 'No description available.')}
+                    </p>
+
+                    <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                        ${i.caution ? `
+                            <div style="font-size:0.75rem; color:#c53030; background:rgba(229,62,62,0.1); padding:4px 8px; border-radius:6px;">
+                                <strong>⚠️ Caution:</strong> ${escapeHtml(i.caution)}
+                            </div>` : ''}
+                        
+                        ${i.allergen ? `
+                            <div style="font-size:0.75rem; color:#2b6cb0; background:rgba(66,153,225,0.1); padding:4px 8px; border-radius:6px;">
+                                <strong>🥛 Allergen:</strong> ${escapeHtml(i.allergen)}
+                            </div>` : ''}
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>`;
+}
   
   container.innerHTML = `
     <div class="result-card card" style="margin-top:28px;">
@@ -449,9 +470,7 @@ function renderSearchResult(data, container) {
       </div>
     </div>
   `;
-}
-
-// ==================== CLAIMS VERIFICATION ====================
+}// ==================== CLAIMS VERIFICATION ====================
 function showInlineClaimVerification() {
   const claimHtml = `
     <div id="inlineClaimBox" style="margin-top: 20px; padding: 20px; background: var(--stone-100); border-radius: var(--r-lg);">

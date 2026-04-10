@@ -4,11 +4,6 @@ import re
 from datetime import datetime
 from functools import wraps
 
-import os
-import json
-from datetime import datetime
-from functools import wraps
-
 from flask import Flask, request, jsonify, session, send_from_directory
 import bcrypt
 from flask_cors import CORS
@@ -20,7 +15,7 @@ from claim_verifier import verify_claims
 from ocr_handler import process_ocr_image, process_ocr_nutrition
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here-change-in-production'  # Required for session
+app.secret_key = 'your-secret-key-here-change-in-production'
 
 # CORS configuration with credentials
 CORS(app, 
@@ -77,7 +72,6 @@ def register():
     if not all([username, email, password]):
         return jsonify({'error': 'All fields are required'}), 400
     
-    # Email validation
     email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
     if not re.match(email_regex, email):
         return jsonify({'error': 'Invalid email format'}), 400
@@ -134,7 +128,6 @@ def login():
             return jsonify({'error': 'Invalid email or password'}), 401
         
         if bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
-            # Update last login
             db = get_db()
             cursor = db.cursor()
             cursor.execute("UPDATE users SET last_login = NOW() WHERE id = %s", (user['id'],))
@@ -142,7 +135,6 @@ def login():
             cursor.close()
             db.close()
             
-            # Store in session
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['role'] = user['role']
@@ -298,9 +290,14 @@ def search_product():
     product = products[0]
     ingredients_text = product.get('ingredients_text', '')
     
+    # 1. Parse and analyze standard ingredients
     ingredient_list = parse_ingredients(ingredients_text)
     analysis = build_ingredient_analysis(ingredient_list, cursor)
 
+    # 2. FIX: Extract INS numbers USING the cursor before it closes
+    ins_data = extract_ins_numbers(ingredients_text, cursor)
+
+    # 3. Now it is safe to close the database
     cursor.close()
     db.close()
 
@@ -311,9 +308,8 @@ def search_product():
             "ingredients_text": ingredients_text
         },
         **analysis,
-        "ins_numbers": extract_ins_numbers(ingredients_text)
+        "ins_numbers": ins_data  # Pass the fetched data here
     })
-
 @app.route('/analyze-ingredients', methods=['POST'])
 def analyze_ingredients():
     data = request.get_json()
@@ -365,13 +361,6 @@ def add_product():
         'message': f'✅ Product "{product_name}" added successfully',
         'analysis': analysis
     })
-
-
-
-       
-
-
-
 # ==================== CLAIM & OCR ROUTES ====================
 
 @app.route('/verify-claims', methods=['POST'])
@@ -391,11 +380,8 @@ def ocr_extract():
     
     return jsonify({'extracted_text': extracted_text, 'raw_text': extracted_text, 'success': True})
 
-# Add these routes to your Flask app
-
 @app.route('/api/ocr/nutrition', methods=['POST'])
 def ocr_nutrition():
-    """Extract text from nutrition label image"""
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
     
@@ -403,7 +389,6 @@ def ocr_nutrition():
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
     
-    # Use your existing OCR function
     extracted_text, error = process_ocr_nutrition(file)
     
     if error:
@@ -416,7 +401,6 @@ def ocr_nutrition():
 
 @app.route('/api/ocr/generic', methods=['POST'])
 def ocr_generic():
-    """Generic OCR for any image"""
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
     
@@ -628,12 +612,10 @@ def home():
 # ==================== INITIALIZE DATABASE ====================
 
 def init_db():
-    """Create tables if they don't exist"""
     try:
         db = get_db()
         cursor = db.cursor()
         
-        # Create users table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -647,7 +629,6 @@ def init_db():
             )
         """)
         
-        # Check if admin exists
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
         admin_count = cursor.fetchone()[0]
         

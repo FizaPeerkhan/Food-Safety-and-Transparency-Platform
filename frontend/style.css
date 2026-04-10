@@ -962,3 +962,26 @@ input, textarea { font-family: inherit; }
     font-size: 15px;
   }
 }
+.ingredient-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 0.8rem;
+  margin: 2px;
+}
+
+.tag-safe {
+  background: #f0fff4;
+  color: #2f855a;
+}
+
+.tag-moderate {
+  background: #fffaf0;
+  color: #b7791f;
+}
+
+.tag-high {
+  background: #fff5f5;
+  color: #c53030;
+}
