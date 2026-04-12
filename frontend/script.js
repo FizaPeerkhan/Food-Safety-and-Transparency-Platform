@@ -470,6 +470,13 @@ if (data.ins_numbers?.length) {
       </div>
     </div>
   `;
+ // At the bottom of renderSearchResult, right before the closing of result-body div
+if (['High', 'Moderate'].includes(data.overall_risk)) {
+    const altContainer = document.createElement('div');
+    altContainer.id = 'alternatives-container';
+    container.querySelector('.result-body').appendChild(altContainer);
+    fetchAndRenderAlternatives(data, altContainer);
+}
 }// ==================== CLAIMS VERIFICATION ====================
 function showInlineClaimVerification() {
   const claimHtml = `
@@ -1139,7 +1146,93 @@ document.addEventListener('keydown', function(e) {
     if (menu) menu.style.display = 'none';
   }
 });
+async function fetchAndRenderAlternatives(data, container) {
+  if (!['High', 'Moderate'].includes(data.overall_risk)) return;
 
+  const healthConditions = JSON.parse(
+    localStorage.getItem('user_health_conditions') || '[]'
+  );
+
+  // Extract flagged ingredient names directly from result data
+  const flaggedNames = [
+    ...(data.high_risk_ingredients || []).map(i => i.ingredient || ''),
+    ...(data.moderate_risk_ingredients || []).map(i => i.ingredient || '')
+  ].filter(Boolean);
+
+  // Build issue keywords from caution groups and explanations
+  const flaggedIssues = [];
+  const allFlagged = [
+    ...(data.high_risk_ingredients || []),
+    ...(data.moderate_risk_ingredients || [])
+  ];
+  allFlagged.forEach(i => {
+    if (i.caution_for) flaggedIssues.push(i.caution_for.toLowerCase());
+    if (i.explanation) {
+      // Pull key words like "sodium", "preservative", "colour" from explanation
+      const words = i.explanation.toLowerCase().match(/\b(sodium|sugar|preservative|colour|color|msg|fat|trans|saturated)\b/g);
+      if (words) flaggedIssues.push(...words);
+    }
+  });
+
+  try {
+    const res = await fetch(`${API_URL}/get-alternatives`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        overall_risk:            data.overall_risk,
+        product_name:            data.product.product_name,
+        brand:                   data.product.brand,
+        health_conditions:       healthConditions,
+        flagged_ingredient_names: flaggedNames,
+        flagged_issues:          [...new Set(flaggedIssues)]
+      })
+    });
+    const result = await res.json();
+    if (!result.show || !result.alternatives?.length) return;
+    renderAlternatives(result.alternatives, data.product.product_name, container);
+  } catch(e) {
+    console.error('Alternatives fetch failed:', e);
+  }
+}
+
+function renderAlternatives(alternatives, productName, container) {
+
+  function scoreClass(s) {
+    return s >= 85 ? 'score-excellent' : s >= 75 ? 'score-good' : 'score-fair';
+  }
+
+  function tagPills(tags) {
+    return (tags || []).slice(0, 3)
+      .map(t => `<span class="alt-tag">${escapeHtml(t)}</span>`)
+      .join('');
+  }
+
+  container.innerHTML = `
+    <div class="alt-section">
+      <p class="alt-section-label">Healthier alternatives to ${escapeHtml(productName)}</p>
+      <p class="alt-section-sub">Similar products with better nutritional profiles</p>
+      <div class="alt-grid">
+        ${alternatives.map(alt => {
+          const cls = scoreClass(alt.health_score);
+          return `
+            <div class="alt-card">
+              <div class="alt-card-header">
+                <div>
+                  <p class="alt-card-title">${escapeHtml(alt.name)}</p>
+                  <p class="alt-card-brand">${escapeHtml(alt.brand)}</p>
+                </div>
+                <span class="alt-score ${cls}">${alt.health_score}/100</span>
+              </div>
+              <div class="alt-bar-track">
+                <div class="alt-bar-fill ${cls}" style="width:${alt.health_score}%"></div>
+              </div>
+              <p class="alt-reason">${escapeHtml(alt.reason)}</p>
+              <div class="alt-tags">${tagPills(alt.tags)}</div>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
 // ==================== INITIALIZE ====================
 document.addEventListener('DOMContentLoaded', () => {
   initNav();

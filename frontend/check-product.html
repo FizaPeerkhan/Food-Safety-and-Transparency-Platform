@@ -212,10 +212,10 @@
       </a>
       <ul class="nav-links">
         <li><a href="index.html" class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
-  <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
-  <li><a href="nutrition.html" class="nav-link"><span class="nav-link-icon">🥗</span> Nutrition Facts</a></li>  <!-- NEW -->
-  <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
-  <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+        <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
+        <li><a href="nutrition.html" class="nav-link"><span class="nav-link-icon">🥗</span> Nutrition Facts</a></li>
+        <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
+        <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
       </ul>
       <div class="nav-action">
         <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
@@ -227,6 +227,7 @@
     <div class="nav-mobile">
       <a href="index.html" class="nav-link">Dashboard</a>
       <a href="check-product.html" class="nav-link">Check Product</a>
+      <a href="nutrition.html" class="nav-link">Nutrition Facts</a>
       <a href="awareness.html" class="nav-link">Awareness</a>
       <a href="stay-safe.html" class="nav-link">Stay Safe</a>
       <a href="report.html" class="nav-report-btn">Report Product</a>
@@ -234,115 +235,121 @@
   </nav>
 
   <div class="page-wrap">
+    <!-- Hero Section with fade animation -->
     <section class="page-hero">
       <div class="page-hero-bg"></div>
       <div class="page-hero-inner">
-        <div class="page-hero-label">
-          <span>🔬</span>
-          <span>Product Intelligence</span>
+        <div class="anim-fade-up">
+          <div class="page-hero-label">
+            <span>🔬</span>
+            <span>Product Intelligence</span>
+          </div>
+          <h1 class="page-hero-title">Know exactly what's<br><em>inside your food.</em></h1>
+          <p class="page-hero-sub">Search by name, upload a label photo, or paste marketing claims. Get an instant, honest breakdown.</p>
         </div>
-        <h1 class="page-hero-title">Know exactly what's<br><em>inside your food.</em></h1>
-        <p class="page-hero-sub">Search by name, upload a label photo, or paste marketing claims. Get an instant, honest breakdown.</p>
       </div>
     </section>
 
-    <div class="check-layout">
-      <div class="check-inner">
-        <div class="check-panel">
-          <div class="check-panel-header">
-            <div class="check-panel-tabs">
-              <button class="tab-btn active" data-tab="search"><span class="tab-icon">🔍</span> Search Product</button>
-              <button class="tab-btn" data-tab="upload"><span class="tab-icon">📷</span> Upload Label</button>
-              <button class="tab-btn" data-tab="add-product"><span class="tab-icon">📤</span> Add Product</button>
-            </div>
-          </div>
-          <div class="check-panel-body">
-            <!-- Search Tab -->
-            <div class="tab-panel active" id="tab-search">
-              <div class="search-bar-big">
-                <div class="search-input-wrap">
-                  <span class="search-input-icon">🔍</span>
-                  <input id="product-search-input" type="text" class="search-input-big" placeholder="e.g., Butter, Maggi, Amul Lassi" autocomplete="off" />
-                </div>
-                <button class="search-btn-big" id="search-btn">Analyze →</button>
+    <!-- Main Content with fade animation -->
+    <div class="anim-fade-up anim-delay-1">
+      <div class="check-layout">
+        <div class="check-inner">
+          <div class="check-panel">
+            <div class="check-panel-header">
+              <div class="check-panel-tabs">
+                <button class="tab-btn active" data-tab="search"><span class="tab-icon">🔍</span> Search Product</button>
+                <button class="tab-btn" data-tab="upload"><span class="tab-icon">📷</span> Upload Label</button>
+                <button class="tab-btn" data-tab="add-product"><span class="tab-icon">📤</span> Add Product</button>
               </div>
-              <div class="search-suggestions">
-                <span style="font-size:.75rem;color:var(--text-faint);align-self:center;">Try:</span>
-                <span class="suggestion-chip" data-val="Butter">🧈 Butter</span>
-                <span class="suggestion-chip" data-val="Maggi">🍜 Maggi</span>
-                <span class="suggestion-chip" data-val="Amul Lassi">🥛 Amul Lassi</span>
-                <span class="suggestion-chip" data-val="Kurkure">🌽 Kurkure</span>
-              </div>
-              <div id="search-result"></div>
             </div>
-
-<!-- Upload Tab -->
-<div class="tab-panel" id="tab-upload" style="display: none;">
-  <div class="upload-zone" id="upload-zone">
-    <span class="upload-icon">📸</span>
-    <div class="upload-title">Drop your label image here</div>
-    <div class="upload-sub">or click to browse your files</div>
-  </div>
-  <input type="file" id="file-input" accept="image/*" style="display:none;" />
-  <button id="browse-btn" class="btn btn-outline" style="margin-top:14px;width:100%;">📁 Browse Files</button>
-  <div class="extracted-area" id="extracted-ingredients">
-    <label style="font-size:.75rem;font-weight:600;text-transform:uppercase;">Extracted Ingredients</label>
-    <textarea id="extracted-text" rows="4" class="extracted-textarea" placeholder="Ingredients will appear here after analysis…"></textarea>
-  </div>
-  <button id="analyze-upload-btn" class="analyze-btn" disabled>🔬 Extract & Analyze Ingredients</button>
-  
-  <!-- ADD THIS - Results container inside Upload tab -->
-  <div id="upload-result" style="margin-top: 20px;"></div>
-</div>
-
-            <!-- Add Product Tab -->
-            <div class="tab-panel" id="tab-add-product" style="display: none;">
-              <div class="add-product-form">
-                <h3>📤 Add New Product to Database</h3>
-                <div class="form-row">
-                  <label>Product Name *</label>
-                  <input type="text" id="newProductName" placeholder="e.g., Organic Oats">
+            <div class="check-panel-body">
+              <!-- Search Tab -->
+              <div class="tab-panel active" id="tab-search">
+                <div class="search-bar-big">
+                  <div class="search-input-wrap">
+                    <span class="search-input-icon">🔍</span>
+                    <input id="product-search-input" type="text" class="search-input-big" placeholder="e.g., Butter, Maggi, Amul Lassi" autocomplete="off" />
+                  </div>
+                  <button class="search-btn-big" id="search-btn">Analyze →</button>
                 </div>
-                <div class="form-row">
-                  <label>Brand *</label>
-                  <input type="text" id="newProductBrand" placeholder="e.g., Quaker">
+                <div class="search-suggestions">
+                  <span style="font-size:.75rem;color:var(--text-faint);align-self:center;">Try:</span>
+                  <span class="suggestion-chip" data-val="Butter">🧈 Butter</span>
+                  <span class="suggestion-chip" data-val="Maggi">🍜 Maggi</span>
+                  <span class="suggestion-chip" data-val="Amul Lassi">🥛 Amul Lassi</span>
+                  <span class="suggestion-chip" data-val="Kurkure">🌽 Kurkure</span>
                 </div>
-                <div class="form-row">
-                  <label>Ingredients List *</label>
-                  <textarea id="newProductIngredients" rows="4" placeholder="List all ingredients separated by commas..."></textarea>
-                </div>
-                <button class="add-product-btn" id="add-product-btn">➕ Add & Analyze</button>
+                <div id="search-result"></div>
               </div>
-              <div id="add-product-result"></div>
-            </div>
 
+              <!-- Upload Tab -->
+              <div class="tab-panel" id="tab-upload" style="display: none;">
+                <div class="upload-zone" id="upload-zone">
+                  <span class="upload-icon">📸</span>
+                  <div class="upload-title">Drop your label image here</div>
+                  <div class="upload-sub">or click to browse your files</div>
+                </div>
+                <input type="file" id="file-input" accept="image/*" style="display:none;" />
+                <button id="browse-btn" class="btn btn-outline" style="margin-top:14px;width:100%;">📁 Browse Files</button>
+                <div class="extracted-area" id="extracted-ingredients">
+                  <label style="font-size:.75rem;font-weight:600;text-transform:uppercase;">Extracted Ingredients</label>
+                  <textarea id="extracted-text" rows="4" class="extracted-textarea" placeholder="Ingredients will appear here after analysis…"></textarea>
+                </div>
+                <button id="analyze-upload-btn" class="analyze-btn" disabled>🔬 Extract & Analyze Ingredients</button>
+                <div id="upload-result" style="margin-top: 20px;"></div>
+              </div>
+
+              <!-- Add Product Tab -->
+              <div class="tab-panel" id="tab-add-product" style="display: none;">
+                <div class="add-product-form">
+                  <h3>📤 Add New Product to Database</h3>
+                  <div class="form-row">
+                    <label>Product Name *</label>
+                    <input type="text" id="newProductName" placeholder="e.g., Organic Oats">
+                  </div>
+                  <div class="form-row">
+                    <label>Brand *</label>
+                    <input type="text" id="newProductBrand" placeholder="e.g., Quaker">
+                  </div>
+                  <div class="form-row">
+                    <label>Ingredients List *</label>
+                    <textarea id="newProductIngredients" rows="4" placeholder="List all ingredients separated by commas..."></textarea>
+                  </div>
+                  <button class="add-product-btn" id="add-product-btn">➕ Add & Analyze</button>
+                </div>
+                <div id="add-product-result"></div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <footer class="footer">
-      <div class="footer-inner">
-        <div>
-          <div class="footer-brand">SafePlate</div>
-          <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
+    <!-- Footer with fade animation -->
+    <div class="anim-fade-up anim-delay-2">
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>
+            <div class="footer-brand">SafePlate</div>
+            <div class="footer-note">Food Safety & Transparency Platform · For educational use</div>
+          </div>
+          <nav class="footer-links">
+            <a href="index.html">Dashboard</a>
+            <a href="check-product.html">Check Product</a>
+            <a href="report.html">Report</a>
+            <a href="awareness.html">Awareness</a>
+            <a href="stay-safe.html">Stay Safe</a>
+          </nav>
         </div>
-        <nav class="footer-links">
-          <a href="index.html">Dashboard</a>
-          <a href="check-product.html">Check Product</a>
-          <a href="report.html">Report</a>
-          <a href="awareness.html">Awareness</a>
-          <a href="stay-safe.html">Stay Safe</a>
-        </nav>
-      </div>
-    </footer>
+      </footer>
+    </div>
   </div>
 </div>
 
 <script src="script.js"></script>
 <script>
-  // Auth check — script.js already defines API_URL and checkAuthState()
-  // but those don't redirect on failure. This enforces redirect for protected pages.
+  // Auth check — enforces redirect for protected pages
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/me', { credentials: 'include' });

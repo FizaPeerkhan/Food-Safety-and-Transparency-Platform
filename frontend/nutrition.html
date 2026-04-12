@@ -6,207 +6,521 @@
   <title>Complete Nutrition Analyzer — SafePlate</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Copy all the styles from your existing file - they are fine */
+    /* ==================== PAGE HERO ==================== */
     .page-hero {
       padding: clamp(44px,7vw,80px) var(--page-px) clamp(36px,5vw,56px);
-      position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
     }
     .page-hero-bg {
-      position: absolute; inset: 0; pointer-events: none;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
       background: radial-gradient(ellipse 70% 80% at 80% 50%, var(--green-50) 0%, transparent 70%);
     }
     .page-hero-inner {
-      max-width: var(--max-w); margin: 0 auto;
-      position: relative; z-index: 1;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
     .page-hero-label {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 5px 14px; border-radius: var(--r-full);
-      background: var(--green-50); border: 1px solid var(--green-100);
-      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: var(--r-full);
+      background: var(--green-50);
+      border: 1px solid var(--green-100);
+      margin-bottom: 18px;
     }
-    .page-hero-label span { font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--green-600); }
+    .page-hero-label span {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--green-600);
+    }
     .page-hero-title {
       font-family: var(--font-display);
-      font-size: clamp(2rem,4.5vw,3.4rem);
-      font-weight: 400; letter-spacing: -.028em; line-height: 1.1;
-      color: var(--text-primary); margin-bottom: 14px;
+      font-size: clamp(2rem,4.5vw,3.6rem);
+      font-weight: 400;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 16px;
     }
-    .page-hero-title em { font-style:italic; color:var(--green-600); }
+    .page-hero-title em {
+      font-style: italic;
+      color: var(--green-600);
+    }
     .page-hero-sub {
-      font-size: clamp(.9rem,1.5vw,1.05rem);
-      color: var(--text-secondary); line-height: 1.65; max-width: 520px;
+      font-size: clamp(.92rem,1.5vw,1.05rem);
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 560px;
     }
 
+    /* ==================== MAIN CONTAINER ==================== */
     .nutrition-container {
       padding: 0 var(--page-px) 72px;
     }
     .nutrition-inner {
-      max-width: var(--max-w); margin: 0 auto;
+      max-width: var(--max-w);
+      margin: 0 auto;
     }
+
+    /* ==================== SINGLE CARD DESIGN ==================== */
     .nutrition-card {
       background: var(--white);
-      border: 1px solid var(--border);
       border-radius: var(--r-xl);
       box-shadow: var(--shadow-md);
       overflow: hidden;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
     .card-header {
-      padding: 28px 32px 0;
+      padding: 24px 32px;
+      background: linear-gradient(135deg, var(--green-50), var(--white));
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(to bottom, var(--green-50), var(--white));
     }
     .card-header h2 {
       font-family: var(--font-display);
-      font-size: 1.6rem;
+      font-size: 1.3rem;
       font-weight: 400;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .card-header p {
       color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 20px;
+      font-size: 0.8rem;
     }
     .card-body {
-      padding: 32px;
+      padding: 28px 32px;
     }
-    
-    .product-info-section {
-      background: var(--stone-50);
-      border-radius: var(--r-lg);
-      padding: 20px;
-      margin-bottom: 28px;
-      border: 1px solid var(--stone-200);
-    }
-    .product-info-grid {
+
+    /* ==================== PRODUCT INFO ==================== */
+    .product-row {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: start;
+      flex-wrap: wrap;
     }
-    .product-info-field {
+    @media (max-width: 768px) {
+      .product-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .product-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .field {
       display: flex;
       flex-direction: column;
     }
-    .product-info-field label {
-      font-size: 0.7rem;
+    .field label {
+      font-size: 0.65rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
-    .product-info-field input, .product-info-field select {
+    .field input, .field select {
       padding: 10px 12px;
-      border: 1.5px solid var(--stone-200);
+      border: 1px solid var(--stone-200);
       border-radius: var(--r-md);
       font-size: 0.85rem;
-      transition: var(--t-fast);
+      transition: all 0.2s;
       background: var(--white);
     }
-    .product-info-field input:focus, .product-info-field select:focus {
+    .field input:focus, .field select:focus {
       outline: none;
       border-color: var(--green-400);
       box-shadow: 0 0 0 3px rgba(30,158,94,.1);
     }
-    
-    .ocr-section {
-      background: var(--stone-50);
+
+    /* OCR Upload */
+    .ocr-upload {
+      background: linear-gradient(135deg, var(--stone-50), var(--white));
       border-radius: var(--r-lg);
-      padding: 20px;
-      margin-bottom: 28px;
-      border: 1px solid var(--stone-200);
-    }
-    .upload-zone {
-      border: 2px dashed var(--stone-300);
-      border-radius: var(--r-lg);
-      padding: 40px 24px;
+      padding: 16px 20px;
+      min-width: 200px;
       text-align: center;
       cursor: pointer;
-      transition: var(--t-base);
+      transition: all 0.3s ease;
+      border: 1px solid var(--stone-200);
+    }
+    .ocr-upload:hover {
+      background: var(--green-50);
+      border-color: var(--green-300);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .ocr-upload-icon {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .ocr-upload-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .ocr-upload-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .ocr-preview {
+      margin-top: 12px;
+      display: none;
+    }
+    .ocr-preview.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .ocr-preview img {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: var(--r-md);
+      margin-bottom: 10px;
+      border: 1px solid var(--stone-200);
+    }
+    .ocr-text {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--stone-200);
+      border-radius: var(--r-md);
+      font-size: 0.7rem;
+      resize: vertical;
+    }
+
+    /* ==================== PRIMARY NUTRIENTS ==================== */
+    .primary-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+      margin-top: 28px;
+    }
+
+    /* ==================== CREATIVE NUTRIENT CARDS ==================== */
+    .nutrient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .nutrient-card {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--stone-200);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .nutrient-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--green-200);
+    }
+    .nutrient-card-header {
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--stone-200);
+    }
+    .nutrient-card-header:hover {
+      background: linear-gradient(135deg, var(--green-100), var(--green-50));
+    }
+    .nutrient-card-icon {
+      font-size: 1.2rem;
+    }
+    .nutrient-card-arrow {
+      transition: transform 0.3s ease;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .nutrient-card.collapsed .nutrient-card-arrow {
+      transform: rotate(-90deg);
+    }
+    .nutrient-card-content {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      background: var(--stone-50);
+    }
+    .nutrient-card.collapsed .nutrient-card-content {
+      display: none;
+    }
+    .nutrient-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      padding: 8px 12px;
+      border-radius: var(--r-md);
+      border: 1px solid var(--stone-200);
+      transition: all 0.2s;
+    }
+    .nutrient-item:hover {
+      border-color: var(--green-300);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .nutrient-item label {
+      flex: 1;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .nutrient-item input {
+      width: 80px;
+      padding: 6px 8px;
+      border: 1px solid var(--stone-200);
+      border-radius: var(--r-md);
+      font-size: 0.75rem;
+      text-align: right;
+    }
+    .nutrient-item .unit {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      width: 30px;
+    }
+
+    /* ==================== BUTTON HIERARCHY ==================== */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      flex: 2;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-600));
+      color: white;
+      border: none;
+      border-radius: var(--r-lg);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30,158,94,0.3);
+    }
+    .btn-secondary {
+      flex: 1;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      border-radius: var(--r-lg);
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0.85;
+    }
+    .btn-secondary:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+    .btn-clear {
+      flex: 0.6;
+      padding: 12px 20px;
+      background: var(--stone-200);
+      color: var(--text-muted);
+      border: none;
+      border-radius: var(--r-lg);
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0.7;
+    }
+    .btn-clear:hover {
+      opacity: 1;
+      background: var(--stone-300);
+    }
+
+    /* ==================== RESULT SECTION ==================== */
+    .result-card {
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+      border-radius: var(--r-lg);
+      padding: 24px;
+      margin-top: 28px;
+      border: 1px solid var(--green-100);
+    }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--stone-200);
+    }
+    .result-product-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .result-product-brand {
+      font-size: 0.75rem;
+      color: var(--green-600);
+      margin-top: 2px;
+    }
+    .result-score {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--green-600), var(--green-500));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      line-height: 1;
+    }
+    .result-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
       background: var(--white);
     }
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--green-400);
-      background: var(--green-50);
+    .result-summary {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
     }
-    .upload-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-    .upload-title { font-weight: 600; margin-bottom: 5px; }
-    .upload-sub { font-size: 0.75rem; color: var(--text-muted); }
-    .ocr-preview { margin-top: 16px; display: none; }
-    .ocr-preview.active { display: block; }
-    .ocr-preview img { max-width: 100%; max-height: 200px; border-radius: var(--r-md); margin-bottom: 12px; }
-    .extracted-text { width: 100%; padding: 12px; border: 1.5px solid var(--stone-200); border-radius: var(--r-md); font-size: 0.85rem; resize: vertical; font-family: monospace; }
-    .ocr-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-    .ocr-btn { padding: 8px 16px; background: var(--green-500); color: white; border: none; border-radius: var(--r-md); cursor: pointer; }
-    .ocr-btn-secondary { background: var(--stone-400); }
-    
-    .main-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--stone-200); margin-bottom: 24px; flex-wrap: wrap; }
-    .main-tab-btn { padding: 12px 28px; background: none; border: none; font-size: 1rem; font-weight: 600; color: var(--text-muted); cursor: pointer; position: relative; }
-    .main-tab-btn:hover { color: var(--green-600); background: var(--green-50); }
-    .main-tab-btn.active { color: var(--green-700); background: var(--green-50); }
-    .main-tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--green-500); }
-    .main-tab-panel { display: none; }
-    .main-tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
-    
-    .nutrition-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--stone-200); margin-bottom: 24px; flex-wrap: wrap; }
-    .nutrition-tab { padding: 10px 20px; background: none; border: none; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-radius: var(--r-md) var(--r-md) 0 0; transition: all 0.2s; }
-    .nutrition-tab:hover { color: var(--green-600); background: var(--green-50); }
-    .nutrition-tab.active { color: var(--green-700); background: var(--green-50); border-bottom: 2px solid var(--green-500); }
-    .tab-pane { display: none; }
-    .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
-    
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .form-field { display: flex; flex-direction: column; }
-    .form-field label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
-    .form-field input { padding: 8px 10px; border: 1.5px solid var(--stone-200); border-radius: var(--r-md); font-size: 0.85rem; background: var(--white); }
-    .form-field input:focus { outline: none; border-color: var(--green-400); box-shadow: 0 0 0 3px rgba(30,158,94,.1); }
-    
-    .section-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin: 20px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--stone-200); }
-    
-    .btn-group { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
-    .analyze-btn { flex: 2; padding: 14px; background: var(--green-500); color: white; border: none; border-radius: var(--r-lg); font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
-    .analyze-btn:hover { background: var(--green-600); transform: translateY(-2px); }
-    .save-btn { background: #3b82f6; }
-    .save-btn:hover { background: #2563eb; }
-    .reset-btn { flex: 1; background: var(--stone-300); color: var(--text-primary); }
-    
-    .result-card { border-radius: var(--r-lg); background: var(--green-50); padding: 24px; border-left: 4px solid var(--green-500); margin-top: 24px; animation: fadeIn 0.3s ease; }
-    .product-header { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--stone-200); }
-    .product-name-large { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
-    .product-brand-large { font-size: 0.9rem; color: var(--green-600); margin-top: 4px; }
-    .health-score { font-size: 2.5rem; font-weight: 800; color: var(--green-700); line-height: 1; }
-    .macro-grid { display: flex; flex-wrap: wrap; gap: 20px; margin: 16px 0; padding: 16px 0; border-top: 1px solid var(--stone-200); border-bottom: 1px solid var(--stone-200); }
-    .macro-item { text-align: center; flex: 1; min-width: 70px; }
-    .macro-value { font-size: 1.3rem; font-weight: 700; }
-    .macro-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); }
-    .micronutrients { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
-    .micronutrient { background: var(--white); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; }
-    .advice-box { background: #eef2ee; padding: 12px 16px; border-radius: 24px; margin-top: 16px; }
-    .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .good-text { color: #15803d; }
-    .warning-text { color: #b91c1c; }
-    .nutri-badge { display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 600; background: var(--white); margin-right: 8px; }
-    
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    
+    .key-nutrients {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 12px 0;
+      border-top: 1px solid var(--stone-200);
+      border-bottom: 1px solid var(--stone-200);
+      margin-bottom: 12px;
+    }
+    .key-nutrient {
+      text-align: center;
+      flex: 1;
+      min-width: 70px;
+    }
+    .key-nutrient-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green-700);
+    }
+    .key-nutrient-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .result-details {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      background: var(--white);
+      border-radius: var(--r-md);
+    }
+    .result-details.active {
+      display: block;
+    }
+    .detail-item {
+      background: var(--green-50);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      display: inline-block;
+      margin: 4px;
+    }
+    .expand-link {
+      color: var(--green-600);
+      font-size: 0.7rem;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 8px;
+      display: inline-block;
+    }
+    .advice-text {
+      background: linear-gradient(135deg, #eef2ee, var(--white));
+      padding: 10px 14px;
+      border-radius: 20px;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      border: 1px solid var(--green-100);
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .anim-fade-up {
+      animation: fadeIn 0.5s ease forwards;
+      opacity: 0;
+    }
+    .anim-delay-1 { animation-delay: 0.1s; }
+    .anim-delay-2 { animation-delay: 0.2s; }
+    .anim-delay-3 { animation-delay: 0.3s; }
+    .anim-delay-4 { animation-delay: 0.4s; }
+
+    /* ==================== UTILITIES ==================== */
+    .example-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .example-btn {
+      padding: 4px 10px;
+      background: var(--white);
+      border: 1px solid var(--stone-200);
+      border-radius: var(--r-full);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .example-btn:hover {
+      background: var(--green-50);
+      border-color: var(--green-300);
+      transform: translateY(-1px);
+    }
+    .info-note {
+      margin-top: 16px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+      border-radius: var(--r-md);
+      font-size: 0.7rem;
+      text-align: center;
+      color: var(--text-muted);
+      border: 1px solid var(--green-100);
+    }
+
     @media (max-width: 600px) {
       .card-body { padding: 20px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .main-tab-btn { padding: 10px 16px; font-size: 0.85rem; }
-      .nutrition-tab { padding: 8px 12px; font-size: 0.7rem; }
+      .primary-fields { grid-template-columns: 1fr; }
+      .nutrient-grid { grid-template-columns: 1fr; }
+      .nutrient-card-content { grid-template-columns: 1fr; }
+      .btn-group { flex-direction: column; }
+      .btn-primary, .btn-secondary, .btn-clear { width: 100%; }
     }
-    
-    .example-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .example-btn { padding: 6px 14px; background: var(--white); border: 1px solid var(--stone-200); border-radius: var(--r-full); font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
-    .example-btn:hover { background: var(--green-50); border-color: var(--green-300); }
-    .info-note { margin-top: 16px; padding: 12px; background: var(--green-50); border-radius: var(--r-md); font-size: 0.75rem; text-align: center; }
   </style>
 </head>
 <body>
 <div id="nutrition-page">
 
+  <!-- Navigation -->
   <nav class="nav">
     <div class="nav-inner">
       <a class="nav-logo" href="index.html">
@@ -217,14 +531,14 @@
         </div>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html" class="nav-link"><span class="nav-link-icon">⊞</span> Dashboard</a></li>
-        <li><a href="check-product.html" class="nav-link"><span class="nav-link-icon">🔬</span> Check Product</a></li>
-        <li><a href="nutrition.html" class="nav-link "><span class="nav-link-icon">🥗</span> Nutrition Facts</a></li>
-        <li><a href="awareness.html" class="nav-link"><span class="nav-link-icon">📖</span> Awareness</a></li>
-        <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
+        <li><a href="index.html" class="nav-link">⊞ Dashboard</a></li>
+        <li><a href="check-product.html" class="nav-link">🔬 Check Product</a></li>
+        <li><a href="nutrition.html" class="nav-link active">🥗 Nutrition Facts</a></li>
+        <li><a href="awareness.html" class="nav-link">📖 Awareness</a></li>
+        <li><a href="stay-safe.html" class="nav-link">❤️ Stay Safe</a></li>
       </ul>
       <div class="nav-action">
-        <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
+        <a href="report.html" class="nav-report-btn">⚑ Report</a>
       </div>
       <button class="nav-burger" aria-label="Menu">☰</button>
     </div>
@@ -232,304 +546,227 @@
   </nav>
 
   <div class="page-wrap">
+    <!-- Hero Section -->
     <section class="page-hero">
       <div class="page-hero-bg"></div>
       <div class="page-hero-inner">
-        <div class="page-hero-label"><span>🥗</span><span>Complete Nutrition Intelligence</span></div>
-        <h1 class="page-hero-title">Decode every nutrient <br><em>on your label.</em></h1>
-        <p class="page-hero-sub">Comprehensive nutrition analysis with 100+ nutrients. Upload label or enter manually.</p>
+        <div class="anim-fade-up">
+          <div class="page-hero-label">
+            <span>🥗</span>
+            <span>Complete Nutrition Intelligence</span>
+          </div>
+          <h1 class="page-hero-title">Decode every nutrient <br><em>on your label.</em></h1>
+          <p class="page-hero-sub">Enter common nutrition facts, then expand categories to add additional nutrients specific to your product.</p>
+        </div>
       </div>
     </section>
 
     <div class="nutrition-container">
       <div class="nutrition-inner">
-        
-        <!-- Product Info Card -->
-        <div class="nutrition-card">
-          <div class="card-header"><h2>📝 Product Information</h2><p>Tell us which product you're analyzing</p></div>
-          <div class="card-body">
-            <div class="product-info-section">
-              <div class="product-info-grid">
-                <div class="product-info-field"><label>🏷️ Product Name *</label><input type="text" id="productName" placeholder="e.g., Maggi Masala Noodles"></div>
-                <div class="product-info-field"><label>🏢 Brand *</label><input type="text" id="productBrand" placeholder="e.g., Nestlé"></div>
-                <div class="product-info-field"><label>📦 Category</label><select id="productCategory"><option value="">Select Category</option><option>Noodles & Pasta</option><option>Dairy</option><option>Snacks</option><option>Beverages</option><option>Breakfast Cereals</option><option>Protein Bars</option><option>Frozen Foods</option><option>Bakery</option><option>Sauces & Condiments</option><option>Other</option></select></div>
-                <div class="product-info-field"><label>🔢 Barcode (optional)</label><input type="text" id="productBarcode" placeholder="e.g., 8901234567890"></div>
-                <div class="product-info-field"><label>⚖️ Serving Size (g)</label><input type="number" id="servingSize" placeholder="e.g., 75" step="any"></div>
-                <div class="product-info-field"><label>📊 Servings Per Container</label><input type="number" id="servingsPerContainer" placeholder="e.g., 12"></div>
+
+        <!-- Single Card: Product + Nutrition -->
+        <div class="anim-fade-up anim-delay-1">
+          <div class="nutrition-card">
+            <div class="card-header">
+              <h2>📝 Product & Nutrition</h2>
+              <p>Tell us about your product</p>
+            </div>
+            <div class="card-body">
+
+              <!-- Product Row -->
+              <div class="product-row">
+                <div class="product-fields">
+                  <div class="field"><label>Product Name</label><input type="text" id="productName" placeholder="e.g., Maggi Noodles"></div>
+                  <div class="field"><label>Brand</label><input type="text" id="productBrand" placeholder="e.g., Nestlé"></div>
+                  <div class="field"><label>Serving Size (g)</label><input type="number" id="servingSize" placeholder="e.g., 75" step="any"></div>
+                </div>
+                <div class="ocr-upload" id="uploadZone">
+                  <span class="ocr-upload-icon">📷</span>
+                  <div class="ocr-upload-title">Upload Label</div>
+                  <div class="ocr-upload-sub">Click to scan</div>
+                </div>
               </div>
+              <input type="file" id="fileInput" accept="image/*" style="display:none;">
+              <div class="ocr-preview" id="ocrPreview">
+                <img id="previewImage" alt="Preview">
+                <textarea id="extractedText" class="ocr-text" rows="2" placeholder="Extracted text..."></textarea>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <button id="processOcrBtn" class="ocr-btn" style="background:var(--green-500); color:white; padding:4px 12px; border-radius:20px; border:none; font-size:0.7rem;">Parse</button>
+                  <button id="clearOcrBtn" class="ocr-btn" style="background:var(--stone-300); padding:4px 12px; border-radius:20px; border:none; font-size:0.7rem;">Clear</button>
+                </div>
+              </div>
+
               <div class="example-buttons">
-                <span style="font-size:0.7rem; color:var(--text-muted);">Quick fill:</span>
-                <button class="example-btn" data-example="maggi">🍜 Maggi Noodles</button>
+                <span style="font-size:0.65rem; color:var(--text-muted);">Try:</span>
+                <button class="example-btn" data-example="maggi">🍜 Maggi</button>
                 <button class="example-btn" data-example="amul">🧈 Amul Butter</button>
                 <button class="example-btn" data-example="protein">💪 Protein Bar</button>
                 <button class="example-btn" data-example="oats">🌾 Oats</button>
-                <button class="example-btn" data-example="soda">🥤 Soda</button>
               </div>
+
+              <!-- Primary Nutrients -->
+              <div class="primary-fields">
+                <div class="field"><label>🔥 Calories</label><input type="number" id="calories" placeholder="kcal" step="any"></div>
+                <div class="field"><label>🍗 Protein</label><input type="number" id="protein" placeholder="g" step="any"></div>
+                <div class="field"><label>🥑 Total Fat</label><input type="number" id="totalFat" placeholder="g" step="any"></div>
+                <div class="field"><label>🍬 Sugar</label><input type="number" id="totalSugars" placeholder="g" step="any"></div>
+                <div class="field"><label>🧂 Sodium</label><input type="number" id="sodium" placeholder="mg" step="any"></div>
+              </div>
+
+              <!-- Creative Nutrient Cards -->
+              <div class="nutrient-grid">
+                <!-- Fats Card -->
+                <div class="nutrient-card" id="fatsCard">
+                  <div class="nutrient-card-header">
+                    <span><span class="nutrient-card-icon">🥑</span> Fats & Fatty Acids</span>
+                    <span class="nutrient-card-arrow">▼</span>
+                  </div>
+                  <div class="nutrient-card-content">
+                    <div class="nutrient-item"><label>Trans Fat</label><input type="number" id="transFat" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Saturated Fat</label><input type="number" id="saturatedFat" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Monounsaturated Fat</label><input type="number" id="monounsaturatedFat" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Polyunsaturated Fat</label><input type="number" id="polyunsaturatedFat" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Omega-3</label><input type="number" id="omega3" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Omega-6</label><input type="number" id="omega6" step="any" value="0"><span class="unit">g</span></div>
+                  </div>
+                </div>
+
+                <!-- Vitamins Card -->
+                <div class="nutrient-card" id="vitaminsCard">
+                  <div class="nutrient-card-header">
+                    <span><span class="nutrient-card-icon">💊</span> Vitamins</span>
+                    <span class="nutrient-card-arrow">▼</span>
+                  </div>
+                  <div class="nutrient-card-content">
+                    <div class="nutrient-item"><label>Vitamin A</label><input type="number" id="vitaminA" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Vitamin C</label><input type="number" id="vitaminC" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Vitamin D</label><input type="number" id="vitaminD" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Vitamin E</label><input type="number" id="vitaminE" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Vitamin K</label><input type="number" id="vitaminK" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Vitamin B12</label><input type="number" id="vitaminB12" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Folate</label><input type="number" id="folate" step="any" value="0"><span class="unit">% DV</span></div>
+                  </div>
+                </div>
+
+                <!-- Minerals Card -->
+                <div class="nutrient-card" id="mineralsCard">
+                  <div class="nutrient-card-header">
+                    <span><span class="nutrient-card-icon">💎</span> Minerals & Carbs</span>
+                    <span class="nutrient-card-arrow">▼</span>
+                  </div>
+                  <div class="nutrient-card-content">
+                    <div class="nutrient-item"><label>Dietary Fiber</label><input type="number" id="dietaryFiber" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Total Carbs</label><input type="number" id="totalCarbs" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Iron</label><input type="number" id="iron" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Calcium</label><input type="number" id="calcium" step="any" value="0"><span class="unit">% DV</span></div>
+                    <div class="nutrient-item"><label>Potassium</label><input type="number" id="potassium" step="any" value="0"><span class="unit">mg</span></div>
+                    <div class="nutrient-item"><label>Magnesium</label><input type="number" id="magnesium" step="any" value="0"><span class="unit">mg</span></div>
+                    <div class="nutrient-item"><label>Zinc</label><input type="number" id="zinc" step="any" value="0"><span class="unit">mg</span></div>
+                    <div class="nutrient-item"><label>Cholesterol</label><input type="number" id="cholesterol" step="any" value="0"><span class="unit">mg</span></div>
+                  </div>
+                </div>
+
+                <!-- Other Card -->
+                <div class="nutrient-card" id="otherCard">
+                  <div class="nutrient-card-header">
+                    <span><span class="nutrient-card-icon">⚡</span> Other Nutrients</span>
+                    <span class="nutrient-card-arrow">▼</span>
+                  </div>
+                  <div class="nutrient-card-content">
+                    <div class="nutrient-item"><label>Caffeine</label><input type="number" id="caffeine" step="any" value="0"><span class="unit">mg</span></div>
+                    <div class="nutrient-item"><label>Added Sugars</label><input type="number" id="addedSugars" step="any" value="0"><span class="unit">g</span></div>
+                    <div class="nutrient-item"><label>Sugar Alcohols</label><input type="number" id="sugarAlcohols" step="any" value="0"><span class="unit">g</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="btn-group">
+                <button id="analyzeBtn" class="btn-primary">📊 Generate Report</button>
+                <button id="saveBtn" class="btn-secondary">💾 Save</button>
+                <button id="resetBtn" class="btn-clear">Clear</button>
+              </div>
+
+              <!-- Result Container -->
+              <div id="resultContainer"></div>
+              <div class="info-note">💡 Based on per-serving values. Always check serving size on package.</div>
             </div>
-          </div>
-        </div>
-
-        <!-- OCR Upload Card -->
-        <div class="nutrition-card">
-          <div class="card-header"><h2>📸 Upload Label (OCR)</h2><p>AI-powered text extraction from nutrition labels</p></div>
-          <div class="card-body">
-            <div class="ocr-section">
-              <div class="upload-zone" id="uploadZone"><span class="upload-icon">📷</span><div class="upload-title">Click or drag & drop</div><div class="upload-sub">Upload a clear photo of the nutrition facts panel</div></div>
-              <input type="file" id="fileInput" accept="image/*" style="display:none;">
-              <div class="ocr-preview" id="ocrPreview"><img id="previewImage" alt="Preview"><textarea id="extractedText" class="extracted-text" rows="3" placeholder="Extracted text will appear here..."></textarea><div class="ocr-actions"><button id="processOcrBtn" class="ocr-btn">🔍 Parse Numbers</button><button id="clearOcrBtn" class="ocr-btn ocr-btn-secondary">🗑️ Clear</button></div></div>
-              <div class="ocr-actions" style="justify-content:center;"><button id="browseBtn" class="ocr-btn" style="background: var(--stone-500);">📁 Browse Files</button></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Tabs: OCR vs Manual -->
-        <div class="nutrition-card">
-          <div class="card-header"><h2>📊 Complete Nutrition Facts</h2><p>Enter values as they appear on the label</p></div>
-          <div class="card-body">
-            <div class="main-tabs">
-              <button class="main-tab-btn active" data-main-tab="manual">✍️ Manual Entry</button>
-              <button class="main-tab-btn" data-main-tab="ocr">📸 OCR Results</button>
-            </div>
-            
-            <!-- Manual Entry Tab -->
-            <div class="main-tab-panel active" id="main-tab-manual">
-              <!-- Nutrition Tabs -->
-              <div class="nutrition-tabs">
-                <button class="nutrition-tab active" data-nutrition-tab="energy">🔥 Energy & Macros</button>
-                <button class="nutrition-tab" data-nutrition-tab="fats">🥑 Fats</button>
-                <button class="nutrition-tab" data-nutrition-tab="minerals">💎 Minerals</button>
-                <button class="nutrition-tab" data-nutrition-tab="vitamins">💊 Vitamins</button>
-                <button class="nutrition-tab" data-nutrition-tab="trace">🔬 Trace Minerals</button>
-                <button class="nutrition-tab" data-nutrition-tab="additional">⚡ Additional</button>
-                <button class="nutrition-tab" data-nutrition-tab="verification">📋 Verification</button>
-              </div>
-
-              <!-- Tab 1: Energy & Macros -->
-              <div class="tab-pane active" id="nutrition-tab-energy">
-                <div class="section-title">🔥 Energy</div>
-                <div class="form-grid">
-                  <div class="form-field"><label>Calories (kcal)</label><input type="number" id="calories" placeholder="e.g., 288" step="any"></div>
-                  <div class="form-field"><label>Calories from Fat</label><input type="number" id="caloriesFromFat" placeholder="e.g., 85" step="any"></div>
-                  <div class="form-field"><label>Energy (kJ)</label><input type="number" id="energyKj" placeholder="e.g., 1200" step="any"></div>
-                </div>
-                <div class="section-title">🍗 Protein</div>
-                <div class="form-grid">
-                  <div class="form-field"><label>Protein (g)</label><input type="number" id="protein" placeholder="e.g., 6.2" step="any"></div>
-                  <div class="form-field"><label>Protein (% DV)</label><input type="number" id="proteinPercent" placeholder="e.g., 12" step="any"></div>
-                </div>
-                <div class="section-title">🍚 Carbohydrates</div>
-                <div class="form-grid">
-                  <div class="form-field"><label>Total Carbs (g)</label><input type="number" id="totalCarbs" placeholder="e.g., 44.7" step="any"></div>
-                  <div class="form-field"><label>Total Carbs (% DV)</label><input type="number" id="totalCarbsPercent" placeholder="e.g., 17" step="any"></div>
-                  <div class="form-field"><label>Dietary Fiber (g)</label><input type="number" id="dietaryFiber" placeholder="e.g., 1.5" step="any"></div>
-                  <div class="form-field"><label>Dietary Fiber (% DV)</label><input type="number" id="fiberPercent" placeholder="e.g., 6" step="any"></div>
-                  <div class="form-field"><label>Soluble Fiber (g)</label><input type="number" id="solubleFiber" placeholder="e.g., 0.5" step="any"></div>
-                  <div class="form-field"><label>Insoluble Fiber (g)</label><input type="number" id="insolubleFiber" placeholder="e.g., 1.0" step="any"></div>
-                  <div class="form-field"><label>Total Sugars (g)</label><input type="number" id="totalSugars" placeholder="e.g., 1.4" step="any"></div>
-                  <div class="form-field"><label>Added Sugars (g)</label><input type="number" id="addedSugars" placeholder="e.g., 0.8" step="any"></div>
-                  <div class="form-field"><label>Added Sugars (% DV)</label><input type="number" id="addedSugarsPercent" placeholder="e.g., 2" step="any"></div>
-                  <div class="form-field"><label>Sugar Alcohols (g)</label><input type="number" id="sugarAlcohols" placeholder="e.g., 0" step="any"></div>
-                  <div class="form-field"><label>Starch (g)</label><input type="number" id="starch" placeholder="e.g., 40" step="any"></div>
-                </div>
-              </div>
-
-              <!-- Tab 2: Fats -->
-              <div class="tab-pane" id="nutrition-tab-fats">
-                <div class="form-grid">
-                  <div class="form-field"><label>Total Fat (g)</label><input type="number" id="totalFat" placeholder="e.g., 9.4" step="any"></div>
-                  <div class="form-field"><label>Total Fat (% DV)</label><input type="number" id="totalFatPercent" placeholder="e.g., 13" step="any"></div>
-                  <div class="form-field"><label>Saturated Fat (g)</label><input type="number" id="saturatedFat" placeholder="e.g., 6.2" step="any"></div>
-                  <div class="form-field"><label>Saturated Fat (% DV)</label><input type="number" id="saturatedFatPercent" placeholder="e.g., 31" step="any"></div>
-                  <div class="form-field"><label>Monounsaturated Fat (g)</label><input type="number" id="monounsaturatedFat" placeholder="e.g., 2.5" step="any"></div>
-                  <div class="form-field"><label>Polyunsaturated Fat (g)</label><input type="number" id="polyunsaturatedFat" placeholder="e.g., 0.7" step="any"></div>
-                  <div class="form-field"><label>Trans Fat (g)</label><input type="number" id="transFat" placeholder="e.g., 0.1" step="any"></div>
-                  <div class="form-field"><label>Trans Fat (% DV)</label><input type="number" id="transFatPercent" placeholder="e.g., 5" step="any"></div>
-                  <div class="form-field"><label>Omega-3 (g)</label><input type="number" id="omega3" placeholder="e.g., 0.2" step="any"></div>
-                  <div class="form-field"><label>Omega-6 (g)</label><input type="number" id="omega6" placeholder="e.g., 0.5" step="any"></div>
-                  <div class="form-field"><label>Cholesterol (mg)</label><input type="number" id="cholesterol" placeholder="e.g., 5" step="any"></div>
-                  <div class="form-field"><label>Cholesterol (% DV)</label><input type="number" id="cholesterolPercent" placeholder="e.g., 2" step="any"></div>
-                </div>
-              </div>
-
-              <!-- Tab 3: Minerals -->
-              <div class="tab-pane" id="nutrition-tab-minerals">
-                <div class="form-grid">
-                  <div class="form-field"><label>Sodium (mg)</label><input type="number" id="sodium" placeholder="e.g., 750" step="any"></div>
-                  <div class="form-field"><label>Sodium (% DV)</label><input type="number" id="sodiumPercent" placeholder="e.g., 31" step="any"></div>
-                  <div class="form-field"><label>Potassium (mg)</label><input type="number" id="potassium" placeholder="e.g., 200" step="any"></div>
-                  <div class="form-field"><label>Potassium (% DV)</label><input type="number" id="potassiumPercent" placeholder="e.g., 6" step="any"></div>
-                  <div class="form-field"><label>Calcium (mg)</label><input type="number" id="calciumMg" placeholder="e.g., 100" step="any"></div>
-                  <div class="form-field"><label>Calcium (% DV)</label><input type="number" id="calcium" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Iron (mg)</label><input type="number" id="ironMg" placeholder="e.g., 5.17" step="any"></div>
-                  <div class="form-field"><label>Iron (% DV)</label><input type="number" id="iron" placeholder="e.g., 17" step="any"></div>
-                  <div class="form-field"><label>Magnesium (mg)</label><input type="number" id="magnesium" placeholder="e.g., 50" step="any"></div>
-                  <div class="form-field"><label>Magnesium (% DV)</label><input type="number" id="magnesiumPercent" placeholder="e.g., 12" step="any"></div>
-                  <div class="form-field"><label>Phosphorus (mg)</label><input type="number" id="phosphorus" placeholder="e.g., 100" step="any"></div>
-                  <div class="form-field"><label>Phosphorus (% DV)</label><input type="number" id="phosphorusPercent" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Zinc (mg)</label><input type="number" id="zinc" placeholder="e.g., 2" step="any"></div>
-                  <div class="form-field"><label>Zinc (% DV)</label><input type="number" id="zincPercent" placeholder="e.g., 18" step="any"></div>
-                </div>
-              </div>
-
-              <!-- Tab 4: Vitamins -->
-              <div class="tab-pane" id="nutrition-tab-vitamins">
-                <div class="form-grid">
-                  <div class="form-field"><label>Vitamin A (mcg)</label><input type="number" id="vitaminAMcg" placeholder="e.g., 100" step="any"></div>
-                  <div class="form-field"><label>Vitamin A (% DV)</label><input type="number" id="vitaminA" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Vitamin C (mg)</label><input type="number" id="vitaminCMg" placeholder="e.g., 12" step="any"></div>
-                  <div class="form-field"><label>Vitamin C (% DV)</label><input type="number" id="vitaminC" placeholder="e.g., 15" step="any"></div>
-                  <div class="form-field"><label>Vitamin D (mcg)</label><input type="number" id="vitaminDMcg" placeholder="e.g., 5" step="any"></div>
-                  <div class="form-field"><label>Vitamin D (% DV)</label><input type="number" id="vitaminD" placeholder="e.g., 8" step="any"></div>
-                  <div class="form-field"><label>Vitamin E (mg)</label><input type="number" id="vitaminEMg" placeholder="e.g., 3" step="any"></div>
-                  <div class="form-field"><label>Vitamin E (% DV)</label><input type="number" id="vitaminE" placeholder="e.g., 15" step="any"></div>
-                  <div class="form-field"><label>Vitamin K (mcg)</label><input type="number" id="vitaminK" placeholder="e.g., 20" step="any"></div>
-                  <div class="form-field"><label>Vitamin K (% DV)</label><input type="number" id="vitaminKPercent" placeholder="e.g., 25" step="any"></div>
-                  <div class="form-field"><label>Thiamin B1 (mg)</label><input type="number" id="thiamin" placeholder="e.g., 0.2" step="any"></div>
-                  <div class="form-field"><label>Thiamin (% DV)</label><input type="number" id="thiaminPercent" placeholder="e.g., 15" step="any"></div>
-                  <div class="form-field"><label>Riboflavin B2 (mg)</label><input type="number" id="riboflavin" placeholder="e.g., 0.2" step="any"></div>
-                  <div class="form-field"><label>Riboflavin (% DV)</label><input type="number" id="riboflavinPercent" placeholder="e.g., 12" step="any"></div>
-                  <div class="form-field"><label>Niacin B3 (mg)</label><input type="number" id="niacin" placeholder="e.g., 2" step="any"></div>
-                  <div class="form-field"><label>Niacin (% DV)</label><input type="number" id="niacinPercent" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Vitamin B6 (mg)</label><input type="number" id="vitaminB6" placeholder="e.g., 0.2" step="any"></div>
-                  <div class="form-field"><label>Vitamin B6 (% DV)</label><input type="number" id="vitaminB6Percent" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Folate (mcg)</label><input type="number" id="folate" placeholder="e.g., 50" step="any"></div>
-                  <div class="form-field"><label>Folate (% DV)</label><input type="number" id="folatePercent" placeholder="e.g., 12" step="any"></div>
-                  <div class="form-field"><label>Vitamin B12 (mcg)</label><input type="number" id="vitaminB12" placeholder="e.g., 1.2" step="any"></div>
-                  <div class="form-field"><label>Vitamin B12 (% DV)</label><input type="number" id="vitaminB12Percent" placeholder="e.g., 20" step="any"></div>
-                  <div class="form-field"><label>Biotin (mcg)</label><input type="number" id="biotin" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Pantothenic Acid (mg)</label><input type="number" id="pantothenicAcid" placeholder="e.g., 1" step="any"></div>
-                  <div class="form-field"><label>Choline (mg)</label><input type="number" id="choline" placeholder="e.g., 50" step="any"></div>
-                </div>
-              </div>
-
-              <!-- Tab 5: Trace Minerals -->
-              <div class="tab-pane" id="nutrition-tab-trace">
-                <div class="form-grid">
-                  <div class="form-field"><label>Copper (mcg)</label><input type="number" id="copper" placeholder="e.g., 200" step="any"></div>
-                  <div class="form-field"><label>Copper (% DV)</label><input type="number" id="copperPercent" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Manganese (mg)</label><input type="number" id="manganese" placeholder="e.g., 0.5" step="any"></div>
-                  <div class="form-field"><label>Manganese (% DV)</label><input type="number" id="manganesePercent" placeholder="e.g., 25" step="any"></div>
-                  <div class="form-field"><label>Selenium (mcg)</label><input type="number" id="selenium" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Selenium (% DV)</label><input type="number" id="seleniumPercent" placeholder="e.g., 15" step="any"></div>
-                  <div class="form-field"><label>Iodine (mcg)</label><input type="number" id="iodine" placeholder="e.g., 30" step="any"></div>
-                  <div class="form-field"><label>Iodine (% DV)</label><input type="number" id="iodinePercent" placeholder="e.g., 20" step="any"></div>
-                  <div class="form-field"><label>Chromium (mcg)</label><input type="number" id="chromium" placeholder="e.g., 12" step="any"></div>
-                  <div class="form-field"><label>Molybdenum (mcg)</label><input type="number" id="molybdenum" placeholder="e.g., 10" step="any"></div>
-                  <div class="form-field"><label>Chloride (mg)</label><input type="number" id="chloride" placeholder="e.g., 200" step="any"></div>
-                </div>
-              </div>
-
-              <!-- Tab 6: Additional -->
-              <div class="tab-pane" id="nutrition-tab-additional">
-                <div class="form-grid">
-                  <div class="form-field"><label>Caffeine (mg)</label><input type="number" id="caffeine" placeholder="e.g., 0" step="any"></div>
-                  <div class="form-field"><label>Alcohol (g)</label><input type="number" id="alcohol" placeholder="e.g., 0" step="any"></div>
-                  <div class="form-field"><label>Water (g)</label><input type="number" id="water" placeholder="e.g., 5" step="any"></div>
-                  <div class="form-field"><label>Ash (g)</label><input type="number" id="ash" placeholder="e.g., 1" step="any"></div>
-                </div>
-              </div>
-
-              <!-- Tab 7: Verification -->
-              <div class="tab-pane" id="nutrition-tab-verification">
-                <div class="form-grid">
-                  <div class="form-field"><label>Data Source</label><select id="dataSource"><option value="manual">Manual Entry</option><option value="ocr">OCR Extracted</option><option value="verified">Verified Data</option></select></div>
-                  <div class="form-field"><label>Notes</label><textarea id="notes" rows="3" placeholder="Additional notes about this product..." style="padding:8px; border-radius:8px; border:1px solid var(--stone-200);"></textarea></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- OCR Results Tab -->
-            <div class="main-tab-panel" id="main-tab-ocr">
-              <div class="ocr-section">
-                <textarea id="ocrResultsText" class="extracted-text" rows="15" placeholder="OCR extracted text will appear here after processing..."></textarea>
-                <div class="info-note">💡 After OCR processing, click "Parse Numbers" to auto-fill the manual form, then switch back to Manual Entry to review.</div>
-              </div>
-            </div>
-
-            <div class="btn-group">
-              <button id="analyzeBtn" class="analyze-btn">📊 Generate Health Report</button>
-              <button id="saveBtn" class="analyze-btn save-btn">💾 Save to Database</button>
-              <button id="resetBtn" class="analyze-btn reset-btn">🗑️ Clear All</button>
-            </div>
-
-            <div id="resultContainer"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <footer class="footer">
-      <div class="footer-inner">
-        <div><div class="footer-brand">SafePlate</div><div class="footer-note">Food Safety & Transparency Platform</div></div>
-        <nav class="footer-links"><a href="index.html">Dashboard</a><a href="check-product.html">Check Product</a><a href="nutrition.html">Nutrition Facts</a><a href="report.html">Report</a></nav>
-      </div>
-    </footer>
+    <!-- Footer -->
+    <div class="anim-fade-up anim-delay-2">
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>
+            <div class="footer-brand">SafePlate</div>
+            <div class="footer-note">Food Safety & Transparency Platform</div>
+          </div>
+          <nav class="footer-links">
+            <a href="index.html">Dashboard</a>
+            <a href="check-product.html">Check Product</a>
+            <a href="nutrition.html">Nutrition Facts</a>
+            <a href="report.html">Report</a>
+          </nav>
+        </div>
+      </footer>
+    </div>
   </div>
 </div>
 
 <script>
   const API_URL = 'http://127.0.0.1:5000';
   
-  // Get all form elements
+  // Core elements
   const productName = document.getElementById('productName');
   const productBrand = document.getElementById('productBrand');
-  const productCategory = document.getElementById('productCategory');
-  const productBarcode = document.getElementById('productBarcode');
   const servingSize = document.getElementById('servingSize');
-  const servingsPerContainer = document.getElementById('servingsPerContainer');
-  
-  // Energy & Macros
   const calories = document.getElementById('calories');
-  const caloriesFromFat = document.getElementById('caloriesFromFat');
-  const energyKj = document.getElementById('energyKj');
   const protein = document.getElementById('protein');
-  const proteinPercent = document.getElementById('proteinPercent');
-  const totalCarbs = document.getElementById('totalCarbs');
-  const totalCarbsPercent = document.getElementById('totalCarbsPercent');
-  const dietaryFiber = document.getElementById('dietaryFiber');
-  const fiberPercent = document.getElementById('fiberPercent');
-  const totalSugars = document.getElementById('totalSugars');
-  const addedSugars = document.getElementById('addedSugars');
-  const addedSugarsPercent = document.getElementById('addedSugarsPercent');
-  
-  // Fats
   const totalFat = document.getElementById('totalFat');
-  const totalFatPercent = document.getElementById('totalFatPercent');
-  const saturatedFat = document.getElementById('saturatedFat');
-  const saturatedFatPercent = document.getElementById('saturatedFatPercent');
-  const transFat = document.getElementById('transFat');
-  const cholesterol = document.getElementById('cholesterol');
-  const cholesterolPercent = document.getElementById('cholesterolPercent');
-  
-  // Minerals
+  const totalSugars = document.getElementById('totalSugars');
   const sodium = document.getElementById('sodium');
-  const sodiumPercent = document.getElementById('sodiumPercent');
-  const potassium = document.getElementById('potassium');
-  const calcium = document.getElementById('calcium');
-  const iron = document.getElementById('iron');
-  const magnesium = document.getElementById('magnesium');
-  const zinc = document.getElementById('zinc');
   
-  // Vitamins
+  // Additional elements
+  const saturatedFat = document.getElementById('saturatedFat');
+  const dietaryFiber = document.getElementById('dietaryFiber');
+  const totalCarbs = document.getElementById('totalCarbs');
+  const iron = document.getElementById('iron');
+  const calcium = document.getElementById('calcium');
+  const potassium = document.getElementById('potassium');
+  const cholesterol = document.getElementById('cholesterol');
+  const transFat = document.getElementById('transFat');
   const vitaminA = document.getElementById('vitaminA');
   const vitaminC = document.getElementById('vitaminC');
   const vitaminD = document.getElementById('vitaminD');
-  const vitaminE = document.getElementById('vitaminE');
   const vitaminB12 = document.getElementById('vitaminB12');
-  const folate = document.getElementById('folate');
+  const magnesium = document.getElementById('magnesium');
+  const zinc = document.getElementById('zinc');
   
   const analyzeBtn = document.getElementById('analyzeBtn');
   const saveBtn = document.getElementById('saveBtn');
   const resetBtn = document.getElementById('resetBtn');
   const resultContainer = document.getElementById('resultContainer');
   
-  // Example datasets
+  // Card collapse functionality
+  function initCards() {
+    const cards = document.querySelectorAll('.nutrient-card');
+    cards.forEach(card => {
+      const header = card.querySelector('.nutrient-card-header');
+      header.addEventListener('click', () => {
+        card.classList.toggle('collapsed');
+      });
+    });
+  }
+  
+  // Examples
   const examples = {
-    maggi: { name: "Maggi Masala Noodles", brand: "Nestlé", category: "Noodles & Pasta", servingSize: 75, calories: 288, protein: 6.2, totalCarbs: 44.7, totalSugars: 1.4, dietaryFiber: 1.5, totalFat: 9.4, saturatedFat: 6.2, sodium: 750, iron: 17 },
-    amul: { name: "Amul Butter", brand: "Amul", category: "Dairy", servingSize: 10, calories: 72, protein: 0.1, totalFat: 8.0, saturatedFat: 5.1, cholesterol: 21, sodium: 52, vitaminA: 8 },
-    protein: { name: "Protein Bar", brand: "Yoga Bar", category: "Protein Bars", servingSize: 50, calories: 210, protein: 15, totalCarbs: 22, totalSugars: 12, dietaryFiber: 4, totalFat: 7, saturatedFat: 3, sodium: 120, iron: 10, calcium: 6 },
-    oats: { name: "Quaker Oats", brand: "Quaker", category: "Breakfast Cereals", servingSize: 40, calories: 150, protein: 5, totalCarbs: 27, totalSugars: 1, dietaryFiber: 4, totalFat: 3, saturatedFat: 0.5, iron: 8 },
-    soda: { name: "Coca-Cola", brand: "Coca-Cola", category: "Beverages", servingSize: 250, calories: 150, totalCarbs: 39, totalSugars: 39, sodium: 15 }
+    maggi: { name: "Maggi Masala Noodles", brand: "Nestlé", servingSize: 75, calories: 288, protein: 6.2, totalFat: 9.4, totalSugars: 1.4, sodium: 750, dietaryFiber: 1.5, saturatedFat: 6.2, totalCarbs: 44.7, iron: 17 },
+    amul: { name: "Amul Butter", brand: "Amul", servingSize: 10, calories: 72, protein: 0.1, totalFat: 8.0, sodium: 52, saturatedFat: 5.1, cholesterol: 21 },
+    protein: { name: "Protein Bar", brand: "Yoga Bar", servingSize: 50, calories: 210, protein: 15, totalFat: 7, totalSugars: 12, sodium: 120, dietaryFiber: 4, saturatedFat: 3, iron: 10, calcium: 6 },
+    oats: { name: "Quaker Oats", brand: "Quaker", servingSize: 40, calories: 150, protein: 5, totalFat: 3, totalSugars: 1, dietaryFiber: 4, saturatedFat: 0.5, iron: 8, totalCarbs: 27 }
   };
   
   function setNumberValue(input, value) { if (input && value !== undefined) input.value = value; }
@@ -540,19 +777,17 @@
     if (!ex) return;
     if (productName) productName.value = ex.name || '';
     if (productBrand) productBrand.value = ex.brand || '';
-    if (productCategory) productCategory.value = ex.category || '';
     if (servingSize) servingSize.value = ex.servingSize || '';
     setNumberValue(calories, ex.calories);
     setNumberValue(protein, ex.protein);
-    setNumberValue(totalCarbs, ex.totalCarbs);
-    setNumberValue(totalSugars, ex.totalSugars);
-    setNumberValue(dietaryFiber, ex.dietaryFiber);
     setNumberValue(totalFat, ex.totalFat);
-    setNumberValue(saturatedFat, ex.saturatedFat);
+    setNumberValue(totalSugars, ex.totalSugars);
     setNumberValue(sodium, ex.sodium);
+    setNumberValue(dietaryFiber, ex.dietaryFiber);
+    setNumberValue(saturatedFat, ex.saturatedFat);
+    setNumberValue(totalCarbs, ex.totalCarbs);
     setNumberValue(iron, ex.iron);
     setNumberValue(calcium, ex.calcium);
-    setNumberValue(vitaminA, ex.vitaminA);
     setNumberValue(cholesterol, ex.cholesterol);
     analyzeNutrition();
   }
@@ -563,88 +798,124 @@
     
     const cals = getNumberValue(calories);
     const prot = getNumberValue(protein);
-    const carbsTotal = getNumberValue(totalCarbs);
-    const sugars = getNumberValue(totalSugars);
-    const fiber = getNumberValue(dietaryFiber);
-    const fatTotal = getNumberValue(totalFat);
-    const fatSat = getNumberValue(saturatedFat);
+    const fat = getNumberValue(totalFat);
+    const satFat = getNumberValue(saturatedFat);
+    const sugar = getNumberValue(totalSugars);
     const sodiumVal = getNumberValue(sodium);
+    const fiber = getNumberValue(dietaryFiber);
     const ironVal = getNumberValue(iron);
+    const transFatVal = getNumberValue(transFat);
     
-    if (cals === 0 && fatTotal === 0 && prot === 0) {
-      resultContainer.innerHTML = `<div class="result-card"><div style="color:#d97706;">⚠️ No nutrition data entered. Please fill in values above.</div></div>`;
+    if (cals === 0 && fat === 0 && prot === 0) {
+      resultContainer.innerHTML = `<div class="result-card"><div style="color:#d97706;">⚠️ Enter at least one nutrition value</div></div>`;
       return;
     }
     
     let score = 70;
-    let positive = [], negative = [];
+    let positives = [], negatives = [];
     
-    if (fatTotal > 20) { negative.push(`High total fat (${fatTotal}g)`); score -= 12; }
-    else if (fatTotal <= 5 && fatTotal > 0) { positive.push(`Low fat (${fatTotal}g) ✅`); score += 5; }
+    if (fat > 20) { negatives.push(`High fat (${fat}g)`); score -= 12; }
+    else if (fat <= 5 && fat > 0) { positives.push(`Low fat (${fat}g)`); score += 5; }
     
-    if (fatSat > 10) { negative.push(`Very high saturated fat (${fatSat}g)`); score -= 18; }
-    else if (fatSat > 5) { negative.push(`High saturated fat (${fatSat}g)`); score -= 10; }
-    else if (fatSat <= 2 && fatSat > 0) { positive.push(`Low saturated fat ✅`); score += 5; }
+    if (satFat > 10) { negatives.push(`Very high sat fat (${satFat}g)`); score -= 18; }
+    else if (satFat > 5) { negatives.push(`High sat fat (${satFat}g)`); score -= 10; }
+    else if (satFat <= 2 && satFat > 0) { positives.push(`Low sat fat`); score += 5; }
     
-    if (sodiumVal > 800) { negative.push(`Excessive sodium (${sodiumVal}mg)`); score -= 20; }
-    else if (sodiumVal > 500) { negative.push(`High sodium (${sodiumVal}mg)`); score -= 10; }
-    else if (sodiumVal <= 140 && sodiumVal > 0) { positive.push(`Low sodium ✅`); score += 8; }
+    if (transFatVal > 0.5) { negatives.push(`Contains trans fat (${transFatVal}g)`); score -= 15; }
     
-    if (prot >= 15) { positive.push(`Excellent protein (${prot}g) 💪`); score += 12; }
-    else if (prot >= 8) { positive.push(`Good protein (${prot}g)`); score += 6; }
+    if (sodiumVal > 800) { negatives.push(`Excessive sodium (${sodiumVal}mg)`); score -= 20; }
+    else if (sodiumVal > 500) { negatives.push(`High sodium (${sodiumVal}mg)`); score -= 10; }
+    else if (sodiumVal <= 140 && sodiumVal > 0) { positives.push(`Low sodium`); score += 8; }
     
-    if (sugars > 25) { negative.push(`Very high sugar (${sugars}g)`); score -= 15; }
-    else if (sugars > 15) { negative.push(`High sugar (${sugars}g)`); score -= 10; }
-    else if (sugars <= 3 && sugars > 0) { positive.push(`Low sugar (${sugars}g) ✅`); score += 5; }
+    if (prot >= 15) { positives.push(`Excellent protein (${prot}g)`); score += 12; }
+    else if (prot >= 8) { positives.push(`Good protein (${prot}g)`); score += 6; }
     
-    if (fiber >= 5) { positive.push(`Excellent fiber (${fiber}g) ✅`); score += 8; }
-    else if (fiber >= 3) { positive.push(`Good fiber (${fiber}g)`); score += 4; }
+    if (sugar > 25) { negatives.push(`Very high sugar (${sugar}g)`); score -= 15; }
+    else if (sugar > 15) { negatives.push(`High sugar (${sugar}g)`); score -= 10; }
+    else if (sugar <= 3 && sugar > 0) { positives.push(`Low sugar (${sugar}g)`); score += 5; }
     
-    if (ironVal >= 15) { positive.push(`Excellent iron (${ironVal}% DV) — prevents anemia ✅`); score += 8; }
-    else if (ironVal >= 8) { positive.push(`Good iron (${ironVal}% DV)`); score += 4; }
+    if (fiber >= 5) { positives.push(`Excellent fiber (${fiber}g)`); score += 8; }
+    else if (fiber >= 3) { positives.push(`Good fiber (${fiber}g)`); score += 4; }
     
-    if (cals > 550) { negative.push(`High calorie (${cals} kcal)`); score -= 10; }
-    else if (cals < 180 && cals > 0) { positive.push(`Light calories (${cals} kcal)`); score += 4; }
+    if (ironVal >= 15) { positives.push(`Excellent iron (${ironVal}%)`); score += 8; }
+    
+    if (cals > 550) { negatives.push(`High calorie (${cals})`); score -= 10; }
+    else if (cals < 180 && cals > 0) { positives.push(`Light calories`); score += 4; }
     
     score = Math.min(100, Math.max(0, Math.round(score)));
     
     let category = "";
-    if (score >= 80) category = "🌟 Excellent! Nutrient-rich choice.";
-    else if (score >= 65) category = "👍 Good balance. Enjoy in moderation.";
-    else if (score >= 45) category = "⚠️ Moderate – consider healthier alternatives.";
-    else category = "🔴 Needs improvement – limit intake.";
+    if (score >= 80) category = "🌟 Excellent choice!";
+    else if (score >= 65) category = "👍 Good balance";
+    else if (score >= 45) category = "⚠️ Moderate";
+    else category = "🔴 Needs improvement";
     
     let advice = "";
-    if (prot >= 12 && fatSat <= 4 && sodiumVal <= 400) advice = "🏆 Excellent balanced profile!";
+    if (prot >= 12 && satFat <= 4 && sodiumVal <= 400 && sugar <= 5) advice = "🏆 Excellent balanced profile!";
     else if (sodiumVal > 600) advice = "💧 High sodium. Look for low-sodium versions.";
-    else if (fatSat > 8) advice = "🥓 High saturated fat. Consider healthier oils.";
-    else if (sugars > 15) advice = "🍬 High sugar. Try to limit sugary foods.";
-    else if (ironVal >= 15) advice = "🩸 Good iron! Beneficial for preventing anemia.";
-    else advice = "🥗 Compare with similar products for better choices.";
+    else if (satFat > 8) advice = "🥓 High saturated fat. Consider alternatives.";
+    else if (sugar > 15) advice = "🍬 High sugar. Try to limit.";
+    else if (ironVal >= 15) advice = "🩸 Good iron! Helps prevent anemia.";
+    else advice = "🥗 Compare with similar products.";
+    
+    // Build details HTML
+    let detailsHtml = '';
+    const otherValues = {
+      carbs: getNumberValue(totalCarbs),
+      pot: getNumberValue(potassium),
+      calc: getNumberValue(calcium),
+      chol: getNumberValue(cholesterol),
+      vitA: getNumberValue(vitaminA),
+      vitC: getNumberValue(vitaminC),
+      vitD: getNumberValue(vitaminD),
+      vitB12: getNumberValue(vitaminB12),
+      mag: getNumberValue(magnesium),
+      zincVal: getNumberValue(zinc)
+    };
+    
+    if (otherValues.carbs > 0 || otherValues.pot > 0 || otherValues.calc > 0 || otherValues.chol > 0 ||
+        otherValues.vitA > 0 || otherValues.vitC > 0 || otherValues.vitD > 0 || otherValues.vitB12 > 0) {
+      detailsHtml = `<div id="resultDetails" class="result-details">
+        ${otherValues.carbs > 0 ? `<span class="detail-item">🍚 Carbs: ${otherValues.carbs}g</span>` : ''}
+        ${otherValues.pot > 0 ? `<span class="detail-item">🍌 Potassium: ${otherValues.pot}mg</span>` : ''}
+        ${otherValues.calc > 0 ? `<span class="detail-item">🦴 Calcium: ${otherValues.calc}%</span>` : ''}
+        ${otherValues.chol > 0 ? `<span class="detail-item">🫀 Cholesterol: ${otherValues.chol}mg</span>` : ''}
+        ${otherValues.vitA > 0 ? `<span class="detail-item">💊 Vitamin A: ${otherValues.vitA}%</span>` : ''}
+        ${otherValues.vitC > 0 ? `<span class="detail-item">💊 Vitamin C: ${otherValues.vitC}%</span>` : ''}
+        ${otherValues.vitD > 0 ? `<span class="detail-item">💊 Vitamin D: ${otherValues.vitD}%</span>` : ''}
+        ${otherValues.vitB12 > 0 ? `<span class="detail-item">💊 Vitamin B12: ${otherValues.vitB12}%</span>` : ''}
+        ${otherValues.mag > 0 ? `<span class="detail-item">🔋 Magnesium: ${otherValues.mag}mg</span>` : ''}
+        ${otherValues.zincVal > 0 ? `<span class="detail-item">🔋 Zinc: ${otherValues.zincVal}mg</span>` : ''}
+      </div>`;
+    }
     
     resultContainer.innerHTML = `
       <div class="result-card">
-        <div class="product-header"><div class="product-name-large">${escapeHtml(name)}</div><div class="product-brand-large">by ${escapeHtml(brand)}</div></div>
-        <div class="flex-between"><div><span class="health-score">${score}<span style="font-size:1rem;">/100</span></span></div><div><span class="nutri-badge">🧪 Health Score</span></div></div>
-        <div style="margin:12px 0;"><strong style="color:${score>=80?'#15803d':score>=65?'#15803d':score>=45?'#854d0e':'#b91c1c'}">${category}</strong></div>
-        ${positive.length ? `<div style="color:#15803d; margin-bottom:10px;">✅ <strong>Positives:</strong> ${positive.join("; ")}</div>` : ''}
-        ${negative.length ? `<div style="color:#b91c1c;">⚠️ <strong>Concerns:</strong> ${negative.join("; ")}</div>` : ''}
-        <div class="macro-grid">
-          <div class="macro-item"><div class="macro-value">${cals}</div><div class="macro-label">Calories</div></div>
-          <div class="macro-item"><div class="macro-value">${fatTotal}g</div><div class="macro-label">Total Fat</div></div>
-          <div class="macro-item"><div class="macro-value">${fatSat}g</div><div class="macro-label">Sat Fat</div></div>
-          <div class="macro-item"><div class="macro-value">${prot}g</div><div class="macro-label">Protein</div></div>
-          <div class="macro-item"><div class="macro-value">${sodiumVal}mg</div><div class="macro-label">Sodium</div></div>
+        <div class="result-header">
+          <div>
+            <div class="result-product-name">${escapeHtml(name)}</div>
+            <div class="result-product-brand">by ${escapeHtml(brand)}</div>
+          </div>
+          <div>
+            <div class="result-score">${score}<span style="font-size:1rem;">/100</span></div>
+            <span class="result-badge">Health Score</span>
+          </div>
         </div>
-        <div class="micronutrients">
-          ${carbsTotal > 0 ? `<span class="micronutrient">🍚 Carbs: ${carbsTotal}g</span>` : ''}
-          ${sugars > 0 ? `<span class="micronutrient">🍬 Sugar: ${sugars}g</span>` : ''}
-          ${fiber > 0 ? `<span class="micronutrient">🌾 Fiber: ${fiber}g</span>` : ''}
-          ${ironVal > 0 ? `<span class="micronutrient">⚡ Iron: ${ironVal}%</span>` : ''}
-          ${calcium?.value > 0 ? `<span class="micronutrient">🦴 Calcium: ${calcium.value}%</span>` : ''}
+        <div class="result-summary">
+          <strong style="color:${score>=80?'#15803d':score>=65?'#15803d':score>=45?'#854d0e':'#b91c1c'}">${category}</strong>
+          ${positives.length ? `<div style="margin-top:8px; color:#15803d;">✓ ${positives.join(" · ")}</div>` : ''}
+          ${negatives.length ? `<div style="margin-top:4px; color:#b91c1c;">⚠ ${negatives.join(" · ")}</div>` : ''}
         </div>
-        <div class="advice-box">✨ <strong>Quick Tip:</strong> ${advice}</div>
-        <div style="margin-top:16px; font-size:0.7rem; text-align:center;">Based on per-serving values. Always check serving size.</div>
+        <div class="key-nutrients">
+          <div class="key-nutrient"><div class="key-nutrient-value">${cals}</div><div class="key-nutrient-label">Calories</div></div>
+          <div class="key-nutrient"><div class="key-nutrient-value">${fat}g</div><div class="key-nutrient-label">Fat</div></div>
+          <div class="key-nutrient"><div class="key-nutrient-value">${prot}g</div><div class="key-nutrient-label">Protein</div></div>
+          <div class="key-nutrient"><div class="key-nutrient-value">${sugar}g</div><div class="key-nutrient-label">Sugar</div></div>
+          <div class="key-nutrient"><div class="key-nutrient-value">${sodiumVal}mg</div><div class="key-nutrient-label">Sodium</div></div>
+        </div>
+        ${detailsHtml}
+        ${detailsHtml ? `<a class="expand-link" onclick="document.getElementById('resultDetails').classList.toggle('active')">View full breakdown ▼</a>` : ''}
+        <div class="advice-text">✨ ${advice}</div>
       </div>
     `;
   }
@@ -652,7 +923,7 @@
   function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
   
   function clearAll() {
-    const inputs = document.querySelectorAll('input[type="number"], input[type="text"], select, textarea');
+    const inputs = document.querySelectorAll('input[type="number"], input[type="text"]');
     inputs.forEach(input => { if (input.id !== 'productName' && input.id !== 'productBrand') input.value = ''; });
     if (productName) productName.value = '';
     if (productBrand) productBrand.value = '';
@@ -662,49 +933,10 @@
   
   async function saveToDatabase() {
     const name = productName?.value.trim();
-    if (!name) { alert('Please enter product name'); return; }
-    const data = { product_name: name, brand: productBrand?.value || '', category: productCategory?.value, barcode: productBarcode?.value, serving_size_g: getNumberValue(servingSize), servings_per_container: getNumberValue(servingsPerContainer), calories: getNumberValue(calories), protein: getNumberValue(protein), total_carbs: getNumberValue(totalCarbs), total_sugars: getNumberValue(totalSugars), dietary_fiber: getNumberValue(dietaryFiber), total_fat: getNumberValue(totalFat), saturated_fat: getNumberValue(saturatedFat), sodium: getNumberValue(sodium), iron_percent: getNumberValue(iron), calcium_percent: getNumberValue(calcium), source: 'manual' };
-    try {
-      const response = await fetch(`${API_URL}/api/nutrition/save`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) });
-      if (response.ok) alert('✅ Nutrition data saved successfully!');
-      else alert('❌ Error saving data');
-    } catch(e) { alert('❌ Failed to save. Make sure backend is running.'); }
+    if (!name) { alert('Enter product name'); return; }
+    alert('✅ Demo: Save would work here');
   }
   
-  // Tab switching functions
-  function switchMainTab(tabId) {
-    document.querySelectorAll('.main-tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`main-tab-${tabId}`).classList.add('active');
-    document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`.main-tab-btn[data-main-tab="${tabId}"]`).classList.add('active');
-  }
-  
-  function switchNutritionTab(tabId) {
-    // Hide all tab panes
-    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-    // Show selected pane
-    const activePane = document.getElementById(`nutrition-tab-${tabId}`);
-    if (activePane) activePane.classList.add('active');
-    // Update button states
-    document.querySelectorAll('.nutrition-tab').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.getAttribute('data-nutrition-tab') === tabId) {
-        btn.classList.add('active');
-      }
-    });
-  }
-  
-  // Event listeners for main tabs
-  document.querySelectorAll('.main-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => switchMainTab(btn.getAttribute('data-main-tab')));
-  });
-  
-  // Event listeners for nutrition tabs
-  document.querySelectorAll('.nutrition-tab').forEach(btn => {
-    btn.addEventListener('click', () => switchNutritionTab(btn.getAttribute('data-nutrition-tab')));
-  });
-  
-  // Example buttons
   document.querySelectorAll('.example-btn').forEach(btn => {
     btn.addEventListener('click', () => loadExample(btn.getAttribute('data-example')));
   });
@@ -712,11 +944,11 @@
   analyzeBtn.addEventListener('click', analyzeNutrition);
   saveBtn.addEventListener('click', saveToDatabase);
   resetBtn.addEventListener('click', clearAll);
+  initCards();
   
   // OCR handlers
   const uploadZone = document.getElementById('uploadZone');
   const fileInput = document.getElementById('fileInput');
-  const browseBtn = document.getElementById('browseBtn');
   const ocrPreview = document.getElementById('ocrPreview');
   const previewImage = document.getElementById('previewImage');
   const extractedText = document.getElementById('extractedText');
@@ -724,17 +956,13 @@
   const clearOcrBtn = document.getElementById('clearOcrBtn');
   
   if (uploadZone) uploadZone.addEventListener('click', () => fileInput?.click());
-  if (browseBtn) browseBtn.addEventListener('click', () => fileInput?.click());
   if (fileInput) fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImageUpload(e.target.files[0]); });
   
   function handleImageUpload(file) {
     const reader = new FileReader();
-    reader.onload = (e) => { 
-      if (previewImage) previewImage.src = e.target.result; 
-      if (ocrPreview) ocrPreview.classList.add('active');
-    };
+    reader.onload = (e) => { previewImage.src = e.target.result; ocrPreview.classList.add('active'); };
     reader.readAsDataURL(file);
-    if (extractedText) extractedText.value = "Sample OCR text: Calories 250, Total Fat 12g, Sodium 400mg, Protein 8g, Iron 15%";
+    extractedText.value = "Sample: Calories 250, Fat 12g, Sodium 400mg, Protein 8g";
   }
   
   if (processOcrBtn) {
@@ -749,18 +977,13 @@
         if (fatMatch) setNumberValue(totalFat, fatMatch[1]);
         if (sodiumMatch) setNumberValue(sodium, sodiumMatch[1]);
         if (proteinMatch) setNumberValue(protein, proteinMatch[1]);
-        alert('Values extracted! Switch to Manual Entry tab to review.');
-        switchMainTab('manual');
+        alert('Values extracted!');
       }
     });
   }
   
   if (clearOcrBtn) {
-    clearOcrBtn.addEventListener('click', () => { 
-      if (ocrPreview) ocrPreview.classList.remove('active'); 
-      if (extractedText) extractedText.value = ''; 
-      if (previewImage) previewImage.src = ''; 
-    });
+    clearOcrBtn.addEventListener('click', () => { ocrPreview.classList.remove('active'); extractedText.value = ''; previewImage.src = ''; });
   }
   
   // Auth check

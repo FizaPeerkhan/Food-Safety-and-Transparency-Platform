@@ -44,7 +44,7 @@
     .page-hero-title {
       font-family: var(--font-display);
       font-size: clamp(2rem,4.5vw,3.6rem);
-      font-weight: 400; letter-spacing: -.03em; line-height: 1.1;
+      font-weight: 400; letter-spacing: -.03em; line-height: 1.08;
       color: var(--text-primary); margin-bottom: 16px;
     }
     .page-hero-title em { font-style: italic; color: var(--green-600); }
@@ -243,6 +243,14 @@
     .badge-caution { background: #fef3c7; color: #d97706; }
     .badge-danger { background: #fee2e2; color: #b91c1c; }
 
+    /* Hide auth buttons and user info initially to prevent flash */
+    #adminInfo, #userInfo {
+      display: none;
+    }
+    #authButtons {
+      display: flex;
+    }
+
     @media (max-width: 768px) {
       .adulterant-grid { grid-template-columns: 1fr; }
       .awareness-cta { padding: 32px 24px; }
@@ -270,18 +278,7 @@
         <li><a href="awareness.html" class="nav-link active"><span class="nav-link-icon">📖</span> Awareness</a></li>
         <li><a href="stay-safe.html" class="nav-link"><span class="nav-link-icon">❤️</span> Stay Safe</a></li>
       </ul>
-      <div class="nav-action">
-        <div id="adminInfo" style="display: none;" class="user-info">
-          <div class="user-avatar">👑</div>
-          <span id="adminName">Admin</span>
-          <span class="admin-badge">Admin</span>
-          <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
-        </div>
-       
-        <div id="authButtons" style="display: flex;">
-          <a href="login.html" class="btn btn-outline btn-sm">Login</a>
-          <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
-        </div>
+   
         <a href="report.html" class="nav-report-btn">⚑ Report Product</a>
       </div>
       <button class="nav-burger" aria-label="Menu">
@@ -329,285 +326,298 @@
       </div>
     </section>
 
+    <!-- Rest of your content remains the same -->
     <!-- Section 1: Key Facts Infographic -->
-    <section class="awareness-section" id="facts-strip" style="padding-top:16px;">
-      <div class="awareness-inner">
-        <div class="infographic-row">
-          <div class="infographic-card" style="background:var(--red-50);border-color:rgba(248,113,113,.2);">
-            <div class="infographic-num" style="color:var(--red-500);">68%</div>
-            <div class="infographic-label" style="color:var(--red-600);">of spice samples</div>
-            <div class="infographic-desc" style="color:var(--red-400);">failed quality tests in 2023 FSSAI survey</div>
-          </div>
-          <div class="infographic-card" style="background:var(--amber-50);border-color:rgba(251,191,36,.25);">
-            <div class="infographic-num" style="color:var(--amber-600);">1 in 3</div>
-            <div class="infographic-label" style="color:#92400e;">honey brands tested</div>
-            <div class="infographic-desc" style="color:var(--amber-500);">contained added sugar or corn syrup</div>
-          </div>
-          <div class="infographic-card" style="background:var(--green-50);border-color:var(--green-100);">
-            <div class="infographic-num" style="color:var(--green-600);">180+</div>
-            <div class="infographic-label" style="color:var(--green-700);">home tests documented</div>
-            <div class="infographic-desc" style="color:var(--green-500);">to detect common adulterants without a lab</div>
-          </div>
-          <div class="infographic-card" style="background:#eff6ff;border-color:#bfdbfe;">
-            <div class="infographic-num" style="color:#1d4ed8;">₹2,100 Cr</div>
-            <div class="infographic-label" style="color:#1e40af;">annual economic loss</div>
-            <div class="infographic-desc" style="color:#3b82f6;">from food adulteration in India</div>
+    <div class="anim-fade-up anim-delay-1">
+      <section class="awareness-section" id="facts-strip" style="padding-top:16px;">
+        <div class="awareness-inner">
+          <div class="infographic-row">
+            <div class="infographic-card" style="background:var(--red-50);border-color:rgba(248,113,113,.2);">
+              <div class="infographic-num" style="color:var(--red-500);">68%</div>
+              <div class="infographic-label" style="color:var(--red-600);">of spice samples</div>
+              <div class="infographic-desc" style="color:var(--red-400);">failed quality tests in 2023 FSSAI survey</div>
+            </div>
+            <div class="infographic-card" style="background:var(--amber-50);border-color:rgba(251,191,36,.25);">
+              <div class="infographic-num" style="color:var(--amber-600);">1 in 3</div>
+              <div class="infographic-label" style="color:#92400e;">honey brands tested</div>
+              <div class="infographic-desc" style="color:var(--amber-500);">contained added sugar or corn syrup</div>
+            </div>
+            <div class="infographic-card" style="background:var(--green-50);border-color:var(--green-100);">
+              <div class="infographic-num" style="color:var(--green-600);">180+</div>
+              <div class="infographic-label" style="color:var(--green-700);">home tests documented</div>
+              <div class="infographic-desc" style="color:var(--green-500);">to detect common adulterants without a lab</div>
+            </div>
+            <div class="infographic-card" style="background:#eff6ff;border-color:#bfdbfe;">
+              <div class="infographic-num" style="color:#1d4ed8;">₹2,100 Cr</div>
+              <div class="infographic-label" style="color:#1e40af;">annual economic loss</div>
+              <div class="infographic-desc" style="color:#3b82f6;">from food adulteration in India</div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- Section 2: Home Adulteration Tests -->
-    <section class="awareness-section" id="adulteration-tests">
-      <div class="awareness-inner">
-        <div class="section-label">
-          <div class="section-label-icon" style="background:var(--green-50);">🧪</div>
-          <div>
-            <div class="section-label-text">Home Adulteration Tests</div>
-            <div class="section-label-sub">Simple tests you can do right now — no lab needed</div>
+    <div class="anim-fade-up anim-delay-2">
+      <section class="awareness-section" id="adulteration-tests">
+        <div class="awareness-inner">
+          <div class="section-label">
+            <div class="section-label-icon" style="background:var(--green-50);">🧪</div>
+            <div>
+              <div class="section-label-text">Home Adulteration Tests</div>
+              <div class="section-label-sub">Simple tests you can do right now — no lab needed</div>
+            </div>
+          </div>
+
+          <div class="adulterant-grid">
+            <!-- Milk Test -->
+            <div class="adulterant-card">
+              <div class="adulterant-card-top">
+                <div class="adulterant-emoji" style="background:var(--green-50);">🥛</div>
+                <div>
+                  <div class="adulterant-name">Milk</div>
+                  <div class="adulterant-sub">Common adulterants: Water, Starch, Detergent, Urea</div>
+                </div>
+              </div>
+              <div class="adulterant-divider"></div>
+              <div class="adulterant-tests">
+                <div class="adulterant-test-label">Water Test</div>
+                <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Place a drop of milk on a <strong>polished slanting surface.</strong></div></div>
+                <div class="test-step"><div class="test-step-num">2</div><div class="test-step-text">Let it slide down on its own without any push.</div></div>
+                <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Flows immediately, leaves no white trail.</span></div>
+                <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Flows slowly, leaves a white trail.</span></div>
+              </div>
+            </div>
+
+            <!-- Honey Test -->
+            <div class="adulterant-card">
+              <div class="adulterant-card-top">
+                <div class="adulterant-emoji" style="background:var(--amber-50);">🍯</div>
+                <div>
+                  <div class="adulterant-name">Honey</div>
+                  <div class="adulterant-sub">Common adulterants: Sugar syrup, HFCS, Jaggery</div>
+                </div>
+              </div>
+              <div class="adulterant-divider"></div>
+              <div class="adulterant-tests">
+                <div class="adulterant-test-label">Thumb Test</div>
+                <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Put a small drop of honey on your <strong>thumb.</strong></div></div>
+                <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Spreads or spills easily.</span></div>
+                <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Stays intact on the thumb.</span></div>
+              </div>
+            </div>
+
+            <!-- Turmeric Test -->
+            <div class="adulterant-card">
+              <div class="adulterant-card-top">
+                <div class="adulterant-emoji" style="background:#fef9c3;">🌿</div>
+                <div>
+                  <div class="adulterant-name">Turmeric Powder</div>
+                  <div class="adulterant-sub">Common adulterants: Metanil Yellow dye, Chalk powder</div>
+                </div>
+              </div>
+              <div class="adulterant-divider"></div>
+              <div class="adulterant-tests">
+                <div class="adulterant-test-label">HCl Test (Metanil Yellow)</div>
+                <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Dissolve 1 teaspoon in a glass of <strong>warm water.</strong></div></div>
+                <div class="test-step"><div class="test-step-num">2</div><div class="test-step-text">Add a few drops of <strong>hydrochloric acid (HCl).</strong></div></div>
+                <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Turns pink or red (Metanil Yellow present).</span></div>
+                <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> No pink or red coloration.</span></div>
+              </div>
+            </div>
+
+            <!-- Ghee Test -->
+            <div class="adulterant-card">
+              <div class="adulterant-card-top">
+                <div class="adulterant-emoji" style="background:#fefce8;">🧈</div>
+                <div>
+                  <div class="adulterant-name">Ghee & Oils</div>
+                  <div class="adulterant-sub">Common adulterants: Vanaspati, Animal fat, Starch</div>
+                </div>
+              </div>
+              <div class="adulterant-divider"></div>
+              <div class="adulterant-tests">
+                <div class="adulterant-test-label">Baudouin Test (Sesame oil)</div>
+                <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Mix 1 tsp ghee with equal parts of <strong>concentrated HCl</strong> + a pinch of sugar.</div></div>
+                <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Pink/red colour in acid layer (Vanaspati present).</span></div>
+                <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> No colour change in acid layer.</span></div>
+              </div>
+            </div>
+
+            <!-- Tea Leaves Test -->
+            <div class="adulterant-card">
+              <div class="adulterant-card-top">
+                <div class="adulterant-emoji" style="background:var(--green-50);">🍵</div>
+                <div>
+                  <div class="adulterant-name">Tea Leaves</div>
+                  <div class="adulterant-sub">Common adulterants: Used tea, Artificial colouring, Sawdust</div>
+                </div>
+              </div>
+              <div class="adulterant-divider"></div>
+              <div class="adulterant-tests">
+                <div class="adulterant-test-label">Filter Paper Test</div>
+                <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Place a small amount of tea on <strong>moist filter paper</strong> or white cloth.</div></div>
+                <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Paper shows artificial colour stains immediately.</span></div>
+                <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Light natural tannin stain only.</span></div>
+              </div>
+            </div>
+
+            <!-- Chilli Powder Test -->
+            <div class="adulterant-card">
+              <div class="adulterant-card-top">
+                <div class="adulterant-emoji" style="background:var(--red-50);">🌶️</div>
+                <div>
+                  <div class="adulterant-name">Chilli Powder</div>
+                  <div class="adulterant-sub">Common adulterants: Brick powder, Sudan Red dye</div>
+                </div>
+              </div>
+              <div class="adulterant-divider"></div>
+              <div class="adulterant-tests">
+                <div class="adulterant-test-label">Water Float Test</div>
+                <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Add a teaspoon of chilli powder to a glass of <strong>water.</strong></div></div>
+                <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Red/orange streaks of artificial dye visible.</span></div>
+                <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Water turns slightly orange-red; no streaking.</span></div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div class="adulterant-grid">
-          <!-- Milk Test -->
-          <div class="adulterant-card">
-            <div class="adulterant-card-top">
-              <div class="adulterant-emoji" style="background:var(--green-50);">🥛</div>
-              <div>
-                <div class="adulterant-name">Milk</div>
-                <div class="adulterant-sub">Common adulterants: Water, Starch, Detergent, Urea</div>
-              </div>
-            </div>
-            <div class="adulterant-divider"></div>
-            <div class="adulterant-tests">
-              <div class="adulterant-test-label">Water Test</div>
-              <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Place a drop of milk on a <strong>polished slanting surface.</strong></div></div>
-              <div class="test-step"><div class="test-step-num">2</div><div class="test-step-text">Let it slide down on its own without any push.</div></div>
-              <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Flows immediately, leaves no white trail.</span></div>
-              <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Flows slowly, leaves a white trail.</span></div>
-            </div>
-          </div>
-
-          <!-- Honey Test -->
-          <div class="adulterant-card">
-            <div class="adulterant-card-top">
-              <div class="adulterant-emoji" style="background:var(--amber-50);">🍯</div>
-              <div>
-                <div class="adulterant-name">Honey</div>
-                <div class="adulterant-sub">Common adulterants: Sugar syrup, HFCS, Jaggery</div>
-              </div>
-            </div>
-            <div class="adulterant-divider"></div>
-            <div class="adulterant-tests">
-              <div class="adulterant-test-label">Thumb Test</div>
-              <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Put a small drop of honey on your <strong>thumb.</strong></div></div>
-              <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Spreads or spills easily.</span></div>
-              <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Stays intact on the thumb.</span></div>
-            </div>
-          </div>
-
-          <!-- Turmeric Test -->
-          <div class="adulterant-card">
-            <div class="adulterant-card-top">
-              <div class="adulterant-emoji" style="background:#fef9c3;">🌿</div>
-              <div>
-                <div class="adulterant-name">Turmeric Powder</div>
-                <div class="adulterant-sub">Common adulterants: Metanil Yellow dye, Chalk powder</div>
-              </div>
-            </div>
-            <div class="adulterant-divider"></div>
-            <div class="adulterant-tests">
-              <div class="adulterant-test-label">HCl Test (Metanil Yellow)</div>
-              <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Dissolve 1 teaspoon in a glass of <strong>warm water.</strong></div></div>
-              <div class="test-step"><div class="test-step-num">2</div><div class="test-step-text">Add a few drops of <strong>hydrochloric acid (HCl).</strong></div></div>
-              <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Turns pink or red (Metanil Yellow present).</span></div>
-              <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> No pink or red coloration.</span></div>
-            </div>
-          </div>
-
-          <!-- Ghee Test -->
-          <div class="adulterant-card">
-            <div class="adulterant-card-top">
-              <div class="adulterant-emoji" style="background:#fefce8;">🧈</div>
-              <div>
-                <div class="adulterant-name">Ghee & Oils</div>
-                <div class="adulterant-sub">Common adulterants: Vanaspati, Animal fat, Starch</div>
-              </div>
-            </div>
-            <div class="adulterant-divider"></div>
-            <div class="adulterant-tests">
-              <div class="adulterant-test-label">Baudouin Test (Sesame oil)</div>
-              <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Mix 1 tsp ghee with equal parts of <strong>concentrated HCl</strong> + a pinch of sugar.</div></div>
-              <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Pink/red colour in acid layer (Vanaspati present).</span></div>
-              <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> No colour change in acid layer.</span></div>
-            </div>
-          </div>
-
-          <!-- Tea Leaves Test -->
-          <div class="adulterant-card">
-            <div class="adulterant-card-top">
-              <div class="adulterant-emoji" style="background:var(--green-50);">🍵</div>
-              <div>
-                <div class="adulterant-name">Tea Leaves</div>
-                <div class="adulterant-sub">Common adulterants: Used tea, Artificial colouring, Sawdust</div>
-              </div>
-            </div>
-            <div class="adulterant-divider"></div>
-            <div class="adulterant-tests">
-              <div class="adulterant-test-label">Filter Paper Test</div>
-              <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Place a small amount of tea on <strong>moist filter paper</strong> or white cloth.</div></div>
-              <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Paper shows artificial colour stains immediately.</span></div>
-              <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Light natural tannin stain only.</span></div>
-            </div>
-          </div>
-
-          <!-- Chilli Powder Test -->
-          <div class="adulterant-card">
-            <div class="adulterant-card-top">
-              <div class="adulterant-emoji" style="background:var(--red-50);">🌶️</div>
-              <div>
-                <div class="adulterant-name">Chilli Powder</div>
-                <div class="adulterant-sub">Common adulterants: Brick powder, Sudan Red dye</div>
-              </div>
-            </div>
-            <div class="adulterant-divider"></div>
-            <div class="adulterant-tests">
-              <div class="adulterant-test-label">Water Float Test</div>
-              <div class="test-step"><div class="test-step-num">1</div><div class="test-step-text">Add a teaspoon of chilli powder to a glass of <strong>water.</strong></div></div>
-              <div class="adulterant-result result-positive">🔴 <span><strong>Adulterated:</strong> Red/orange streaks of artificial dye visible.</span></div>
-              <div class="adulterant-result result-negative" style="margin-top:8px;">🟢 <span><strong>Pure:</strong> Water turns slightly orange-red; no streaking.</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- Section 3: Food Label Guide -->
-    <section class="awareness-section" id="label-guide" style="padding-top:8px;">
-      <div class="awareness-inner">
-        <div class="section-label">
-          <div class="section-label-icon" style="background:var(--amber-50);">🏷️</div>
-          <div>
-            <div class="section-label-text">Decoding Food Labels</div>
-            <div class="section-label-sub">What every section of a label actually means</div>
+    <div class="anim-fade-up anim-delay-3">
+      <section class="awareness-section" id="label-guide" style="padding-top:8px;">
+        <div class="awareness-inner">
+          <div class="section-label">
+            <div class="section-label-icon" style="background:var(--amber-50);">🏷️</div>
+            <div>
+              <div class="section-label-text">Decoding Food Labels</div>
+              <div class="section-label-sub">What every section of a label actually means</div>
+            </div>
+          </div>
+
+          <div class="accordion">
+            <div class="accordion-item">
+              <button class="accordion-trigger">
+                <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:var(--green-50);">📝</div><div><div class="accordion-title">Ingredient List — The Most Important Section</div><div class="accordion-meta">How to read order, hidden sugars & chemical names</div></div></div>
+                <span class="accordion-chevron">▼</span>
+              </button>
+              <div class="accordion-body"><div class="accordion-body-inner">
+                <div class="label-guide-grid">
+                  <div class="label-guide-item"><div class="label-guide-key">📊 Order by weight</div><div class="label-guide-val">Ingredients are listed from <strong>most to least</strong> by weight. If sugar is #1, there's more sugar than anything else.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🍬 Hidden sugars</div><div class="label-guide-val">Sugar hides under 50+ names: <strong>dextrose, maltose, HFCS, sucrose, cane syrup, fruit juice concentrate</strong>, and more.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🔢 E-numbers</div><div class="label-guide-val">Codes like E102, E621 are food additives. Not all are harmful, but unfamiliar ones deserve a quick search.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">⚠️ Allergen declaration</div><div class="label-guide-val">Allergens like <strong>milk, nuts, gluten, soy, eggs</strong> must be declared.</div></div>
+                </div>
+                <div class="tip-box tip-box-green"><span>💡 <strong>The 5-ingredient rule:</strong> Products with 5 or fewer recognisable ingredients are almost always less processed and safer.</span></div>
+              </div></div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger">
+                <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:#eff6ff;">📊</div><div><div class="accordion-title">Nutrition Facts Panel — Numbers That Matter</div><div class="accordion-meta">Serving sizes, daily values, and what to watch for</div></div></div>
+                <span class="accordion-chevron">▼</span>
+              </button>
+              <div class="accordion-body"><div class="accordion-body-inner">
+                <div class="label-guide-grid">
+                  <div class="label-guide-item"><div class="label-guide-key">🍽️ Serving size trap</div><div class="label-guide-val">Always multiply nutrients by the number of servings you actually eat.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🧂 Sodium watch</div><div class="label-guide-val">Aim for under <strong>2,300mg/day</strong>. 600mg+ per serving is high.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🍬 Added vs total sugar</div><div class="label-guide-val">Added sugars over 10g/serving is a red flag.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🥑 Fat types matter</div><div class="label-guide-val"><strong>Trans fats = 0g always.</strong> Saturated fat should be minimal.</div></div>
+                </div>
+                <div class="tip-box tip-box-amber"><span>⚠️ Even "0g trans fat" labels can legally contain up to 0.499g per serving. Check for <strong>"partially hydrogenated oil"</strong> in the ingredient list.</span></div>
+              </div></div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger">
+                <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:var(--amber-50);">📅</div><div><div class="accordion-title">Date Labels — Best Before vs Expiry</div><div class="accordion-meta">Understanding the real difference and when to discard</div></div></div>
+                <span class="accordion-chevron">▼</span>
+              </button>
+              <div class="accordion-body"><div class="accordion-body-inner">
+                <div class="label-guide-grid">
+                  <div class="label-guide-item"><div class="label-guide-key">🟡 Best Before Date</div><div class="label-guide-val">Product is at <strong>peak quality</strong> before this date.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🔴 Use By / Expiry Date</div><div class="label-guide-val"><strong>Safety date</strong> — do not consume after this date.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🟢 Manufacturing Date</div><div class="label-guide-val">Useful to calculate freshness when no expiry is listed.</div></div>
+                </div>
+                <div class="tip-box tip-box-red"><span>🚨 Never consume baby food, dairy, or packaged meat past the <strong>Use By</strong> date.</span></div>
+              </div></div>
+            </div>
+
+            <div class="accordion-item">
+              <button class="accordion-trigger">
+                <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:var(--red-50);">📣</div><div><div class="accordion-title">Front-of-Pack Claims — What They Really Mean</div><div class="accordion-meta">Decoding "Natural", "Organic", "Light", "No Added Sugar"</div></div></div>
+                <span class="accordion-chevron">▼</span>
+              </button>
+              <div class="accordion-body"><div class="accordion-body-inner">
+                <div class="label-guide-grid">
+                  <div class="label-guide-item"><div class="label-guide-key">🌿 "Natural"</div><div class="label-guide-val"><strong>Unregulated term</strong> in most countries.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🌾 "Organic"</div><div class="label-guide-val">Only trustworthy with a <strong>certified organic seal</strong>.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">💧 "Light" or "Lite"</div><div class="label-guide-val">Can mean <strong>light in colour, flavour, or texture</strong> — not necessarily calories.</div></div>
+                  <div class="label-guide-item"><div class="label-guide-key">🚫 "No Added Sugar"</div><div class="label-guide-val">Product may still be <strong>naturally high in sugar</strong>.</div></div>
+                </div>
+                <div class="tip-box tip-box-green"><span>💡 <strong>Rule of thumb:</strong> The front of a pack is designed by marketing teams. Always flip to the back for the real story.</span></div>
+              </div></div>
+            </div>
           </div>
         </div>
-
-        <div class="accordion">
-          <div class="accordion-item">
-            <button class="accordion-trigger">
-              <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:var(--green-50);">📝</div><div><div class="accordion-title">Ingredient List — The Most Important Section</div><div class="accordion-meta">How to read order, hidden sugars & chemical names</div></div></div>
-              <span class="accordion-chevron">▼</span>
-            </button>
-            <div class="accordion-body"><div class="accordion-body-inner">
-              <div class="label-guide-grid">
-                <div class="label-guide-item"><div class="label-guide-key">📊 Order by weight</div><div class="label-guide-val">Ingredients are listed from <strong>most to least</strong> by weight. If sugar is #1, there's more sugar than anything else.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🍬 Hidden sugars</div><div class="label-guide-val">Sugar hides under 50+ names: <strong>dextrose, maltose, HFCS, sucrose, cane syrup, fruit juice concentrate</strong>, and more.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🔢 E-numbers</div><div class="label-guide-val">Codes like E102, E621 are food additives. Not all are harmful, but unfamiliar ones deserve a quick search.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">⚠️ Allergen declaration</div><div class="label-guide-val">Allergens like <strong>milk, nuts, gluten, soy, eggs</strong> must be declared.</div></div>
-              </div>
-              <div class="tip-box tip-box-green"><span>💡 <strong>The 5-ingredient rule:</strong> Products with 5 or fewer recognisable ingredients are almost always less processed and safer.</span></div>
-            </div></div>
-          </div>
-
-          <div class="accordion-item">
-            <button class="accordion-trigger">
-              <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:#eff6ff;">📊</div><div><div class="accordion-title">Nutrition Facts Panel — Numbers That Matter</div><div class="accordion-meta">Serving sizes, daily values, and what to watch for</div></div></div>
-              <span class="accordion-chevron">▼</span>
-            </button>
-            <div class="accordion-body"><div class="accordion-body-inner">
-              <div class="label-guide-grid">
-                <div class="label-guide-item"><div class="label-guide-key">🍽️ Serving size trap</div><div class="label-guide-val">Always multiply nutrients by the number of servings you actually eat.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🧂 Sodium watch</div><div class="label-guide-val">Aim for under <strong>2,300mg/day</strong>. 600mg+ per serving is high.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🍬 Added vs total sugar</div><div class="label-guide-val">Added sugars over 10g/serving is a red flag.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🥑 Fat types matter</div><div class="label-guide-val"><strong>Trans fats = 0g always.</strong> Saturated fat should be minimal.</div></div>
-              </div>
-              <div class="tip-box tip-box-amber"><span>⚠️ Even "0g trans fat" labels can legally contain up to 0.499g per serving. Check for <strong>"partially hydrogenated oil"</strong> in the ingredient list.</span></div>
-            </div></div>
-          </div>
-
-          <div class="accordion-item">
-            <button class="accordion-trigger">
-              <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:var(--amber-50);">📅</div><div><div class="accordion-title">Date Labels — Best Before vs Expiry</div><div class="accordion-meta">Understanding the real difference and when to discard</div></div></div>
-              <span class="accordion-chevron">▼</span>
-            </button>
-            <div class="accordion-body"><div class="accordion-body-inner">
-              <div class="label-guide-grid">
-                <div class="label-guide-item"><div class="label-guide-key">🟡 Best Before Date</div><div class="label-guide-val">Product is at <strong>peak quality</strong> before this date.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🔴 Use By / Expiry Date</div><div class="label-guide-val"><strong>Safety date</strong> — do not consume after this date.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🟢 Manufacturing Date</div><div class="label-guide-val">Useful to calculate freshness when no expiry is listed.</div></div>
-              </div>
-              <div class="tip-box tip-box-red"><span>🚨 Never consume baby food, dairy, or packaged meat past the <strong>Use By</strong> date.</span></div>
-            </div></div>
-          </div>
-
-          <div class="accordion-item">
-            <button class="accordion-trigger">
-              <div class="accordion-trigger-left"><div class="accordion-icon-wrap" style="background:var(--red-50);">📣</div><div><div class="accordion-title">Front-of-Pack Claims — What They Really Mean</div><div class="accordion-meta">Decoding "Natural", "Organic", "Light", "No Added Sugar"</div></div></div>
-              <span class="accordion-chevron">▼</span>
-            </button>
-            <div class="accordion-body"><div class="accordion-body-inner">
-              <div class="label-guide-grid">
-                <div class="label-guide-item"><div class="label-guide-key">🌿 "Natural"</div><div class="label-guide-val"><strong>Unregulated term</strong> in most countries.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🌾 "Organic"</div><div class="label-guide-val">Only trustworthy with a <strong>certified organic seal</strong>.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">💧 "Light" or "Lite"</div><div class="label-guide-val">Can mean <strong>light in colour, flavour, or texture</strong> — not necessarily calories.</div></div>
-                <div class="label-guide-item"><div class="label-guide-key">🚫 "No Added Sugar"</div><div class="label-guide-val">Product may still be <strong>naturally high in sugar</strong>.</div></div>
-              </div>
-              <div class="tip-box tip-box-green"><span>💡 <strong>Rule of thumb:</strong> The front of a pack is designed by marketing teams. Always flip to the back for the real story.</span></div>
-            </div></div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- Section 4: Common E-Numbers -->
-    <section class="awareness-section" id="additives-guide" style="padding-top:8px;">
-      <div class="awareness-inner">
-        <div class="section-label">
-          <div class="section-label-icon" style="background:#f0f9ff;">🔢</div>
-          <div>
-            <div class="section-label-text">Common Food Additives (E-Numbers)</div>
-            <div class="section-label-sub">A quick reference to what's in your packaged food</div>
+    <div class="anim-fade-up anim-delay-4">
+      <section class="awareness-section" id="additives-guide" style="padding-top:8px;">
+        <div class="awareness-inner">
+          <div class="section-label">
+            <div class="section-label-icon" style="background:#f0f9ff;">🔢</div>
+            <div>
+              <div class="section-label-text">Common Food Additives (E-Numbers)</div>
+              <div class="section-label-sub">A quick reference to what's in your packaged food</div>
+            </div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table class="additives-table">
-            <thead><tr><th>Code</th><th>Name</th><th>Found In</th><th>Concern Level</th></tr></thead>
-            <tbody>
-              <tr><td><span class="additive-code">E102</span></td><td>Tartrazine (Yellow 5)</td><td>Soft drinks, candy, cereals</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
-              <tr><td><span class="additive-code">E110</span></td><td>Sunset Yellow</td><td>Orange drinks, jam, soups</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
-              <tr><td><span class="additive-code">E211</span></td><td>Sodium Benzoate</td><td>Fizzy drinks, pickles, sauces</td><td><span class="badge badge-danger">✕ High</span></td></tr>
-              <tr><td><span class="additive-code">E320</span></td><td>BHA</td><td>Chips, biscuits, instant noodles</td><td><span class="badge badge-danger">✕ High</span></td></tr>
-              <tr><td><span class="additive-code">E621</span></td><td>Monosodium Glutamate (MSG)</td><td>Savoury snacks, soups, fast food</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
-              <tr><td><span class="additive-code">E951</span></td><td>Aspartame</td><td>Diet drinks, sugar-free gum</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
-              <tr><td><span class="additive-code">E300</span></td><td>Ascorbic Acid (Vitamin C)</td><td>Juices, canned fruit, meat</td><td><span class="badge badge-safe">✓ Safe</span></td></tr>
-              <tr><td><span class="additive-code">E306</span></td><td>Tocopherols (Vitamin E)</td><td>Oils, cereals, dairy</td><td><span class="badge badge-safe">✓ Safe</span></td></tr>
-              <tr><td><span class="additive-code">E440</span></td><td>Pectin</td><td>Jams, jellies, fruit products</td><td><span class="badge badge-safe">✓ Safe</span></td></tr>
-            </tbody>
-          </table>
-        </div>
+          <div class="table-wrap">
+            <table class="additives-table">
+              <thead>
+                <tr><th>Code</th><th>Name</th><th>Found In</th><th>Concern Level</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="additive-code">E102</span></td><td>Tartrazine (Yellow 5)</td><td>Soft drinks, candy, cereals</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
+                <tr><td><span class="additive-code">E110</span></td><td>Sunset Yellow</td><td>Orange drinks, jam, soups</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
+                <tr><td><span class="additive-code">E211</span></td><td>Sodium Benzoate</td><td>Fizzy drinks, pickles, sauces</td><td><span class="badge badge-danger">✕ High</span></td></tr>
+                <tr><td><span class="additive-code">E320</span></td><td>BHA</td><td>Chips, biscuits, instant noodles</td><td><span class="badge badge-danger">✕ High</span></td></tr>
+                <tr><td><span class="additive-code">E621</span></td><td>Monosodium Glutamate (MSG)</td><td>Savoury snacks, soups, fast food</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
+                <tr><td><span class="additive-code">E951</span></td><td>Aspartame</td><td>Diet drinks, sugar-free gum</td><td><span class="badge badge-caution">⚠ Moderate</span></td></tr>
+                <tr><td><span class="additive-code">E300</span></td><td>Ascorbic Acid (Vitamin C)</td><td>Juices, canned fruit, meat</td><td><span class="badge badge-safe">✓ Safe</span></td></tr>
+                <tr><td><span class="additive-code">E306</span></td><td>Tocopherols (Vitamin E)</td><td>Oils, cereals, dairy</td><td><span class="badge badge-safe">✓ Safe</span></td></tr>
+                <tr><td><span class="additive-code">E440</span></td><td>Pectin</td><td>Jams, jellies, fruit products</td><td><span class="badge badge-safe">✓ Safe</span></td></tr>
+              </tbody>
+            </table>
+          </div>
 
-        <!-- CTA Banner -->
-        <div class="awareness-cta">
-          <div class="awareness-cta-text">
-            <div class="awareness-cta-title">Now check your products in real time.</div>
-            <div class="awareness-cta-sub">Use our product checker to scan ingredients, assess risk levels, and decode marketing claims on any food you buy.</div>
-          </div>
-          <div class="awareness-cta-actions">
-            <a href="check-product.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">🔬 Check a Product</a>
-            <a href="stay-safe.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">❤️ Stay Safe Guide</a>
+          <!-- CTA Banner -->
+          <div class="awareness-cta">
+            <div class="awareness-cta-text">
+              <div class="awareness-cta-title">Now check your products in real time.</div>
+              <div class="awareness-cta-sub">Use our product checker to scan ingredients, assess risk levels, and decode marketing claims on any food you buy.</div>
+            </div>
+            <div class="awareness-cta-actions">
+              <a href="check-product.html" class="btn btn-lg" style="background:#fff;color:var(--green-800);border-color:#fff;">🔬 Check a Product</a>
+              <a href="stay-safe.html" class="btn btn-lg btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">❤️ Stay Safe Guide</a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-inner">
-        <div><div class="footer-brand">SafePlate</div><div class="footer-note">Food Safety & Transparency Platform · For educational use</div></div>
-        <nav class="footer-links"><a href="index.html">Dashboard</a><a href="check-product.html">Check Product</a><a href="nutrition.html">Nutrition Facts</a><a href="report.html">Report</a><a href="awareness.html">Awareness</a><a href="stay-safe.html">Stay Safe</a></nav>
-      </div>
-    </footer>
+    <div class="anim-fade-up anim-delay-5">
+      <footer class="footer">
+        <div class="footer-inner">
+          <div><div class="footer-brand">SafePlate</div><div class="footer-note">Food Safety & Transparency Platform · For educational use</div></div>
+          <nav class="footer-links"><a href="index.html">Dashboard</a><a href="check-product.html">Check Product</a><a href="nutrition.html">Nutrition Facts</a><a href="report.html">Report</a><a href="awareness.html">Awareness</a><a href="stay-safe.html">Stay Safe</a></nav>
+        </div>
+      </footer>
+    </div>
   </div>
 </div>
 
@@ -662,6 +672,7 @@
     try {
       const response = await fetch(`${API_URL}/api/me`, { credentials: 'include' });
       const data = await response.json();
+      
       const adminInfo = document.getElementById('adminInfo');
       const userInfo = document.getElementById('userInfo');
       const authButtons = document.getElementById('authButtons');
@@ -670,24 +681,24 @@
       if (data.authenticated) {
         const user = data.user;
         if (user.role === 'admin') {
-          if (adminInfo) adminInfo.style.display = 'flex';
-          if (userInfo) userInfo.style.display = 'none';
-          if (authButtons) authButtons.style.display = 'none';
-          if (mobileAuthLinks) mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Logout</a>';
-          if (document.getElementById('adminName')) document.getElementById('adminName').textContent = user.username;
+          adminInfo.style.display = 'flex';
+          userInfo.style.display = 'none';
+          authButtons.style.display = 'none';
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">👑 Admin Logout</a>';
+          document.getElementById('adminName').textContent = user.username;
         } else {
-          if (adminInfo) adminInfo.style.display = 'none';
-          if (userInfo) userInfo.style.display = 'flex';
-          if (authButtons) authButtons.style.display = 'none';
-          if (mobileAuthLinks) mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
-          if (document.getElementById('userName')) document.getElementById('userName').textContent = user.username;
-          if (document.getElementById('userAvatar')) document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
+          adminInfo.style.display = 'none';
+          userInfo.style.display = 'flex';
+          authButtons.style.display = 'none';
+          mobileAuthLinks.innerHTML = '<a href="#" onclick="logout()" class="nav-link">Logout</a>';
+          document.getElementById('userName').textContent = user.username;
+          document.getElementById('userAvatar').textContent = user.username?.charAt(0).toUpperCase() || 'U';
         }
       } else {
-        if (adminInfo) adminInfo.style.display = 'none';
-        if (userInfo) userInfo.style.display = 'none';
-        if (authButtons) authButtons.style.display = 'flex';
-        if (mobileAuthLinks) mobileAuthLinks.innerHTML = '<a href="login.html" class="nav-link">Login</a><a href="signup.html" class="nav-link">Sign Up</a>';
+        adminInfo.style.display = 'none';
+        userInfo.style.display = 'none';
+        authButtons.style.display = 'flex';
+        mobileAuthLinks.innerHTML = '<a href="login.html" class="nav-link">Login</a><a href="signup.html" class="nav-link">Sign Up</a>';
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -695,7 +706,9 @@
   }
 
   async function logout() {
-    try { await fetch(`${API_URL}/api/logout`, { method: 'POST', credentials: 'include' }); } catch(e) {}
+    try { 
+      await fetch(`${API_URL}/api/logout`, { method: 'POST', credentials: 'include' }); 
+    } catch(e) {}
     window.location.href = 'index.html';
   }
 

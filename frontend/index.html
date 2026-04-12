@@ -567,7 +567,7 @@
           <div class="stat-card anim-fade-up anim-delay-4" data-reveal>
             <div class="stat-card-icon" style="background:#eff6ff;">🏥</div>
             <div>
-              <div class="stat-card-num" style="color:#1d4ed8;">6</div>
+              <div class="stat-card-num" style="color:#1d4ed8;">9</div>
               <div class="stat-card-lbl">Health Profiles</div>
             </div>
           </div>
@@ -689,7 +689,7 @@
         category: report.category || 'Reported',
         riskLevel: report.severity === 'high' ? 'high' : (report.severity === 'medium' ? 'medium' : 'low'),
         riskScore: report.severity === 'high' ? 85 : (report.severity === 'medium' ? 55 : 30),
-        status: report.status === 'Under Review' ? 'flagged' : (report.status === 'Resolved' ? 'safe' : 'adulterated'),
+        status: report.status === 'Under Review' ? 'flagged' : (report.status === 'Resolved' ? 'safe(reviewed)' : 'adulterated'),
         image: '⚠️',
         ingredients: [report.issue_type || 'Reported Issue'],
         isReport: true,

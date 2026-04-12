@@ -414,7 +414,282 @@ def ocr_generic():
         'text': extracted_text,
         'success': True
     })
+# Replace your ALTERNATIVES_DB in app.py with this more targeted list:
 
+ALTERNATIVES_DB = [
+    {
+        "name": "Millet Noodles",
+        "brand": "Slurrp Farm",
+        "reason": "High fiber, no preservatives, whole grain alternative to refined wheat noodles",
+        "tags": ["high fiber", "no preservatives", "whole grain"],
+        "health_score": 82,
+        "suitable_for": ["diabetes", "hypertension", "heartdisease"],
+        "replaces_category": ["noodles", "instant noodles", "pasta", "maggi"]
+    },
+    {
+        "name": "Brown Rice Noodles",
+        "brand": "Nature's Basket",
+        "reason": "Gluten-free, lower glycemic index than refined wheat noodles",
+        "tags": ["gluten free", "low GI", "no additives"],
+        "health_score": 78,
+        "suitable_for": ["diabetes", "celiac"],
+        "replaces_category": ["noodles", "instant noodles", "maggi"]
+    },
+    {
+        "name": "Jowar Noodles",
+        "brand": "Soulfull",
+        "reason": "Made from sorghum, no MSG, no artificial preservatives, high fiber",
+        "tags": ["no MSG", "high fiber", "no preservatives"],
+        "health_score": 80,
+        "suitable_for": ["diabetes", "hypertension"],
+        "replaces_category": ["noodles", "instant noodles", "maggi"]
+    },
+    {
+        "name": "Ragi Vermicelli",
+        "brand": "Bambino",
+        "reason": "Finger millet base, high calcium and iron, no MSG or artificial additives",
+        "tags": ["no MSG", "high calcium", "no additives"],
+        "health_score": 84,
+        "suitable_for": ["pregnant", "diabetes", "hypertension"],
+        "replaces_category": ["noodles", "instant noodles", "vermicelli", "maggi"]
+    },
+    {
+        "name": "Oats Biscuits",
+        "brand": "Britannia NutriChoice",
+        "reason": "High fiber, lower sugar than regular biscuits",
+        "tags": ["high fiber", "low sugar", "whole grain"],
+        "health_score": 74,
+        "suitable_for": ["diabetes", "heartdisease"],
+        "replaces_category": ["biscuits", "cookies", "dark fantasy", "parle", "bakery"]
+    },
+    {
+        "name": "Multigrain Cookies",
+        "brand": "Unibic",
+        "reason": "Whole grain, no maida, less sugar than cream biscuits",
+        "tags": ["whole grain", "no maida", "low sugar"],
+        "health_score": 76,
+        "suitable_for": ["diabetes", "heartdisease"],
+        "replaces_category": ["biscuits", "cookies", "dark fantasy", "bakery"]
+    },
+    {
+        "name": "Ragi Cookies",
+        "brand": "Sprout",
+        "reason": "Finger millet based, high calcium, no refined flour",
+        "tags": ["high calcium", "no maida", "whole grain"],
+        "health_score": 78,
+        "suitable_for": ["diabetes", "pregnant"],
+        "replaces_category": ["biscuits", "cookies", "dark fantasy", "bakery"]
+    },
+    {
+        "name": "Multigrain Bread",
+        "brand": "Harvest Gold",
+        "reason": "Complex carbs, added vitamins, no artificial colours",
+        "tags": ["multigrain", "no artificial colour", "vitamins"],
+        "health_score": 76,
+        "suitable_for": ["heartdisease", "hypertension"],
+        "replaces_category": ["bread", "bakery", "sandwich"]
+    },
+    {
+        "name": "Cold Pressed Mustard Oil",
+        "brand": "Dhara",
+        "reason": "Natural fat source, no hydrogenation, rich in omega-3",
+        "tags": ["natural", "no hydrogenation", "omega-3"],
+        "health_score": 85,
+        "suitable_for": ["heartdisease", "hypertension"],
+        "replaces_category": ["oil", "cooking oil", "vegetable oil"]
+    },
+    {
+        "name": "Rock Salt",
+        "brand": "Tata",
+        "reason": "Lower sodium than table salt, contains natural minerals",
+        "tags": ["low sodium", "natural minerals"],
+        "health_score": 80,
+        "suitable_for": ["hypertension"],
+        "replaces_category": ["salt", "condiments"]
+    },
+    {
+        "name": "Stevia Sweetener",
+        "brand": "Zindagi",
+        "reason": "Zero calories, plant-based, does not spike blood sugar",
+        "tags": ["zero calorie", "plant-based", "no sugar spike"],
+        "health_score": 88,
+        "suitable_for": ["diabetes", "pcos"],
+        "replaces_category": ["sugar", "sweetener"]
+    },
+    {
+        "name": "Unsalted Mixed Nuts",
+        "brand": "Happilo",
+        "reason": "Healthy fats, high protein, no added salt or preservatives",
+        "tags": ["healthy fats", "high protein", "no preservatives"],
+        "health_score": 90,
+        "suitable_for": ["heartdisease", "diabetes", "pcos"],
+        "replaces_category": ["snacks", "chips", "namkeen", "kurkure", "bingo"]
+    },
+    {
+        "name": "Greek Yogurt",
+        "brand": "Epigamia",
+        "reason": "High protein, probiotic, no added sugar in plain variant",
+        "tags": ["high protein", "probiotic", "no added sugar"],
+        "health_score": 86,
+        "suitable_for": ["pcos", "thyroid", "pregnant"],
+        "replaces_category": ["dairy", "yogurt", "dahi", "curd"]
+    },
+    {
+        "name": "Quinoa",
+        "brand": "True Elements",
+        "reason": "Complete protein, gluten-free, high fiber, low GI",
+        "tags": ["complete protein", "gluten free", "low GI"],
+        "health_score": 92,
+        "suitable_for": ["celiac", "diabetes", "pcos", "pregnant"],
+        "replaces_category": ["rice", "grains", "cereal"]
+    },
+    {
+        "name": "Baked Makhana",
+        "brand": "Go Makhana",
+        "reason": "Low sodium, no artificial flavours, high magnesium",
+        "tags": ["low sodium", "no artificial flavour", "baked"],
+        "health_score": 83,
+        "suitable_for": ["hypertension", "heartdisease", "pregnant"],
+        "replaces_category": ["snacks", "chips", "namkeen", "kurkure", "bingo"]
+    },
+    {
+        "name": "Homemade Tomato Sauce",
+        "brand": "DIY",
+        "reason": "No preservatives, no added colour, control over sodium and sugar",
+        "tags": ["no preservatives", "no added colour", "low sodium"],
+        "health_score": 95,
+        "suitable_for": ["hypertension", "diabetes", "heartdisease"],
+        "replaces_category": ["sauce", "ketchup", "condiments"]
+    }
+]
+
+
+@app.route('/get-alternatives', methods=['POST'])
+def get_alternatives():
+    data = request.get_json() or {}
+    overall_risk = data.get('overall_risk', 'Low')
+    health_conditions = data.get('health_conditions', [])
+    product_name = data.get('product_name', '').lower()
+    brand = data.get('brand', '').lower()
+    flagged_names = [f.lower() for f in data.get('flagged_ingredient_names', [])]
+    flagged_issues = [f.lower() for f in data.get('flagged_issues', [])]
+
+    # Only show alternatives for High or Moderate risk products
+    if overall_risk == 'Low':
+        return jsonify({'alternatives': [], 'show': False})
+
+    # Improved category detection
+    product_lower = f"{product_name} {brand}"
+    
+    # Direct brand matching
+    brand_mapping = {
+        'maggi': ['noodles', 'instant noodles'],
+        'kurkure': ['snacks', 'chips', 'namkeen'],
+        'lays': ['chips', 'snacks'],
+        'bingo': ['chips', 'snacks'],
+        'parle': ['biscuits', 'cookies'],
+        'britannia': ['biscuits', 'cookies', 'bread'],
+        'dark fantasy': ['biscuits', 'cookies', 'dark fantasy'],
+        'amul': ['milk', 'dairy', 'butter', 'cheese'],
+        'mother dairy': ['milk', 'dairy', 'yogurt'],
+        'nestle': ['noodles', 'chocolate', 'dairy'],
+    }
+    
+    product_category_hints = []
+    
+    # Check brand mapping
+    for brand_key, categories in brand_mapping.items():
+        if brand_key in product_lower:
+            product_category_hints.extend(categories)
+    
+    # Check for category keywords in product name
+    category_keywords = {
+        'noodles': ['noodle', 'maggi', 'yippee', 'top ramen', 'ching', 'vermicelli', 'pasta'],
+        'biscuits': ['biscuit', 'cookie', 'parle', 'marie', 'krack', 'dark fantasy', 'oreo', 'hide & seek', 'good day'],
+        'chips': ['chip', 'lays', 'kurkure', 'too yumm', 'bingo', 'namkeen', 'snack'],
+        'sauce': ['sauce', 'ketchup', 'kissan', 'maggi sauce'],
+        'oil': ['oil', 'ghee', 'vanaspati', 'cooking oil'],
+        'milk': ['milk', 'dairy', 'dahi', 'yogurt', 'amul', 'toned milk'],
+        'bread': ['bread', 'rusk', 'toast', 'sandwich'],
+        'sugar': ['sugar', 'jaggery', 'syrup', 'sweetener'],
+        'salt': ['salt', 'namak', 'sendha namak'],
+        'butter': ['butter', 'margarine', 'butter spread'],
+        'cheese': ['cheese', 'processed cheese', 'cheddar'],
+    }
+    
+    for cat, keywords in category_keywords.items():
+        for kw in keywords:
+            if kw in product_lower:
+                product_category_hints.append(cat)
+    
+    # Remove duplicates
+    product_category_hints = list(set(product_category_hints))
+    
+    # If no category detected, try to infer from product type
+    if not product_category_hints:
+        # Default fallbacks based on common product types
+        if 'biscuit' in product_lower or 'cookie' in product_lower:
+            product_category_hints = ['biscuits', 'cookies']
+        elif 'noodle' in product_lower or 'maggi' in product_lower:
+            product_category_hints = ['noodles', 'instant noodles']
+        elif 'chip' in product_lower or 'snack' in product_lower:
+            product_category_hints = ['snacks', 'chips']
+    
+    scored = []
+    for alt in ALTERNATIVES_DB:
+        score = 0
+        replaces = [r.lower() for r in alt.get('replaces_category', [])]
+        
+        # PRIMARY SIGNAL: direct brand match or category match
+        category_match = any(hint in replaces for hint in product_category_hints)
+        
+        # Specific brand matching for better alternatives
+        if 'dark fantasy' in product_lower and 'dark fantasy' in replaces:
+            score += 20  # Strong boost for Dark Fantasy alternatives
+        elif 'maggi' in product_lower and 'maggi' in replaces:
+            score += 20
+        elif 'kurkure' in product_lower and 'kurkure' in replaces:
+            score += 20
+        elif category_match:
+            score += 15
+        
+        # If no category match at all, skip entirely
+        if not category_match and product_category_hints:
+            continue
+        
+        # Health condition match
+        for condition in health_conditions:
+            if condition in alt.get('suitable_for', []):
+                score += 5
+        
+        # Tag addresses a flagged issue
+        for issue in flagged_issues:
+            for tag in alt.get('tags', []):
+                if any(word in tag.lower() for word in issue.split()):
+                    score += 2
+        
+        # Base health score (0-100 scale, divide by 10)
+        score += alt['health_score'] / 10
+        
+        # Penalize if health_score is low
+        if alt['health_score'] < 70:
+            score -= 5
+        
+        scored.append({**alt, '_score': score})
+    
+    # Sort by score and take top 3
+    scored.sort(key=lambda x: x['_score'], reverse=True)
+    top = []
+    for a in scored[:3]:
+        top.append({
+            'name': a['name'],
+            'brand': a['brand'],
+            'reason': a['reason'],
+            'tags': a['tags'],
+            'health_score': a['health_score']
+        })
+    
+    return jsonify({'alternatives': top, 'show': bool(top)})
 # ==================== REPORT ROUTES ====================
 
 @app.route('/submit-report', methods=['POST'])
