@@ -19,10 +19,11 @@ app.secret_key = 'your-secret-key-here-change-in-production'
 
 # CORS configuration with credentials
 CORS(app, 
-     origins=["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5000"],
+     origins=["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5000", "http://localhost:5000"],
      supports_credentials=True,
-     allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+     allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_credentials=True)
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -60,6 +61,15 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ==================== AUTHENTICATION ROUTES ====================
+
+@app.after_request
+def after_request(response):
+    """Add CORS headers to every response"""
+    response.headers.add('Access-Control-Allow-Origin', 'http://127.0.0.1:5500')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -118,7 +128,7 @@ def login():
     
     try:
         db = get_db()
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()  # PyMySQL - returns dict because of DictCursor in config
         cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         cursor.close()
@@ -182,7 +192,7 @@ def get_current_user():
 def get_users():
     try:
         db = get_db()
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()  # PyMySQL - returns dict
         cursor.execute("SELECT id, username, email, role, created_at, last_login FROM users ORDER BY id DESC")
         users = cursor.fetchall()
         cursor.close()
@@ -267,12 +277,13 @@ def get_admin_stats():
 
 @app.route('/search', methods=['GET'])
 def search_product():
+    """Search for a product by name or brand and analyze its ingredients"""
     product_name = request.args.get('name', '')
     if not product_name:
         return jsonify({'error': 'Product name is required'}), 400
 
     db = get_db()
-    cursor = db.cursor(dictionary=True, buffered=True)
+    cursor = db.cursor()  # FIXED: Removed dictionary=True (PyMySQL uses DictCursor from config)
 
     cursor.execute("""
         SELECT * FROM products 
@@ -290,14 +301,14 @@ def search_product():
     product = products[0]
     ingredients_text = product.get('ingredients_text', '')
     
-    # 1. Parse and analyze standard ingredients
+    # Parse and analyze standard ingredients
     ingredient_list = parse_ingredients(ingredients_text)
     analysis = build_ingredient_analysis(ingredient_list, cursor)
 
-    # 2. FIX: Extract INS numbers USING the cursor before it closes
+    # Extract INS numbers using the cursor before it closes
     ins_data = extract_ins_numbers(ingredients_text, cursor)
 
-    # 3. Now it is safe to close the database
+    # Close database connection
     cursor.close()
     db.close()
 
@@ -308,10 +319,12 @@ def search_product():
             "ingredients_text": ingredients_text
         },
         **analysis,
-        "ins_numbers": ins_data  # Pass the fetched data here
+        "ins_numbers": ins_data
     })
+
 @app.route('/analyze-ingredients', methods=['POST'])
 def analyze_ingredients():
+    """Analyze manually entered ingredients text"""
     data = request.get_json()
     ingredients_text = data.get('ingredients_text', '')
 
@@ -320,19 +333,22 @@ def analyze_ingredients():
 
     ingredient_list = parse_ingredients(ingredients_text)
     db = get_db()
-    cursor = db.cursor(dictionary=True, buffered=True)
+    cursor = db.cursor()  # FIXED: Removed dictionary=True
     analysis = build_ingredient_analysis(ingredient_list, cursor)
+    ins_data = extract_ins_numbers(ingredients_text, cursor)
+    
     cursor.close()
     db.close()
 
     return jsonify({
         "product": {"product_name": "Manual Analysis", "brand": "—", "ingredients_text": ingredients_text},
         **analysis,
-        "ins_numbers": extract_ins_numbers(ingredients_text)
+        "ins_numbers": ins_data
     })
 
 @app.route('/add-product', methods=['POST'])
 def add_product():
+    """Add a new product to the database"""
     data = request.get_json()
     product_name = data.get('product_name', '')
     brand = data.get('brand', '')
@@ -349,9 +365,12 @@ def add_product():
     """, (product_name, brand, ingredients_text))
     db.commit()
     
+    # Use a new cursor for analysis
+    analysis_cursor = db.cursor()  # FIXED: Removed dictionary=True
     ingredient_list = parse_ingredients(ingredients_text)
-    analysis_cursor = db.cursor(dictionary=True, buffered=True)
     analysis = build_ingredient_analysis(ingredient_list, analysis_cursor)
+    ins_data = extract_ins_numbers(ingredients_text, analysis_cursor)
+    
     analysis_cursor.close()
     cursor.close()
     db.close()
@@ -359,18 +378,22 @@ def add_product():
     return jsonify({
         'success': True,
         'message': f'✅ Product "{product_name}" added successfully',
-        'analysis': analysis
+        'analysis': analysis,
+        'ins_numbers': ins_data
     })
+
 # ==================== CLAIM & OCR ROUTES ====================
 
 @app.route('/verify-claims', methods=['POST'])
 def verify_claims_route():
+    """Verify marketing claims against ingredients"""
     data = request.get_json()
     result = verify_claims(data.get('claims', []), data.get('ingredients_text', ''))
     return jsonify(result)
 
 @app.route('/ocr', methods=['POST'])
 def ocr_extract():
+    """Extract text from uploaded image using OCR"""
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
     
@@ -382,6 +405,7 @@ def ocr_extract():
 
 @app.route('/api/ocr/nutrition', methods=['POST'])
 def ocr_nutrition():
+    """Extract text from nutrition label image"""
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
     
@@ -401,6 +425,7 @@ def ocr_nutrition():
 
 @app.route('/api/ocr/generic', methods=['POST'])
 def ocr_generic():
+    """Generic OCR for any image"""
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
     
@@ -414,7 +439,8 @@ def ocr_generic():
         'text': extracted_text,
         'success': True
     })
-# Replace your ALTERNATIVES_DB in app.py with this more targeted list:
+
+# ==================== ALTERNATIVES DATABASE ====================
 
 ALTERNATIVES_DB = [
     {
@@ -563,9 +589,9 @@ ALTERNATIVES_DB = [
     }
 ]
 
-
 @app.route('/get-alternatives', methods=['POST'])
 def get_alternatives():
+    """Get healthier alternatives for high-risk products"""
     data = request.get_json() or {}
     overall_risk = data.get('overall_risk', 'Low')
     health_conditions = data.get('health_conditions', [])
@@ -690,10 +716,12 @@ def get_alternatives():
         })
     
     return jsonify({'alternatives': top, 'show': bool(top)})
+
 # ==================== REPORT ROUTES ====================
 
 @app.route('/submit-report', methods=['POST'])
 def submit_report():
+    """Submit a user report about a flagged product"""
     try:
         product_name = request.form.get('product_name', '')
         brand = request.form.get('brand', '')
@@ -748,9 +776,10 @@ def submit_report():
 
 @app.route('/flagged-products', methods=['GET'])
 def get_flagged_products():
+    """Get all flagged products from the database"""
     try:
         db = get_db()
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()  # FIXED: Removed dictionary=True
         cursor.execute("SELECT * FROM flagged_products ORDER BY id DESC")
         products = cursor.fetchall()
         cursor.close()
@@ -761,6 +790,7 @@ def get_flagged_products():
 
 @app.route('/evidence/<path:filename>')
 def serve_evidence(filename):
+    """Serve evidence files"""
     try:
         return send_from_directory('evidence', filename)
     except Exception as e:
@@ -768,6 +798,7 @@ def serve_evidence(filename):
 
 @app.route('/api/flagged-products/<int:report_id>/resolve', methods=['PUT'])
 def resolve_report(report_id):
+    """Mark a report as resolved"""
     db = get_db()
     cursor = db.cursor()
     cursor.execute("UPDATE flagged_products SET status = 'Resolved' WHERE id = %s", (report_id,))
@@ -778,6 +809,7 @@ def resolve_report(report_id):
 
 @app.route('/api/flagged-products/<int:report_id>', methods=['DELETE'])
 def delete_report(report_id):
+    """Delete a report"""
     db = get_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM flagged_products WHERE id = %s", (report_id,))
@@ -790,8 +822,9 @@ def delete_report(report_id):
 
 @app.route('/products', methods=['GET'])
 def list_products():
+    """List all products"""
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()  # FIXED: Removed dictionary=True
     cursor.execute("SELECT product_name, brand FROM products ORDER BY product_name LIMIT 100")
     products = cursor.fetchall()
     cursor.close()
@@ -800,8 +833,9 @@ def list_products():
 
 @app.route('/ingredients', methods=['GET'])
 def get_all_ingredients():
+    """Get all ingredients from database"""
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()  # FIXED: Removed dictionary=True
     cursor.execute("SELECT * FROM ingredients")
     results = cursor.fetchall()
     cursor.close()
@@ -810,12 +844,13 @@ def get_all_ingredients():
 
 @app.route('/disease-aware', methods=['GET'])
 def disease_aware():
+    """Get ingredients to avoid for specific health conditions"""
     condition = request.args.get('condition', '')
     if not condition:
         return jsonify({'error': 'Health condition is required'}), 400
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()  # FIXED: Removed dictionary=True
     cursor.execute("SELECT * FROM ingredients WHERE LOWER(caution_group) LIKE LOWER(%s)", (f"%{condition}%",))
     results = cursor.fetchall()
     cursor.close()
@@ -824,6 +859,7 @@ def disease_aware():
 
 @app.route('/health-score', methods=['POST'])
 def health_score():
+    """Calculate health score based on ingredients"""
     data = request.get_json()
     ingredients_text = data.get('ingredients_text', '')
     
@@ -832,7 +868,7 @@ def health_score():
     
     ingredient_list = parse_ingredients(ingredients_text)
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()  # FIXED: Removed dictionary=True
     
     high_risk_count = moderate_risk_count = 0
     for ing in ingredient_list:
@@ -864,6 +900,7 @@ def health_score():
 
 @app.route('/', methods=['GET'])
 def home():
+    """API home endpoint"""
     return jsonify({
         'name': 'Food Safety Checker API',
         'version': '2.0',
@@ -887,10 +924,12 @@ def home():
 # ==================== INITIALIZE DATABASE ====================
 
 def init_db():
+    """Initialize database tables if they don't exist"""
     try:
         db = get_db()
         cursor = db.cursor()
         
+        # Create users table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -904,6 +943,7 @@ def init_db():
             )
         """)
         
+        # Check if admin exists
         cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
         admin_count = cursor.fetchone()[0]
         

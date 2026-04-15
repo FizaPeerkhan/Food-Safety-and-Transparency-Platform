@@ -1,7 +1,8 @@
-flask
-flask-cors
-mysql-connector-python
-opencv-python
-numpy
-easyocr
-pillow
+Flask==3.0.3
+flask-cors==6.0.2
+mysql-connector-python==9.3.0
+bcrypt==3.2.0
+pytesseract==0.3.13
+pillow==10.3.0
+gunicorn==21.2.0
+python-dotenv==0.21.0

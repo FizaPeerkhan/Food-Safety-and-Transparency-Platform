@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.pyc
+
+
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Uploads (if storing images)
+uploads/
+
+# Database (if local)
+*.db
