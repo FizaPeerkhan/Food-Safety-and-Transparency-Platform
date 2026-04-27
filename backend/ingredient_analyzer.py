@@ -217,7 +217,31 @@ GENERAL_GROUPS = {
 }
 
 def _query_ingredient(name_lower, cursor):
-    """Query database for ingredient by name"""
+    """Query database for ingredient by name — tries exact, then partial"""
+    
+    # 1. Exact match first
+    cursor.execute("""
+        SELECT * FROM ingredients
+        WHERE LOWER(ingredient_name) = %s
+        LIMIT 1
+    """, (name_lower,))
+    row = cursor.fetchone()
+    if row:
+        return row
+
+    # 2. First word match (e.g., "coriander powder" → search "coriander")
+    first_word = name_lower.split()[0] if ' ' in name_lower else None
+    if first_word and len(first_word) > 3:
+        cursor.execute("""
+            SELECT * FROM ingredients
+            WHERE LOWER(ingredient_name) LIKE %s
+            LIMIT 1
+        """, (f'%{first_word}%',))
+        row = cursor.fetchone()
+        if row:
+            return row
+
+    # 3. Fallback — truncated LIKE (original behaviour)
     cursor.execute("""
         SELECT * FROM ingredients
         WHERE LOWER(ingredient_name) LIKE %s
@@ -227,6 +251,28 @@ def _query_ingredient(name_lower, cursor):
 
 def _has_db_match(name_lower, cursor):
     """Check if ingredient exists in database"""
+    
+    # Exact
+    cursor.execute("""
+        SELECT 1 FROM ingredients
+        WHERE LOWER(ingredient_name) = %s
+        LIMIT 1
+    """, (name_lower,))
+    if cursor.fetchone():
+        return True
+
+    # First word
+    first_word = name_lower.split()[0] if ' ' in name_lower else None
+    if first_word and len(first_word) > 3:
+        cursor.execute("""
+            SELECT 1 FROM ingredients
+            WHERE LOWER(ingredient_name) LIKE %s
+            LIMIT 1
+        """, (f'%{first_word}%',))
+        if cursor.fetchone():
+            return True
+
+    # Truncated LIKE
     cursor.execute("""
         SELECT 1 FROM ingredients
         WHERE LOWER(ingredient_name) LIKE %s
@@ -278,9 +324,8 @@ def _process_subs(subs, cursor, seen_ingredients, all_ingredients,
             if should_flag:
                 flagged = True
                 key = row['ingredient_name'].lower()
-                if key not in seen_ingredients:
-                    seen_ingredients.add(key)
-                    entry = {
+                
+                entry = {
                         'ingredient': row['ingredient_name'],
                         'original_text': sub,
                         'category': row.get('category', ''),
@@ -290,9 +335,9 @@ def _process_subs(subs, cursor, seen_ingredients, all_ingredients,
                         'allergen': allergen,
                         'is_debunked': False
                     }
-                    if risk_level == 'High':
+                if risk_level == 'High':
                         high_risk.append(entry)
-                    else:
+                else:
                         moderate_risk.append(entry)
                 if allergen:
                     allergens.add(allergen)
@@ -407,10 +452,9 @@ def build_ingredient_analysis(ingredient_list, cursor):
             )
             if should_flag:
                 flagged = True
-                key = row['ingredient_name'].lower()
-                if key not in seen_ingredients:
-                    seen_ingredients.add(key)
-                    entry = {
+                #key = row['ingredient_name'].lower()
+                
+                entry = {
                         'ingredient': row['ingredient_name'],
                         'original_text': name,
                         'category': category,
@@ -420,9 +464,9 @@ def build_ingredient_analysis(ingredient_list, cursor):
                         'allergen': allergen,
                         'is_debunked': False
                     }
-                    if risk_level == 'High':
+                if risk_level == 'High':
                         high_risk.append(entry)
-                    elif risk_level == 'Moderate':
+                elif risk_level == 'Moderate':
                         moderate_risk.append(entry)
 
                 if allergen:

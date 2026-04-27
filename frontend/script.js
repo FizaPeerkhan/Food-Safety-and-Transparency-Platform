@@ -363,12 +363,20 @@ function renderSearchResult(data, container) {
   
   let ingredientTags = '';
   const ingredientsList = data.all_ingredients || data.product.ingredients_text.split(',').map(x => ({ name: x.trim() }));
-  ingredientsList.forEach(i => {
-    const name = i.name || i;
-    const isHigh = hiSet.has(name.toLowerCase());
-    const isMod = moSet.has(name.toLowerCase());
-    ingredientTags += `<span class="ingredient-pill ${isHigh ? 'pill-danger' : (isMod ? 'pill-caution' : 'pill-safe')}">${escapeHtml(name)}</span>`;
-  });
+ ingredientsList.forEach(i => {
+  const name = i.name || i;
+  const isHigh = hiSet.has(name.toLowerCase());
+  const isMod = moSet.has(name.toLowerCase());
+  const isInfo = i.risk_level === 'Info' || i.is_debunked === true;
+  
+  let pillClass = 'pill-safe';
+  if (isInfo) pillClass = 'pill-info';
+  else if (isHigh) pillClass = 'pill-danger';
+  else if (isMod) pillClass = 'pill-caution';
+  
+  const title = i.explanation || i.category || '';
+  ingredientTags += `<span class="ingredient-pill ${pillClass}" title="${escapeHtml(title)}">${escapeHtml(name)}</span>`;
+});
   
   let highRiskHtml = '';
   if (data.high_risk_ingredients?.length) {
@@ -1011,6 +1019,12 @@ style.textContent = `
     color: #2b6cb0 !important;
     border-color: #bee3f8 !important;
     font-style: italic;
+  }
+  .pill-info {
+    background: #ebf8ff !important;
+    color: #2b6cb0 !important;
+    border-color: #bee3f8 !important;
+    font-style: italic !important;
   }
 `;
 document.head.appendChild(style);
